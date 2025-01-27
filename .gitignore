@@ -160,6 +160,7 @@ libs/
 archived/
 prototypes/
 test_configs/
+outputs/
 
 # Ignore specific file types
 *.env

@@ -1,0 +1,138 @@
+# configs/example.yaml
+
+output:
+  root_dir: "outputs"
+  batch_identifier: "batch_2023_08_01_test"
+
+# Ceroni et al. (DOI: 10.1038/nmeth.4635)
+ceroni:
+  data:
+    dataset_key: "ceroni_burden"
+    sheet_name: "Mean FPKM"
+    usecols: "A:P"
+    header: 0
+    skiprows: 3
+
+  thresholds:
+    log2_fc_threshold: 2.0
+    time_point: 15
+    drop_zeros: true
+    plasmid_pairs:
+      - [ "pLys-M1", "pLys" ]
+      - [ "pPD864-LacZ", "pPD864" ]
+      - [ "pSB1C3-H3", "pSB1C3" ]
+
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+# Mori et al. (DOI: 10.15252/msb.20209536)
+mori:
+  data:
+    dataset_key: "mori_ev8"
+    sheet_name: "EV8-AbsoluteMassFractions-1"
+    usecols:
+      - "Gene name"
+      - "Lib-02"
+      - "Lib-06"
+      - "Lib-14"
+      - "Lib-17"
+      - "Lib-28"
+      - "Lib-19"
+      - "Lib-20"
+
+  thresholds:
+    reference_col: "Lib-20"
+    conditions:
+      - "Lib-02"
+      - "Lib-06"
+      - "Lib-14"
+      - "Lib-17"
+      - "Lib-28"
+      - "Lib-19"
+    log2_fc_threshold: 2.0
+
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+# Wu et al (DOI: 10.1038/s41564-022-01310-w)
+wu:
+  data:
+    dataset_key: "wu"
+    sheet_name: "Group #1 protein mass fractions"
+
+  thresholds:
+    log2_fc_threshold: 2.0
+    comparisons:
+      Clim_MOPS_Over_Rich_MOPS: ["M1", "N5"]
+      Clim_MOPS_Over_WT_Rich_LB: ["M1", "O8"]
+
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+# Zhus et al. (DOI: 10.1038/s41467-023-36254-0)
+zhu:
+  data:
+    dataset_key: "zhu"
+    sheet_name: "supplementary data 2"
+    usecols: "B,C,I,K"
+    header: 0
+
+  thresholds:
+    log2_fc_threshold: 3
+
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+# Emani et al (DOI: 10.1093/synbio/ysad013)
+emani:
+  data:
+    dataset_key: "emani_et_al"
+    sheet_name: "Figure 5_alltags v control"
+    usecols:
+      - "Gene"
+      - "log2FoldChange (Green = Upregulated in 10uM IPTG All Tags)"
+      - "pvalue"
+      - "padj"
+  thresholds:
+    log2_fc_threshold: 2.0
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+# Schmidt et al. (DOI: 10.1038/nbt.3418)
+schmidt:
+  data:
+    dataset_key: "schmidt"
+    sheet_name: "Schmidt et al."
+    usecols: "C:AC"
+    header: 2
+  thresholds:
+    log2_fc_threshold: 2.0
+    comparisons:
+      Acetate_vs_Glucose: ["Acetate", "Glucose"]
+      Xylose_vs_Glucose: ["Xylose", "Glucose"]
+      Chemostat_slow_vs_fast: ["Chemostat µ=0.20", "Chemostat µ=0.5"]
+      Osmotic_stress_glucose_vs_Glucose: ["Osmotic-stress glucose", "Glucose"]
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+# Radzikowski et al. (DOI: 10.15252/msb.20166998)
+radzikowski:
+  data:
+    dataset_key: "radzikowski"
+    sheet_name: "Sheet1"
+    usecols: "A:S"
+    header: 2
+  thresholds:
+    log2_fc_threshold: 2.0
+    comparisons:
+      Persisters_0.5h_Over_GlucoseGrowth: ["Persisters_0.5h", "GlucoseGrowth"]
+      Starved_0.5h_Over_GlucoseGrowth: ["Starved_0.5h", "GlucoseGrowth"]
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
