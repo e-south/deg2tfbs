@@ -16,41 +16,56 @@ DNADESIGN_DATA = Path(__file__).parent.parent.parent.parent / 'dnadesign-data'
 
 # A simple dictionary mapping keys to actual file paths:
 DATA_FILES = {
-    # Comparative proteomic datasets (E. coli)
-    'wu': DNADESIGN_DATA / 'primary_literature' / 'Wu_et_al' / '41564_2022_1310_MOESM3_ESM.xlsx',
-    'zhu': DNADESIGN_DATA / 'primary_literature' / 'Zhu_et_al' / '41467_2023_36254_MOESM3_ESM.xlsx',
+    # Comparative Omics (RNA‐seq, Absolute Proteomics) Datasets
+    # Most of these datasets compare omics readouts between a single “target” and “reference” condition, 
+    # enabling the identification of up- and down-regulated genes. Some studies provide full raw data, 
+    # which lets us reproduce results, apply custom thresholds, and isolate differentially expressed 
+    # genes ourselves
+
+    # Diverse Media Conditions
     'mori_ev8': DNADESIGN_DATA / 'primary_literature' /'Mori_et_al' / 'msb20209536-sup-0009-datasetev8.xlsx',
     'mori_ev9': DNADESIGN_DATA / 'primary_literature' /'Mori_et_al' / 'msb20209536-sup-0010-datasetev9.xlsx',
-    'peebo': DNADESIGN_DATA / 'primary_literature' / 'Peebo_et_al' / 'gene_list.xlsx',
-    'durfee': DNADESIGN_DATA / 'primary_literature' / 'Durfee_et_al' / 'gene_list.xlsx',
-    'houser': DNADESIGN_DATA / 'primary_literature' / 'Houser_et_al' / 'pcbi.1004400.s004.csv',
     'schmidt': DNADESIGN_DATA / 'primary_literature' / 'Schmidt_et_al' / 'table_s6.xlsx',
-    'radzikowski': DNADESIGN_DATA / 'primary_literature' / 'Radzikowski_et_al' / 'msb166998-sup-0002-tableev1.xlsx',
     
-    # PRECISE-1K datasets from imodulonDB (gene sets following data-driven regulon categorization) (E. coli)
-    'lamoureux_1k': DNADESIGN_DATA / 'primary_literature' / 'Lamoureux_et_al' / 'PRECISE_1K',
-        
-    # RNA-seq DEGs following isoleucine starvation (E. coli)
+    # Stringent Response and Nutrient Limitation
+    'durfee': DNADESIGN_DATA / 'primary_literature' / 'Durfee_et_al' / 'gene_list.xlsx',
+    'fragoso_et_al': DNADESIGN_DATA / 'primary_literature' / 'Fragoso-Jimenez_et_al' / '12934_2022_1909_MOESM_ESM.xlsx',
+    'franchini_a': DNADESIGN_DATA / 'primary_literature' / 'Franchini_et_al_a' / 'gene_list.xlsx',
+    'franchini_b': DNADESIGN_DATA / 'primary_literature' / 'Franchini_et_al_b' / 'gene_list.xlsx',
     'gummesson_1': DNADESIGN_DATA / 'primary_literature' / 'Gummesson_et_al' / 'Gummesson et al (1).xlsx',
     'gummesson_2': DNADESIGN_DATA / 'primary_literature' / 'Gummesson_et_al' / 'Gummesson et al (2).xlsx',
     'gummesson_3': DNADESIGN_DATA / 'primary_literature' / 'Gummesson_et_al' / 'Gummesson et al (3).xlsx',
-    
-    # RNA-seq DEGs following nutrient starvation (E. coli)
-    'franchini_a': DNADESIGN_DATA / 'primary_literature' / 'Franchini_et_al_a' / 'gene_list.xlsx',
-    'franchini_b': DNADESIGN_DATA / 'primary_literature' / 'Franchini_et_al_b' / 'gene_list.xlsx',
+    'houser': DNADESIGN_DATA / 'primary_literature' / 'Houser_et_al' / 'pcbi.1004400.s004.csv',
+    'lu': DNADESIGN_DATA / 'primary_literature' / 'Lu_et_al' / 'ST1_ST2_glyphosate_shock.csv',
     'sanchez_vasquez': DNADESIGN_DATA /'primary_literature' / 'Sanchez-Vazquez_et_al' / 'gene_list.xlsx',
+    'wu': DNADESIGN_DATA / 'primary_literature' / 'Wu_et_al' / '41564_2022_1310_MOESM3_ESM.xlsx',
+    'zhu': DNADESIGN_DATA / 'primary_literature' / 'Zhu_et_al' / '41467_2023_36254_MOESM3_ESM.xlsx',
+
+    # Metabolic Burden
+    'ceroni': DNADESIGN_DATA / 'primary_literature' / 'Ceroni_et_al' / '41592_2018_BFnmeth4635_MOESM4_ESM.xlsx',
+    'rajacharya': DNADESIGN_DATA / 'primary_literature' / 'Rajacharya_et_al' / '41598_2024_63148_MOESM2_ESM.xlsx',
     
-    # RNA-seq DEGs following metabolic burden (E. coli)
-    'ceroni_burden': DNADESIGN_DATA / 'primary_literature' / 'Ceroni_et_al' / '41592_2018_BFnmeth4635_MOESM4_ESM.xlsx',
+    # Membrane Stress and Fatty Acid Production
+    'emani': DNADESIGN_DATA / 'primary_literature' / 'Emani_et_al' / 'Supplementary data.xlsx',
+    'vazulka': DNADESIGN_DATA / 'primary_literature' / 'Vazulka_et_al' / 'TableS1.xlsx',
     
-    # RNA-seq DEGs related to periplasmic stress (E. coli)
-    'emani_et_al': DNADESIGN_DATA / 'primary_literature' / 'Emani_et_al' / 'Supplementary data.xlsx',
+    # Antibiotic Stress
+    'bie': DNADESIGN_DATA / 'primary_literature' / 'Bie_et_al' / 'spectrum.00317-23-s0002.xlsx',
+    'deter': DNADESIGN_DATA / 'primary_literature' / 'Deter_et_al' / 'GSE156896_read_counts.csv',
+    'radzikowski': DNADESIGN_DATA / 'primary_literature' / 'Radzikowski_et_al' / 'msb166998-sup-0002-tableev1.xlsx',
     
-    # RNA-seq DEGs related to substrate uptake rate (E. coli)
-    'fragoso_et_al': DNADESIGN_DATA / 'primary_literature' / 'Fragoso-Jimenez_et_al' / '12934_2022_1909_MOESM_ESM.xlsx',
+    # Heat Shock Response
+    'kim': DNADESIGN_DATA / 'primary_literature' / 'Kim_et_al' / '41598_2020_74606_MOESM1_ESM.xlsx',
+    'zhang': DNADESIGN_DATA / 'primary_literature' / 'Zhang_et_al' / 'TableS1.xlsx',
     
-    # RNA-seq DEGs related to ampicillin resistance (E. coli)
-    'deter_et_al': DNADESIGN_DATA / 'primary_literature' / 'Deter_et_al' / 'GSE156896_read_counts.csv',
+    # Phage Shock Response
+    'jovanovic': DNADESIGN_DATA / 'primary_literature' / 'Jovanovic_et_al' / 'Supplementary_table_4_MG1655+PspA.xls',
+    
+    # Other Curated Literature
+    'peebo': DNADESIGN_DATA / 'primary_literature' / 'Peebo_et_al' / 'gene_list.xlsx',
+
+    # PRECISE-1K datasets from imodulonDB (gene sets following data-driven regulon categorization) (E. coli)
+    'lamoureux_1k': DNADESIGN_DATA / 'primary_literature' / 'Lamoureux_et_al' / 'PRECISE_1K',
         
     # EcoCyc Pathway/Genome Database Full Regulatory Network
     'ecocyc_full_reg_network': DNADESIGN_DATA / 'EcoCyc' / 'ECOLI-regulatory-network.txt',
@@ -85,6 +100,7 @@ DATA_FILES = {
     'sun_yim': DNADESIGN_DATA / 'primary_literature' / 'Sun_Yim_et_al' / 'msb198875-sup-0002-sdatafig1.xlsx',
 }
 
+
 def load_dataset(dataset_key, sheet_name=None, usecols=None, header=0, skiprows=None):
     """
     Minimal example that loads a dataset from the known path in DATA_FILES.
@@ -94,7 +110,8 @@ def load_dataset(dataset_key, sheet_name=None, usecols=None, header=0, skiprows=
     if not file_path.exists():
         raise FileNotFoundError(f"File not found for key {dataset_key}: {file_path}")
 
-    if file_path.suffix == ".xlsx":
+    # Fix: Treat both .xlsx and .xls as Excel
+    if file_path.suffix in [".xlsx", ".xls"]:
         df = pd.read_excel(
             file_path, 
             sheet_name=sheet_name,
@@ -108,5 +125,3 @@ def load_dataset(dataset_key, sheet_name=None, usecols=None, header=0, skiprows=
         raise ValueError(f"Unsupported file format for {file_path.suffix}")
 
     return df
-
-

@@ -1,13 +1,13 @@
 # configs/example.yaml
 
 output:
-  root_dir: "outputs"
-  batch_identifier: "batch_2023_08_01_test"
+  root_dir: "pipeline/deg_fetcher"
+  batch_identifier: "batch_2025_01_30"
 
 # Ceroni et al. (DOI: 10.1038/nmeth.4635)
 ceroni:
   data:
-    dataset_key: "ceroni_burden"
+    dataset_key: "ceroni"
     sheet_name: "Mean FPKM"
     usecols: "A:P"
     header: 0
@@ -26,7 +26,6 @@ ceroni:
     csv_subdir: "csv"
     plot_subdir: "plots"
 
-# Mori et al. (DOI: 10.15252/msb.20209536)
 mori:
   data:
     dataset_key: "mori_ev8"
@@ -37,19 +36,30 @@ mori:
       - "Lib-06"
       - "Lib-14"
       - "Lib-17"
-      - "Lib-28"
       - "Lib-19"
       - "Lib-20"
+      - "Lib-28"
+
+  comparisons:
+    - { condition: "Lib-17", reference: "Lib-20" }
+    - { condition: "Lib-02", reference: "Lib-20" }
+    - { condition: "Lib-06", reference: "Lib-20" }
+    - { condition: "Lib-14", reference: "Lib-20" }
+    - { condition: "Lib-19", reference: "Lib-20" }
+    - { condition: "Lib-28", reference: "Lib-20" }
+    - { condition: "Lib-19", reference: "Lib-20" }
+
+  descriptors:
+    "Lib-00-A1": "Glucose minimal medium (A1-1)"
+    "Lib-02": "High osmolarity"
+    "Lib-06": "Poor carbon (acetate)"
+    "Lib-14": "Oxidative stress"
+    "Lib-17": "Low pH (acetate)"
+    "Lib-19": "LB stationary"
+    "Lib-20": "LB log-phase"
+    "Lib-28": "Xylose + oxaloacetate"
 
   thresholds:
-    reference_col: "Lib-20"
-    conditions:
-      - "Lib-02"
-      - "Lib-06"
-      - "Lib-14"
-      - "Lib-17"
-      - "Lib-28"
-      - "Lib-19"
     log2_fc_threshold: 2.0
 
   output:
@@ -90,7 +100,7 @@ zhu:
 # Emani et al (DOI: 10.1093/synbio/ysad013)
 emani:
   data:
-    dataset_key: "emani_et_al"
+    dataset_key: "emani"
     sheet_name: "Figure 5_alltags v control"
     usecols:
       - "Gene"
@@ -136,3 +146,114 @@ radzikowski:
   output:
     csv_subdir: "csv"
     plot_subdir: "plots"
+
+bie:
+  data:
+    dataset_key: "bie"
+    sheet_name: "Sheet1"
+    usecols:
+      - "Gene_id"
+      - "Genename"
+      - "KAN_2_fpkm"
+      - "KAN_3_fpkm"
+      - "KAN_4_fpkm"
+      - "CIP_1_fpkm"
+      - "CIP_2_fpkm"
+      - "CIP_3_fpkm"
+      - "H2O_2_fpkm"
+      - "H2O_3_fpkm"
+      - "H2O_4_fpkm"
+      - "significant(KANvsH2O)"
+      - "log2FoldChange(KANvsH2O)"
+      - "significant(CIPvsH2O)"
+      - "log2FoldChange(CIPvsH2O)"
+    header: 1
+
+  thresholds:
+    log2_fc_threshold: 2.0
+    # Now we store replicate suffixes in a dictionary
+    replicate_dict:
+      KAN: ["_2_fpkm","_3_fpkm","_4_fpkm"]
+      CIP: ["_1_fpkm","_2_fpkm","_3_fpkm"]
+      H2O: ["_2_fpkm","_3_fpkm","_4_fpkm"]
+    water_prefix: "H2O"
+    antibiotics: ["KAN","CIP"]
+    significance_cols:
+      KAN: "significant(KANvsH2O)"
+      CIP: "significant(CIPvsH2O)"
+    log2_fc_cols:
+      KAN: "log2FoldChange(KANvsH2O)"
+      CIP: "log2FoldChange(CIPvsH2O)"
+
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+deter:
+  data:
+    dataset_key: "deter"
+    header: 0
+    usecols:
+      - "Name"
+      - "gene"
+      - "Stationary rep1"
+      - "Stationary rep2"
+      - "Stationary rep3"
+      - "3h fresh media rep1"
+      - "3h fresh media rep2"
+      - "3h fresh media rep3"
+      - "3h amp media rep1"
+      - "3h amp media rep2"
+      - "3h amp media rep3"
+
+  thresholds:
+    log2_fc_threshold: 2.0
+
+    # Define two comparisons:
+    #  1) 3h amp media vs 3h fresh media
+    #  2) Stationary vs 3h fresh media
+    comparisons:
+      - { target: "3h amp media", reference: "3h fresh media" }
+      # - { target: "Stationary", reference: "3h fresh media" }
+
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+jovanovic:
+  data:
+    dataset_key: "jovanovic"
+    sheet_name: "Sheet1"
+    usecols:
+      - "Gene"
+      - "Product"
+      - "Fold regulation"
+    header: 2
+
+  thresholds:
+    # Name of the column that has linear fold regulation
+    fc_col: "Fold regulation"
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+rajacharya:
+  data:
+    dataset_key: "rajacharya"
+    sheet_name: "Sheet 1"
+    # columns U, V, W, X => "Accession", "genes", "logFC", "PValue"
+    usecols:
+      - "Accession"
+      - "genes"
+      - "logFC"
+      - "PValue"
+    header: 3
+
+  thresholds:
+    log2_fc_threshold: 2.0
+
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+

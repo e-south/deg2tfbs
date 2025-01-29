@@ -114,7 +114,7 @@ def radzikowski_comparisons(df, comparisons, threshold=2.0, save_plots=False, pl
             plt.axhline(threshold, color="gray", linestyle="--")
             plt.axhline(-threshold, color="gray", linestyle="--")
             plt.xscale("log")
-            plt.title(f"Radzikowski comparison: {label}")
+            plt.title(f"Radzikowski et al.\n log2({label})")
             plt.xlabel("Average Abundance")
             plt.ylabel("Log2 Fold Change")
             sns.despine()

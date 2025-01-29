@@ -111,12 +111,12 @@ def run_emani_pipeline(full_config: dict):
     )
     plt.axvline(x=threshold, color='gray', linestyle='--')
     plt.axvline(x=-threshold, color='gray', linestyle='--')
-    plt.title("Periplasmic Stress Genes: log2FC vs. -log10(PAdj)")
+    plt.title("Emani et al.\n -log10(PAdj) versus (N22_GFP / WT)")
     plt.xlabel("Log2 Fold Change")
     plt.ylabel("-log10(PAdj)")
     sns.despine()
 
-    plot_path = plot_dir / "emani_DEGs_et_al.png"
+    plot_path = plot_dir / "emani_N22_GFP_vs_WT.png"
     plt.savefig(plot_path, dpi=150)
     plt.close()
 

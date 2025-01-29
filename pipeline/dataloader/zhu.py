@@ -3,17 +3,17 @@
 <deg2tfbs project>
 zhu.py
 
-Module for reading and analyzing data from Zhu et al., where they compared abundances
-of >2500 proteins in MG1655 during nutrient downshift (i.e., (p)ppGpp accumulation).
-The proteomes of wild type cells at 0 min, 20 min, 40 min, and 80 min of postshift
-were analyzed. The proteomes of relA-deficient strain at 0 min, 1.5 h, 3 h, and 4.5 h
-of postshift were also analyzed. Supplementary Figure 5 contains iBAQ mass values.
+Module for loading and analyzing data from Zhu et al., which compared abundances
+of >2500 proteins in MG1655 during nutrient downshift. The proteomes of wild type 
+cells at 0 min, 20 min, 40 min, and 80 min of postshift were analyzed. The proteomes 
+of relA-deficient strain at 0 min, 1.5 h, 3 h, and 4.5 h of postshift were also 
+analyzed. Supplementary Figure 5 contains iBAQ mass values.
 
 "Stringent response ensures the timely adaptation of bacterial growth to nutrient 
 downshift"
 DOI: 10.1038/s41467-023-36254-0
 
-Author(s): Eric J. South
+Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
 """
@@ -28,15 +28,16 @@ from deg2tfbs.pipeline.dataloader.utils import load_dataset
 
 def read_zhu_data(config_data: dict) -> pd.DataFrame:
     """
-    Reads Zhu dataset with keys from config.
-    Typically:
+    Reads the sourced Zhu dataset using keys from the YAML config.
+    
+    E.g. config:
       {
         "dataset_key": "zhu",
         "sheet_name": "supplementary data 2",
         "usecols": "B,C,I,K",
         "header": 0
       }
-    We'll rename columns for clarity: [Protein names, Gene names, iBAQ mass E1, iBAQ mass E3].
+    Rename columns for clarity: [Protein names, Gene names, iBAQ mass E1, iBAQ mass E3].
     Then we drop zeros and compute log2_fc.
     """
     df = load_dataset(
@@ -54,11 +55,13 @@ def read_zhu_data(config_data: dict) -> pd.DataFrame:
 def zhu_threshold_analysis(df, threshold=3.0, save_plots=False, plot_dir=None):
     """
     Calculate log2 fold change = log2(E3 / E1).
-    Classify up/down based on threshold, produce MA plot if requested.
+    Classify up/down based on threshold, produce MA plot.
     Returns up & down DataFrames.
     """
     df["average_iBAQ"] = (df["iBAQ mass E1"] + df["iBAQ mass E3"]) / 2
     df["log2_fc"] = np.log2(df["iBAQ mass E3"] / df["iBAQ mass E1"])
+    
+    # Up- and down-regulated genes are colored red and green, respectively
     df["color"] = np.where(df["log2_fc"] >= threshold, "red",
                   np.where(df["log2_fc"] <= -threshold, "green", "gray"))
 
@@ -72,9 +75,9 @@ def zhu_threshold_analysis(df, threshold=3.0, save_plots=False, plot_dir=None):
         plt.xscale('log')
         plt.axhline(threshold, color='gray', linestyle='--')
         plt.axhline(-threshold, color='gray', linestyle='--')
-        plt.title("Zhu: Nutrient Downshift (RelA Overproduction vs WT)")
+        plt.title("Zhu et al.\n log2 (RelA Overproduction / WT)")
         plt.xlabel("Average iBAQ")
-        plt.ylabel("Log2 FC")
+        plt.ylabel("Log2 Fold Change")
         plt.savefig(plot_dir / "zhu_relA_overexpression_vs_WT.png", dpi=150)
         plt.close()
 
@@ -114,4 +117,5 @@ def run_zhu_pipeline(full_config: dict):
     up.to_csv(csv_dir / "DEGs_upregulated_zhu.csv", index=False)
     down.to_csv(csv_dir / "DEGs_downregulated_zhu.csv", index=False)
 
-    print(f"[Zhu Pipeline] Completed. Found: {len(up)} up, {len(down)} down total.")
+    print(f"[Zhu et al. Pipeline] Completed. Identified DEGs across 1 condition pair at log2 ≥ {threshold}: {len(up)} up, {len(down)} down.")
+

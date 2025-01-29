@@ -3,14 +3,14 @@
 <deg2tfbs project>
 ceroni.py
 
-Module for reading and analyzing data described in Ceroni et al., where they 
-combined RNA-seq with an in vivo assay to identify transcriptional changes that
-occur in Escherichia coli when burdensome synthetic constructs are expressed.
+Module for loading and analyzing data described in Ceroni et al., which 
+combined RNA-seq with in vivo assays to identify transcriptional changes that
+occur in E. coli when burdensome synthetic constructs are expressed.
 
 "Burden-driven feedback control of gene expression"
 DOI: 10.1038/nmeth.4635
 
-Author(s): Eric J. South
+Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
 """
@@ -28,11 +28,11 @@ from deg2tfbs.pipeline.dataloader.utils import load_dataset
 
 def read_ceroni_data(config_data: dict) -> pd.DataFrame:
     """
-    Reads the Ceroni dataset using keys from the YAML config.
+    Reads the sourced Ceroni dataset using keys from the YAML config.
     
-    default config_data looks like:
+    E.g. config:
       {
-        "dataset_key": "ceroni_burden",
+        "dataset_key": "ceroni",
         "sheet_name": "Mean FPKM",
         "usecols": "A:P",
         "header": 0,
@@ -47,12 +47,13 @@ def read_ceroni_data(config_data: dict) -> pd.DataFrame:
         skiprows=config_data.get("skiprows", None)
     )
     
-    # Tidy up DataFrame
+    # Specify which plasmids (i.e., strains) and time points we're interested in
     plasmid_names = ['pSB1C3-H3','pLys-M1','pSB1C3','pLys','pSB1C3-Lux','pPD864-LacZ','pPD864']
-    time_points = ['15','60']
+    time_points = ['15','60'] # minutes
     headers = ['gene_id','gene_name'] + [f"{p}_{t}" for p in plasmid_names for t in time_points]
     df.columns = headers
     
+    # Tidy up the DataFrame
     df_melted = pd.melt(
         df,
         id_vars=['gene_id', 'gene_name'],
@@ -65,25 +66,42 @@ def read_ceroni_data(config_data: dict) -> pd.DataFrame:
     return df_melted
 
 
-def ceroni_ma_plot(df, plasmid1, plasmid2, threshold=2.0, epsilon=1e-5, plot_path=None):
+def ceroni_ma_plot(
+    df,
+    plasmid1,
+    plasmid2,
+    threshold=2.0,
+    epsilon=1e-5,
+    plot_path=None,
+    time_point=None
+):
     """
-    Creates and saves an MA-plot comparing plasmid1 and plasmid2 from the Ceroni dataset. 
-    Here, plasmid1 and plasmid2 represent strain genotypes during an RNA-seq experiment, 
-    enabling differential gene expression analysis relative to plasmid burden.
+    Creates and saves an MA-plot comparing strains carrying plasmid1 
+    and plasmid2 from the Ceroni dataset.
     """
-    sns.set(style="ticks")
+    # Set up the plot
+    sns.set_theme(style="ticks")
     df['log2_ratio'] = np.log2((df[plasmid1] + epsilon) / (df[plasmid2] + epsilon))
+    df['average_expression'] = (df[plasmid1] + df[plasmid2]) / 2
+
+    # Up- and down-regulated genes are colored red and green, respectively
     colors = np.where(
         df['log2_ratio'] >= threshold, 'red',
-        np.where(df['log2_ratio'] <= -threshold, 'green','lightgray')
+        np.where(df['log2_ratio'] <= -threshold, 'green', 'lightgray')
     )
-
+    # Plot 
     plt.figure(figsize=(6,5))
     plt.scatter(df['average_expression'], df['log2_ratio'], c=colors, alpha=0.25, edgecolors='none')
     plt.xscale('log')
     plt.axhline(threshold, color='gray', linestyle='--')
     plt.axhline(-threshold, color='gray', linestyle='--')
-    plt.title(f"MA Plot: {plasmid1} vs. {plasmid2}")
+
+    # Title and subtitle
+    if time_point is not None:
+        plt.title(f"Ceroni et al.\nlog2({plasmid1} / {plasmid2}); {time_point} mins")
+    else:
+        plt.title(f"Ceroni et al.\nlog2({plasmid1} / {plasmid2})")
+
     plt.xlabel("Average Expression")
     plt.ylabel("Log2 Fold Change")
     sns.despine()
@@ -95,9 +113,11 @@ def ceroni_ma_plot(df, plasmid1, plasmid2, threshold=2.0, epsilon=1e-5, plot_pat
 
 def ceroni_thresholding(df, plasmid1, plasmid2, threshold=2.0, time_point=15, drop_zeros=False):
     """
-    For a given plasmid pair, filter df for time_point,
-    pivot, compute log2 ratio, do up/down selection.
-    Returns upregulated, downregulated DataFrames.
+    For a given pair of strains carrying different plasmids, filter df by time_point, 
+    pivot the data, compute the log₂ ratio between average FPKM values, and classify 
+    genes as upregulated or downregulated.
+
+    Returns two DataFrames: upregulated and downregulated.
     """
     df_sub = df[(df['Time'] == time_point) & (df['Plasmid'].isin([plasmid1, plasmid2]))].copy()
     pivoted = df_sub.pivot_table(
@@ -106,9 +126,11 @@ def ceroni_thresholding(df, plasmid1, plasmid2, threshold=2.0, time_point=15, dr
         values='DE_of_Mean_FPKM'
     )
 
+    # Drop rows with zeros in either plasmid
     if drop_zeros:
         pivoted = pivoted[(pivoted[plasmid1]!=0) & (pivoted[plasmid2]!=0)]
 
+    # Compute log2 ratio and average expression
     pivoted['log2_ratio'] = np.log2((pivoted[plasmid1]+1e-5)/(pivoted[plasmid2]+1e-5))
     pivoted['average_expression'] = (pivoted[plasmid1]+pivoted[plasmid2])/2
     pivoted.reset_index(inplace=True)
@@ -127,37 +149,40 @@ def run_ceroni_pipeline(full_config: dict):
       - ceroni: { data, thresholds, output subdirs, etc. }
     """
 
-    # 1) Extract the "ceroni" config subset
+    # Extract the "ceroni" config subset
     config_ceroni = full_config["ceroni"]
 
-    # 2) Load data
+    # Load data
     df_melted = read_ceroni_data(config_ceroni["data"])
 
-    # 3) Build the final output paths
+    # Build the final output paths
     project_root = Path(__file__).parent.parent.parent
-    # top-level output folder, e.g. deg2tfbs/output
+    
+    # Output folder, e.g. deg2tfbs/pipeline/deg_fetcher
     output_root = project_root / full_config["output"]["root_dir"]
 
     # Append the batch identifier
     batch_id = full_config["output"]["batch_identifier"]
     batch_dir = output_root / batch_id
 
-    # For ceroni, we define subfolders like "csv" and "plots" from config
+    # Define subfolders for "csv" and "plots" values from config
     csv_dir = batch_dir / config_ceroni["output"]["csv_subdir"]
     plot_dir = batch_dir / config_ceroni["output"]["plot_subdir"]
 
+    # Create the directories if they don't exist
     csv_dir.mkdir(parents=True, exist_ok=True)
     plot_dir.mkdir(parents=True, exist_ok=True)
 
-    # 4) Retrieve thresholds
+    # Retrieve thresholds
     plasmid_pairs = config_ceroni["thresholds"]["plasmid_pairs"]
     threshold = config_ceroni["thresholds"]["log2_fc_threshold"]
     time_point = config_ceroni["thresholds"]["time_point"]
     drop_zeros = config_ceroni["thresholds"]["drop_zeros"]
+    time_point = config_ceroni["thresholds"]["time_point"]  # e.g. 15, 60
 
     all_up = []
     all_down = []
-
+    
     for (p1, p2) in plasmid_pairs:
         up, down, pivoted = ceroni_thresholding(
             df_melted,
@@ -167,24 +192,25 @@ def run_ceroni_pipeline(full_config: dict):
             drop_zeros=drop_zeros
         )
 
-        # Make a plot
-        plot_path = plot_dir / f"ceroni_{p1}_vs_{p2}.png"
+        # Save MA plot
+        plot_path = plot_dir / f"ceroni_{p1}_versus_{p2}.png"
         ceroni_ma_plot(pivoted, p1, p2, threshold=threshold, plot_path=plot_path)
 
         # Save CSV
-        up.to_csv(csv_dir / f"up_{p1}_vs_{p2}.csv", index=False)
-        down.to_csv(csv_dir / f"down_{p1}_vs_{p2}.csv", index=False)
+        up.to_csv(csv_dir / f"ceroni_upregulated_{p1}_versus_{p2}.csv", index=False)
+        down.to_csv(csv_dir / f"ceroni_downregulated_{p1}_versus_{p2}.csv", index=False)
 
         all_up.append(up)
         all_down.append(down)
-
+    
+    # Combine all up and down DEGs
     up_all = pd.concat(all_up, ignore_index=True).drop_duplicates()
     down_all = pd.concat(all_down, ignore_index=True).drop_duplicates()
 
-    up_all.to_csv(csv_dir / "DEGs_upregulated_all.csv", index=False)
-    down_all.to_csv(csv_dir / "DEGs_downregulated_all.csv", index=False)
+    up_all.to_csv(csv_dir / "ceroni_upregulated_degs.csv", index=False)
+    down_all.to_csv(csv_dir / "ceroni_downregulated_degs.csv", index=False)
 
-    print(f"[Ceroni Pipeline] Completed. Found: {len(up_all)} up, {len(down_all)} down total.")
+    print(f"[Ceroni et al. Pipeline] Completed. Identified DEGs across {len(plasmid_pairs)} condition pairs at log2 ≥ {threshold}: {len(up_all)} up, {len(down_all)} down.")  
 
 
 if __name__ == "__main__":
@@ -193,6 +219,3 @@ if __name__ == "__main__":
         full_config = yaml.safe_load(f)
 
     run_ceroni_pipeline(full_config)
-
-    
-    

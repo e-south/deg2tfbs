@@ -3,7 +3,7 @@
 <deg2tfbs project>
 wu.py
 
-Module for reading and analyzing data from Wu et al., where they investigated the 
+Module for loading and analyzing data from Wu et al., which investigated the 
 allocation of the proteome of E. coli grown in rich or minimal media during steady-state
 growth and transitions between them. Proteomic fractions for many genes are available in
 Supplementary Table 9, specifically samples M1 (Carbon limited), O8 (LB), and N5
@@ -14,7 +14,7 @@ for each proteomic sample.
 minimal media depends on proteome reserves"
 DOI: 10.1038/s41564-022-01310-w
 
-Author(s): Eric J. South
+Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
 """
@@ -29,15 +29,13 @@ from deg2tfbs.pipeline.dataloader.utils import load_dataset
 
 def read_wu_data(config_data: dict) -> pd.DataFrame:
     """
-    Reads the Wu dataset using keys from the YAML config.
+    Reads the sourced Wu dataset using keys from the YAML config.
 
-    Example config_data:
+    E.g. config:
       {
         "dataset_key": "wu",
         "sheet_name": "Group #1 protein mass fractions"
       }
-
-    Returns a DataFrame, possibly after dropping NaNs.
     """
     df = load_dataset(
         dataset_key=config_data["dataset_key"],
@@ -70,6 +68,8 @@ def wu_pairwise_comparison(df, comparisons, threshold=2.0, plot_dir=None):
         sub = sub.replace(0, np.nan).dropna()
         sub["log2_fc"] = np.log2(sub[num]) - np.log2(sub[den])
         sub["avg_expr"] = (sub[num] + sub[den]) / 2
+        
+        # Up- and down-regulated genes are colored red and green, respectively
         sub["color"] = np.where(sub["log2_fc"] >= threshold, "red",
                       np.where(sub["log2_fc"] <= -threshold, "green", "gray"))
 
@@ -77,7 +77,7 @@ def wu_pairwise_comparison(df, comparisons, threshold=2.0, plot_dir=None):
         down = sub[sub["log2_fc"] <= -threshold]
         all_up.append(up)
         all_down.append(down)
-
+         
         if plot_dir:
             sns.set_style("ticks")
             plt.figure(figsize=(6,5))
@@ -86,9 +86,9 @@ def wu_pairwise_comparison(df, comparisons, threshold=2.0, plot_dir=None):
             plt.xscale('log')
             plt.axhline(threshold, color='gray', linestyle='--')
             plt.axhline(-threshold, color='gray', linestyle='--')
-            plt.title(f"Wu: {label}")
-            plt.xlabel("Avg Protein Mass Fraction")
-            plt.ylabel("Log2 FC")
+            plt.title(f"Wu et al.\n log2 ({num} / {den})\n{label}")
+            plt.xlabel("Average Protein Mass Fraction")
+            plt.ylabel("Log2 Fold Change")
             plt.savefig(plot_dir / f"wu_{label}.png", dpi=150)
             plt.close()
 
@@ -112,7 +112,6 @@ def run_wu_pipeline(full_config: dict):
           csv_subdir: "csv"
           plot_subdir: "plots"
     """
-
     config_wu = full_config["wu"]
     df = read_wu_data(config_wu["data"])
 
@@ -131,7 +130,8 @@ def run_wu_pipeline(full_config: dict):
 
     up_all, down_all = wu_pairwise_comparison(df, comparisons, threshold=threshold, plot_dir=plot_dir)
 
-    up_all.to_csv(csv_dir / "DEGs_upregulated_all_wu.csv", index=False)
-    down_all.to_csv(csv_dir / "DEGs_downregulated_all_wu.csv", index=False)
+    up_all.to_csv(csv_dir / "wu_upregulated_degs.csv", index=False)
+    down_all.to_csv(csv_dir / "wu_downregulated_degs.csv", index=False)
 
-    print(f"[Wu Pipeline] Completed. Found: {len(up_all)} up, {len(down_all)} down total.")
+    print(f"[Wu et al. Pipeline] Completed. Identified DEGs acros {len(comparisons)} condition pairs at log2 ≥ {threshold}: {len(up_all)} up, {len(down_all)} down.")
+

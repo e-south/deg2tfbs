@@ -78,7 +78,7 @@ def schmidt_comparisons(df, comparisons, threshold=2.0, save_plots=False, plot_d
             plt.axhline(threshold, color="gray", linestyle="--")
             plt.axhline(-threshold, color="gray", linestyle="--")
             plt.xscale("log")
-            plt.title(f"Schmidt comparison: {label} ({condition} vs {reference})")
+            plt.title(f"Schmidt et al.\n log2 ({condition} / {reference})")
             plt.xlabel("Average Protein Copies/Cell")
             plt.ylabel("Log2 Fold Change")
             sns.despine()
