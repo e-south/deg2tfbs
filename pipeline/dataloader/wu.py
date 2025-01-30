@@ -10,6 +10,9 @@ Supplementary Table 9, specifically samples M1 (Carbon limited), O8 (LB), and N5
 (nutrient-rich WT). See Supplemental Table 2 for details about environmental conditions
 for each proteomic sample.
 
+The module isolates up- and down-regulated genes based on a user-defined log2 fold 
+change threshold and saves an MA plot (average expression vs. log2 Fold Change).
+
 "Enzyme expression kinetics by Escherichia coli during transition from rich to 
 minimal media depends on proteome reserves"
 DOI: 10.1038/s41564-022-01310-w
@@ -18,7 +21,7 @@ Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
 """
-
+import yaml
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -64,10 +67,14 @@ def wu_pairwise_comparison(df, comparisons, threshold=2.0, plot_dir=None):
 
     for label, (num, den) in comparisons.items():
         sub = df[[num, den]].copy()
-        # Avoid zero
+        # Handle zeros before calculations
+        sub = df[["Gene name", num, den]].copy()
         sub = sub.replace(0, np.nan).dropna()
-        sub["log2_fc"] = np.log2(sub[num]) - np.log2(sub[den])
-        sub["avg_expr"] = (sub[num] + sub[den]) / 2
+        # Add pseudocount to avoid log(0)
+        epsilon = 1e-5
+        sub["log2_fc"] = np.log2((sub[num]+epsilon)/(sub[den]+epsilon))
+        sub["avg_expr"] = (sub[num] + sub[den])/2
+        sub["comparison"] = label
         
         # Up- and down-regulated genes are colored red and green, respectively
         sub["color"] = np.where(sub["log2_fc"] >= threshold, "red",
@@ -129,9 +136,30 @@ def run_wu_pipeline(full_config: dict):
     comparisons = config_wu["thresholds"]["comparisons"]
 
     up_all, down_all = wu_pairwise_comparison(df, comparisons, threshold=threshold, plot_dir=plot_dir)
+    
+    required_columns = ["gene", "source", "thresholds", "comparison"]
+    
+    # Tidy up the DataFrames of up- and down-regulated genes
+    up_clean = up_all[["Gene name", "comparison"]].copy()
+    up_clean.rename(columns={"Gene name": "gene"}, inplace=True)
+    up_clean["source"] = "wu"
+    up_clean["thresholds"] = threshold
+    up_clean = up_clean[required_columns]
 
-    up_all.to_csv(csv_dir / "wu_upregulated_degs.csv", index=False)
-    down_all.to_csv(csv_dir / "wu_downregulated_degs.csv", index=False)
+    down_clean = down_all[["Gene name", "comparison"]].copy()
+    down_clean.rename(columns={"Gene name": "gene"}, inplace=True)
+    down_clean["source"] = "wu"
+    down_clean["thresholds"] = threshold
+    down_clean = down_clean[required_columns]
 
-    print(f"[Wu et al. Pipeline] Completed. Identified DEGs acros {len(comparisons)} condition pairs at log2 ≥ {threshold}: {len(up_all)} up, {len(down_all)} down.")
+    up_clean.to_csv(csv_dir / "wu_upregulated_degs.csv", index=False)
+    down_clean.to_csv(csv_dir / "wu_downregulated_degs.csv", index=False)
 
+    print(f"[Wu et al. Pipeline] Completed. Identified DEGs across {len(comparisons)} condition pairs at log2 ≥ {threshold}: {len(up_all)} up, {len(down_all)} down.")
+
+if __name__ == "__main__":
+    config_path = Path(__file__).parent.parent.parent / "configs" / "example.yaml"
+    with open(config_path, "r") as f:
+        full_config = yaml.safe_load(f)
+
+    run_wu_pipeline(full_config)

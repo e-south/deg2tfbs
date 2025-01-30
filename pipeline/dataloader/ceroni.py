@@ -7,6 +7,9 @@ Module for loading and analyzing data described in Ceroni et al., which
 combined RNA-seq with in vivo assays to identify transcriptional changes that
 occur in E. coli when burdensome synthetic constructs are expressed.
 
+The module isolates up- and down-regulated genes based on a user-defined log2 fold 
+change threshold and saves an MA plot (average expression vs. log2 Fold Change).
+
 "Burden-driven feedback control of gene expression"
 DOI: 10.1038/nmeth.4635
 
@@ -192,17 +195,29 @@ def run_ceroni_pipeline(full_config: dict):
             drop_zeros=drop_zeros
         )
 
-        # Save MA plot
+        required_columns = ["gene", "source", "thresholds", "comparison"]
+        
+        # Tidy up the DataFrames of up- and down-regulated genes
+        up_clean = up.copy()
+        up_clean["gene"] = up_clean["gene_name"]
+        up_clean["source"] = "ceroni"
+        up_clean["thresholds"] = threshold
+        up_clean["comparison"] = f"{p1}_versus_{p2}"
+        up_clean = up_clean[required_columns]
+        all_up.append(up_clean)
+
+        down_clean = down.copy()
+        down_clean["gene"] = down_clean["gene_name"] 
+        down_clean["source"] = "ceroni"
+        down_clean["thresholds"] = threshold
+        down_clean["comparison"] = f"{p1}_versus_{p2}"
+        down_clean = down_clean[required_columns]
+        all_down.append(down_clean)
+
+        # Save MA plot: fold changes (M values) against average expression (A values)
         plot_path = plot_dir / f"ceroni_{p1}_versus_{p2}.png"
         ceroni_ma_plot(pivoted, p1, p2, threshold=threshold, plot_path=plot_path)
 
-        # Save CSV
-        up.to_csv(csv_dir / f"ceroni_upregulated_{p1}_versus_{p2}.csv", index=False)
-        down.to_csv(csv_dir / f"ceroni_downregulated_{p1}_versus_{p2}.csv", index=False)
-
-        all_up.append(up)
-        all_down.append(down)
-    
     # Combine all up and down DEGs
     up_all = pd.concat(all_up, ignore_index=True).drop_duplicates()
     down_all = pd.concat(all_down, ignore_index=True).drop_duplicates()
@@ -211,7 +226,6 @@ def run_ceroni_pipeline(full_config: dict):
     down_all.to_csv(csv_dir / "ceroni_downregulated_degs.csv", index=False)
 
     print(f"[Ceroni et al. Pipeline] Completed. Identified DEGs across {len(plasmid_pairs)} condition pairs at log2 ≥ {threshold}: {len(up_all)} up, {len(down_all)} down.")  
-
 
 if __name__ == "__main__":
     config_path = Path(__file__).parent.parent.parent / "configs" / "example.yaml"

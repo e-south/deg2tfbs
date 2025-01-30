@@ -3,16 +3,26 @@
 <deg2tfbs project>
 bie.py
 
-Module for reading and analyzing data described in Bie et al.,
-an RNA‐seq survey of how E. coli K‐12 MG1655 responds to multiple antibiotics.
+Module for loading and analyzing data described in Bie et al. which performed 
+transcriptomic analysis on how E. coli responds to nine representative 
+classes of antibiotics (tetracycline, mitomycin C, imipenem, ceftazidime, kanamycin, 
+ciprofloxacin, polymyxin E, erythromycin, and chloramphenicol).
 
-We compute average FPKM across replicates, then compute log2 fold-change 
-for antibiotic vs. water, returning up- and down-regulated genes based 
-on a user-defined threshold (and optionally significance columns).
+The module isolates up- and down-regulated genes based on a user-defined log2 fold 
+change threshold and saves an MA plot (average expression vs. log2 Fold Change).
+
+"Comparative Analysis of Transcriptomic Response of Escherichia coli 
+K-12 MG1655 to Nine Representative Classes of Antibiotics"
+DOI: 10.1128/spectrum.00317-23
+
+Module Author(s): Eric J. South
+Dunlop Lab
 --------------------------------------------------------------------------------
 """
 
 import os
+
+import yaml
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -21,8 +31,18 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from deg2tfbs.pipeline.dataloader.utils import load_dataset
 
-
 def read_bie_data(config_data: dict) -> pd.DataFrame:
+    """
+    Reads the Bie dataset using keys from the YAML config.
+
+    E.g. config:
+      {
+        "dataset_key": "bie",
+        "sheet_name": "Sheet1",
+        "usecols": [...],
+        "header": 1
+      }
+    """
     df = load_dataset(
         dataset_key=config_data["dataset_key"],
         sheet_name=config_data.get("sheet_name"),
@@ -33,174 +53,73 @@ def read_bie_data(config_data: dict) -> pd.DataFrame:
     return df
 
 
-def compute_average_fpkm(df, prefix, replicate_suffixes):
-    """
-    Compute the average FPKM across replicates for a given prefix.
-    e.g., prefix="KAN", replicate_suffixes=["_1_fpkm","_2_fpkm","_3_fpkm"]
-    """
-    cols = [f"{prefix}{suffix}" for suffix in replicate_suffixes]
-    valid_cols = [c for c in cols if c in df.columns]
-    if not valid_cols:
-        raise KeyError(f"No valid columns found for prefix '{prefix}' with replicates {replicate_suffixes}")
-    return df[valid_cols].mean(axis=1)
-
-
-def add_average_fpkm_columns(df, config_bie):
-    """
-    For each antibiotic + the water prefix, compute average FPKM 
-    using the replicate_dict from config. 
-    E.g. replicate_dict might be:
-        { "KAN": ["_1_fpkm","_2_fpkm","_3_fpkm"],
-          "CIP": ["_2_fpkm","_3_fpkm","_4_fpkm"],
-          "H2O": ["_2_fpkm","_3_fpkm","_4_fpkm"] }
-    """
-    replicate_dict = config_bie["thresholds"].get("replicate_dict", {})
-    water_prefix = config_bie["thresholds"].get("water_prefix", "H2O")
-    antibiotics = config_bie["thresholds"].get("antibiotics", [])
-
-    # Gather all relevant prefixes (antibiotics plus water)
-    all_prefixes = antibiotics + [water_prefix]
-
-    for abx in all_prefixes:
-        # If there's a custom replicate list for this prefix, use it.
-        # Otherwise, fallback to something like ["_2_fpkm","_3_fpkm","_4_fpkm"].
-        replicate_suffixes = replicate_dict.get(abx, ["_2_fpkm","_3_fpkm","_4_fpkm"])
-        
-        avg_col = f"{abx}_avg_fpkm"
-        df[avg_col] = compute_average_fpkm(df, abx, replicate_suffixes)
-
-    return df
-
-
-def filter_and_rank_genes(
-    df,
-    abx_prefix,
-    water_prefix,
-    log2_fc_col,
-    sig_col,
-    threshold=2.0
-):
-    """
-    Filter and rank up/down regulated genes for antibiotic vs. water 
-    based on log2 fold change and significance columns.
-
-    This function:
-    1) Subsets rows that meet a condition (log2_fc >= threshold or <= -threshold, if you want).
-    2) (Optional) Uses 'sig_col' to confirm significance if that is part of your logic.
-    3) Calculates an effect size or rank based on control FPKM + log2 FC.
-
-    Returns: A tuple (up_df, down_df) with relevant columns.
-    """
-    # e.g. "KAN_avg_fpkm"
-    abx_col = f"{abx_prefix}_avg_fpkm"
-    h2o_col = f"{water_prefix}_avg_fpkm"
-
-    # Optionally, we might require sig_col to say 'UP' or 'DOWN' 
-    # or use numerical p-value columns. 
-    # For now, let's assume "UP" means up, "DOWN" means down 
-    # or skip if you only want fold-change.
-    sub = df.copy()
-
-    # Up = log2_fc >= threshold
-    up = sub[
-        (sub[log2_fc_col] >= threshold) &
-        (sub[sig_col] == "UP")     # <--- or (True) if you don't need significance
-    ].copy()
-
-    # Down = log2_fc <= -threshold
-    down = sub[
-        (sub[log2_fc_col] <= -threshold) &
-        (sub[sig_col] == "DOWN")   # <--- or (True) if you don't need significance
-    ].copy()
-
-    # Optionally rank them, e.g. "big movers" with high water expression + large fold change
-    # We can add some "Effect_Size" metric
-    if abx_col in up.columns and h2o_col in up.columns:
-        up["FPKM_Difference"] = up[abx_col] - up[h2o_col]
-        up["Rank_FPKM"] = up[h2o_col].rank(ascending=False)
-        up["Rank_Log2FC"] = up[log2_fc_col].rank(ascending=False)  # up means bigger is better
-        up["Effect_Size"] = up["Rank_FPKM"] + up["Rank_Log2FC"]
-
-    if abx_col in down.columns and h2o_col in down.columns:
-        down["FPKM_Difference"] = down[abx_col] - down[h2o_col]
-        down["Rank_FPKM"] = down[h2o_col].rank(ascending=False)
-        down["Rank_Log2FC"] = down[log2_fc_col].rank(ascending=True)  # down means smaller is better
-        down["Effect_Size"] = down["Rank_FPKM"] + down["Rank_Log2FC"]
-
-    # Sort by effect size
-    if "Effect_Size" in up.columns:
-        up.sort_values("Effect_Size", inplace=True, ascending=True)
-    if "Effect_Size" in down.columns:
-        down.sort_values("Effect_Size", inplace=True, ascending=True)
-
-    return up, down
-
-
 def bie_ma_plot(
-    df: pd.DataFrame,
-    condition_col: str,
-    reference_col: str,
+    df_cond: pd.DataFrame,
+    readcount_abx_col: str,
+    readcount_h2o_col: str,
+    log2_fc_col: str,
     threshold: float,
-    output_path: Path = None
+    antibiotic_name: str,
+    output_path: Path
 ):
     """
-    Creates and saves an MA-like plot comparing two columns: antibiotic vs. water,
-    coloring points that exceed log2_fc >= threshold (red) or <= -threshold (green).
-    Assumes df has 'log2_fc' and 'avg_expr' columns from antibiotic vs. water.
-
-    Args:
-        df (pd.DataFrame): DataFrame with columns [condition_col, reference_col, log2_fc, avg_expr].
-        condition_col (str): e.g. "KAN_avg_fpkm"
-        reference_col (str): e.g. "H2O_avg_fpkm"
-        threshold (float): log2 fold-change cutoff.
-        output_path (Path, optional): Save the figure if provided.
+    Creates and saves an MA-like plot for a given antibiotic vs. H2O.
+    x-axis: average expression = (abx_readcount + h2o_readcount)/2
+    y-axis: log2_fold_change from the dataset.
     """
     sns.set_style("ticks")
 
-    colors = np.where(
-        df["log2_fc"] >= threshold, "red",
-        np.where(df["log2_fc"] <= -threshold, "green", "gray")
+    # Compute average expression for the MA plot
+    df_cond["avg_expr"] = (df_cond[readcount_abx_col] + df_cond[readcount_h2o_col]) / 2.0
+
+    # Up- and down-regulated genes are colored red and green, respectively
+    df_cond["color"] = np.where(
+        df_cond[log2_fc_col] >= threshold, "red",
+        np.where(df_cond[log2_fc_col] <= -threshold, "green", "gray")
     )
 
+    # Plot the MA-like figure
     plt.figure(figsize=(6,5))
-    plt.scatter(df["avg_expr"], df["log2_fc"], c=colors, alpha=0.25, edgecolors="none")
+    plt.scatter(
+        df_cond["avg_expr"],
+        df_cond[log2_fc_col],
+        c=df_cond["color"],
+        alpha=0.25,
+        edgecolors="none"
+    )
     plt.xscale("log")
-    plt.axhline(threshold, color="gray", linestyle="--")
-    plt.axhline(-threshold, color="gray", linestyle="--")
+    plt.axhline(y=threshold, color="gray", linestyle="--")
+    plt.axhline(y=-threshold, color="gray", linestyle="--")
 
-    abx_name = condition_col.replace("_avg_fpkm","")
-    water_name = reference_col.replace("_avg_fpkm","")
-
-    plt.title(f"BIE et al.\n{abx_name} vs. {water_name}")
-    plt.xlabel("Average Expression")
-    plt.ylabel("Log2 Fold Change")
+    plt.title(f"Bie et al.\n log2 ({antibiotic_name} / Water)")
+    plt.xlabel("Average Expression (read count)")
+    plt.ylabel("log2 Fold Change")
     sns.despine()
 
-    if output_path is not None:
-        plt.savefig(output_path, dpi=150)
+    plt.savefig(output_path, dpi=150)
     plt.close()
 
 
 def run_bie_pipeline(full_config: dict):
     """
-    Orchestrates:
-
-      1) Reading the Bie dataset from config
-      2) Computing average FPKM for antibiotic vs. water
-      3) For each antibiotic in config, compute log2(FC) vs. water
-      4) Identify up/down regulated genes
-      5) Generate MA plots
-      6) Save results to CSV
+      1) Reads the dataset from config
+      2) For each antibiotic block in thresholds["conditions"], we:
+         - Identify relevant columns (readcount_abx, readcount_h2o, log2_fc)
+         - Generate an MA plot (avg_expr vs. log2_fc)
+         - Determine up/down by threshold
+         - Save partial CSVs for up/down
+      3) Combine up/down across all antibiotics
+      4) Save final aggregated CSVs
     """
     config_bie = full_config.get("bie", None)
     if config_bie is None:
-        print("[BIE Pipeline] No 'bie' config found. Skipping.")
+        print("[Bie Pipeline] No 'bie' config found. Skipping.")
         return
 
-    # 1) Load data
+    # Load data
     df = read_bie_data(config_bie["data"])
 
-    # 2) Build output paths
+    # Build output paths
     project_root = Path(__file__).parent.parent.parent
     output_root = project_root / full_config["output"]["root_dir"]
     batch_id = full_config["output"]["batch_identifier"]
@@ -211,78 +130,88 @@ def run_bie_pipeline(full_config: dict):
     csv_dir.mkdir(parents=True, exist_ok=True)
     plot_dir.mkdir(parents=True, exist_ok=True)
 
-    # 3) Setup thresholds
+    # Retrieve threshold + conditions
     threshold = config_bie["thresholds"].get("log2_fc_threshold", 2.0)
-    antibiotic_list = config_bie["thresholds"].get("antibiotics", ["KAN","CIP"])
-    water_prefix = config_bie["thresholds"].get("water_prefix","H2O")
-
-    # 4) Compute average FPKM columns
-    df = add_average_fpkm_columns(df, config_bie)
+    conditions = config_bie["thresholds"].get("conditions", [])
 
     all_up = []
     all_down = []
 
-    # 5) For each antibiotic, do the comparison vs. water
-    sig_cols = config_bie["thresholds"].get("significance_cols", {})
-    fc_cols = config_bie["thresholds"].get("log2_fc_cols", {})
+    # For each antibiotic definition in the config
+    for cond_info in conditions:
+        antibiotic_name    = cond_info["antibiotic_name"]
+        gene_col           = cond_info["gene_col"]
+        abx_readcount_col  = cond_info["abx_readcount_col"]
+        h2o_readcount_col  = cond_info["h2o_readcount_col"]
+        log2_fc_col        = cond_info["log2_fc_col"]
+        sig_col            = cond_info.get("sig_col", None)  # optional significance
 
-    for abx in antibiotic_list:
-        log2_fc_col = fc_cols.get(abx, None)
-        sig_col = sig_cols.get(abx, None)
+        # Subset DataFrame to relevant columns
+        req_cols = [gene_col, abx_readcount_col, h2o_readcount_col, log2_fc_col]
+        if sig_col:
+            req_cols.append(sig_col)
+        
+        # Check for missing columns
+        missing = [c for c in req_cols if c not in df.columns]
+        if missing:
+            print(f"[Bie Pipeline] Missing columns {missing} for antibiotic {antibiotic_name}, skipping.")
+            continue
 
-        # If we have precomputed log2 fold-change + significance:
-        if log2_fc_col and log2_fc_col in df.columns and sig_col in df.columns:
-            up, down = filter_and_rank_genes(
-                df=df,
-                abx_prefix=abx,
-                water_prefix=water_prefix,
-                log2_fc_col=log2_fc_col,
-                sig_col=sig_col,
-                threshold=threshold
-            )
-            # For MA plot, let's rename columns so it matches [log2_fc, avg_expr].
-            plot_df = df[[log2_fc_col]].copy()
-            plot_df["avg_expr"] = (
-                df[f"{abx}_avg_fpkm"] + df[f"{water_prefix}_avg_fpkm"]
-            ) / 2.0
-            plot_df.rename(columns={log2_fc_col: "log2_fc"}, inplace=True)
+        # Create a small sub-DataFrame
+        df_cond = df[req_cols].dropna().copy()
 
-        else:
-            # Otherwise compute on the fly
-            df_comp = df[[f"{abx}_avg_fpkm", f"{water_prefix}_avg_fpkm"]].dropna().copy()
-            df_comp["log2_fc"] = (
-                np.log2(df_comp[f"{abx}_avg_fpkm"]) - 
-                np.log2(df_comp[f"{water_prefix}_avg_fpkm"])
-            )
-            df_comp["avg_expr"] = (
-                df_comp[f"{abx}_avg_fpkm"] + df_comp[f"{water_prefix}_avg_fpkm"]
-            ) / 2.0
-
-            up = df_comp[df_comp["log2_fc"] >= threshold].copy()
-            down = df_comp[df_comp["log2_fc"] <= -threshold].copy()
-            plot_df = df_comp
-
-        # Save partial CSVs
-        up.to_csv(csv_dir / f"bie_up_{abx}_vs_{water_prefix}.csv", index=False)
-        down.to_csv(csv_dir / f"bie_down_{abx}_vs_{water_prefix}.csv", index=False)
-        all_up.append(up)
-        all_down.append(down)
-
-        # 6) Create MA plot
-        plot_path = plot_dir / f"bie_ma_{abx}_vs_{water_prefix}.png"
+        # Create an MA-like plot
+        plot_fname = f"bie_ma_{antibiotic_name}_vs_H2O.png"
+        plot_path  = plot_dir / plot_fname
         bie_ma_plot(
-            df=plot_df,
-            condition_col=f"{abx}_avg_fpkm",
-            reference_col=f"{water_prefix}_avg_fpkm",
+            df_cond,
+            readcount_abx_col=abx_readcount_col,
+            readcount_h2o_col=h2o_readcount_col,
+            log2_fc_col=log2_fc_col,
             threshold=threshold,
+            antibiotic_name=antibiotic_name,
             output_path=plot_path
         )
 
-    # 7) Combine all up/down across conditions
+        # Identify up/down
+        up = df_cond[df_cond[log2_fc_col] >= threshold].copy()
+        down = df_cond[df_cond[log2_fc_col] <= -threshold].copy()
+
+        # Generate comparison string (KANvsH2O, CIPvsH2O, etc)
+        comparison_str = f"{antibiotic_name}vsH2O"
+
+        required_columns = ["gene", "source", "thresholds", "comparison"]
+        
+        # Tidy up the DataFrames of up- and down-regulated genes
+        up_clean = up[[gene_col]].copy()  # Use gene_col from config
+        up_clean = up_clean.rename(columns={gene_col: "gene"})
+        up_clean["source"] = "bie"
+        up_clean["thresholds"] = threshold
+        up_clean["comparison"] = comparison_str
+        up_clean = up_clean[required_columns]
+
+        down_clean = down[[gene_col]].copy()
+        down_clean = down_clean.rename(columns={gene_col: "gene"})
+        down_clean["source"] = "bie"
+        down_clean["thresholds"] = threshold
+        down_clean["comparison"] = comparison_str
+        down_clean = down_clean[required_columns]  
+
+        all_up.append(up_clean)
+        all_down.append(down_clean)
+
+    # Combine up-/down-regulated across all conditions
     df_up = pd.concat(all_up, ignore_index=True).drop_duplicates()
     df_down = pd.concat(all_down, ignore_index=True).drop_duplicates()
 
-    df_up.to_csv(csv_dir / "bie_DEGs_upregulated_all.csv", index=False)
-    df_down.to_csv(csv_dir / "bie_DEGs_downregulated_all.csv", index=False)
+    df_up.to_csv(csv_dir / "bie_upregulated_degs.csv", index=False)
+    df_down.to_csv(csv_dir / "bie_downregulated_degs.csv", index=False)
 
-    print(f"[Bie Pipeline] Completed. Found {len(df_up)} total up and {len(df_down)} total down.")
+    print(f"[Bie et al. Pipeline] Completed. Identified DEGs across {len(config_bie['thresholds']['conditions'])} condition pairs at log2 ≥ {threshold}: {len(df_up)} up, {len(df_down)} down.")  
+
+if __name__ == "__main__":
+    config_path = Path(__file__).parent.parent.parent / "configs" / "example.yaml"
+    with open(config_path, "r") as f:
+        full_config = yaml.safe_load(f)
+
+    run_bie_pipeline(full_config)

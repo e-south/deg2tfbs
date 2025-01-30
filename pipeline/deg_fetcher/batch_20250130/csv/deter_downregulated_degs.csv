@@ -1,0 +1,10 @@
+gene,source,thresholds,comparison
+kilR,deter,2.0,3h amp media_versus_3h fresh media
+mglA,deter,2.0,3h amp media_versus_3h fresh media
+mglB,deter,2.0,3h amp media_versus_3h fresh media
+tnaA,deter,2.0,3h amp media_versus_3h fresh media
+tnaC,deter,2.0,3h amp media_versus_3h fresh media
+yadK,deter,2.0,3h amp media_versus_3h fresh media
+ybcW,deter,2.0,3h amp media_versus_3h fresh media
+yneL,deter,2.0,3h amp media_versus_3h fresh media
+ypdJ,deter,2.0,3h amp media_versus_3h fresh media

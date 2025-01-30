@@ -3,29 +3,36 @@
 <deg2tfbs project>
 schmidt.py
 
-Module for reading and analyzing data from Schmidt et al., Table S6, which contains 
-global absolute abundance estimations from both datasets including functional 
-annotations using cluster of orthologues groups (COG).
+Module for loading and analyzing data from Schmidt et al., Table S6, which contains 
+global absolute abundance estimations for over 2,300 proteins in E. coli under 22
+different experimental condition.
+
+The module isolates up- and down-regulated genes based on a user-defined log2 fold 
+change threshold and saves an MA plot (average expression vs. log2 Fold Change).
 
 "The quantitative and condition-dependent Escherichia coli proteome"
 DOI: 10.1038/nbt.3418
-Author(s): Eric J. South
+
+Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
 """
 
+from pathlib import Path
+
+import yaml
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from pathlib import Path
 from deg2tfbs.pipeline.dataloader.utils import load_dataset
 
 def read_schmidt_data(config_data: dict) -> pd.DataFrame:
     """
-    Loads Schmidt data from the YAML config, e.g.:
-
+    Reads the sourced Schmidt dataset using keys from the YAML config.
+    
+    E.g. config:
       dataset_key: "schmidt"
       sheet_name: "Schmidt et al."
       usecols: "C:AC"
@@ -45,10 +52,10 @@ def read_schmidt_data(config_data: dict) -> pd.DataFrame:
 
 def schmidt_comparisons(df, comparisons, threshold=2.0, save_plots=False, plot_dir=None):
     """
-    For each comparison label in 'comparisons', we do:
+    For each comparison label in 'comparisons':
       - log2FC = log2( df[condition] + 1 ) - log2( df[reference] + 1 )
-      - average = ( condition + reference ) / 2
-      - classify up/down using threshold
+      - average protein abundance = ( condition + reference ) / 2
+      - classify up/down using a defined threshold
 
     Returns a combined up/down DataFrame across all comparisons.
     """
@@ -58,16 +65,20 @@ def schmidt_comparisons(df, comparisons, threshold=2.0, save_plots=False, plot_d
     for label, (condition, reference) in comparisons.items():
         # Avoid zero with small offset
         offset = 1.0
-        df_sub = df[[condition, reference]].dropna().copy()
+        df_sub = df[["Gene", condition, reference]].dropna().copy()
         df_sub["log2FC"] = np.log2(df_sub[condition] + offset) - np.log2(df_sub[reference] + offset)
         df_sub["avg_exp"] = (df_sub[condition] + df_sub[reference]) / 2
 
+        # Up- and down-regulated genes are colored red and green, respectively
         df_sub["color"] = np.where(
             df_sub["log2FC"] >= threshold, "red",
             np.where(df_sub["log2FC"] <= -threshold, "green", "gray")
         )
-        up = df_sub[df_sub["log2FC"] >= threshold]
-        down = df_sub[df_sub["log2FC"] <= -threshold]
+        up = df_sub[df_sub["log2FC"] >= threshold].copy()
+        up["comparison"] = label
+        down = df_sub[df_sub["log2FC"] <= -threshold].copy()
+        down["comparison"] = label
+        
         all_up.append(up)
         all_down.append(down)
 
@@ -133,7 +144,27 @@ def run_schmidt_pipeline(full_config: dict):
         plot_dir=plot_dir
     )
 
-    up_all.to_csv(csv_dir / "DEGs_upregulated_all_schmidt.csv", index=False)
-    down_all.to_csv(csv_dir / "DEGs_downregulated_all_schmidt.csv", index=False)
+    required_columns = ["gene", "source", "thresholds", "comparison"]
+    
+    # Tidy up the DataFrames of up- and down-regulated genes
+    up_clean = up_all.copy().rename(columns={"Gene": "gene"})
+    up_clean["source"] = "schmidt"
+    up_clean["thresholds"] = threshold
+    up_clean = up_clean[required_columns]
 
-    print(f"[Schmidt Pipeline] Completed. Found: {len(up_all)} up, {len(down_all)} down total.")
+    down_clean = down_all.copy().rename(columns={"Gene": "gene"})
+    down_clean["source"] = "schmidt"
+    down_clean["thresholds"] = threshold
+    down_clean = down_clean[required_columns]
+
+    up_clean.to_csv(csv_dir / "schmidt_upregulated_degs.csv", index=False)
+    down_clean.to_csv(csv_dir / "schmidt_downregulated_degs.csv", index=False)
+
+    print(f"[Schmidt et al. Pipeline] Completed. Identified DEGs across {len(comparisons)} condition pairs at log2 ≥ {threshold}: {len(up_all)} up, {len(down_all)} down.")
+    
+if __name__ == "__main__":
+  config_path = Path(__file__).parent.parent.parent / "configs" / "example.yaml"
+  with open(config_path, "r") as f:
+      full_config = yaml.safe_load(f)
+
+  run_schmidt_pipeline(full_config)

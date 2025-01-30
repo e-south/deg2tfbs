@@ -3,20 +3,22 @@
 <deg2tfbs project>
 radzikowski.py
 
-Module for reading and analyzing data from Radzikowski et al.. Radzikowski et al. 
-developed and experimentally verified a model, in which persistence is established 
-through a system-level feedback: Strong perturbations of metabolic homeostasis 
-cause metabolic fluxes to collapse, prohibiting adjustments toward restoring 
-homeostasis.
+Module for loading and analyzing data from Radzikowski et al., which collected E. coli
+proteomic datasets across different growth conditions to identify differentially expressed
+in the context of growth limiation and persistence.
+
+The module isolates up- and down-regulated genes based on a user-defined log2 fold 
+change threshold and saves an MA plot (average expression vs. log2 Fold Change).
 
 "Bacterial persistence is an active σS stress response to metabolic flux limitation"
 DOI: 10.15252/msb.20166998
 
-Author(s): Eric J. South
+Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
 """
 
+import yaml
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -27,24 +29,25 @@ from deg2tfbs.pipeline.dataloader.utils import load_dataset
 
 def read_radzikowski_data(config_data: dict) -> pd.DataFrame:
     """
-    Loads Radzikowski data using the user-provided 'dataset_key', etc. from YAML.
-
-    Since the actual file columns include 'glucose growth', 'persisters, 0.5h', 
-    'starved, 0.5h', etc., we rename them here to match the keys 
-    used in the YAML 'comparisons':
-
-       "Persisters_0.5h"
-       "GlucoseGrowth"
-       "Starved_0.5h"
-       ...
-
-    Example config_data might be:
-      dataset_key: "radzikowski"
-      sheet_name: "Sheet1"
-      usecols: "A:S"
-      header: 2
+    Reads the sourced Radzikowski dataset using keys from the YAML config.
+    
+    E.g. config:
+      {
+        dataset_key: "radzikowski"
+        sheet_name: "Sheet1"
+        usecols: "A:S"
+        header: 2
+      }
+      
+    Note: Since the actual file columns include 'glucose growth', 
+          'persisters, 0.5h', 'starved, 0.5h', etc., we rename 
+          them here to match the keys used in the YAML 'comparisons':
+            "Persisters_0.5h"
+            "GlucoseGrowth"
+            "Starved_0.5h"
+            ...
     """
-    # 1) Load dataset
+    # Load dataset
     df = load_dataset(
         dataset_key=config_data["dataset_key"],
         sheet_name=config_data.get("sheet_name"),
@@ -53,8 +56,8 @@ def read_radzikowski_data(config_data: dict) -> pd.DataFrame:
         skiprows=config_data.get("skiprows", None)
     )
 
-    # 2) Rename columns so they match the "Persisters_0.5h", "GlucoseGrowth", etc. 
-    #    that the pipeline references in the YAML comparisons.
+    # Rename columns so they match the "Persisters_0.5h", "GlucoseGrowth", etc. 
+    # that the pipeline references in the YAML comparisons.
     column_renames = {
         "Accession": "Accession",
         "Gene": "Gene",
@@ -92,17 +95,22 @@ def radzikowski_comparisons(df, comparisons, threshold=2.0, save_plots=False, pl
             print(f"Skipping comparison '{label}' because columns '{numerator}' or '{denominator}' not in DataFrame.")
             continue
 
-        df_sub = df[[numerator, denominator]].dropna().copy()
+        # Calculate log2FC and average expression
+        df_sub = df[["Gene", numerator, denominator]].dropna().copy()
         df_sub[f"log2FC_{label}"] = np.log2(df_sub[numerator] + eps) - np.log2(df_sub[denominator] + eps)
         df_sub[f"avg_exp_{label}"] = (df_sub[numerator] + df_sub[denominator]) / 2
 
+        # Up- and down-regulated genes are colored red and green, respectively
         df_sub["color"] = np.where(
             df_sub[f"log2FC_{label}"] >= threshold, "red",
             np.where(df_sub[f"log2FC_{label}"] <= -threshold, "green", "gray")
         )
-
-        up = df_sub[df_sub[f"log2FC_{label}"] >= threshold]
-        down = df_sub[df_sub[f"log2FC_{label}"] <= -threshold]
+        
+        # Classify up/down based on threshold
+        up = df_sub[df_sub[f"log2FC_{label}"] >= threshold].copy()
+        up["comparison"] = label
+        down = df_sub[df_sub[f"log2FC_{label}"] <= -threshold].copy()
+        down["comparison"] = label
         all_up.append(up)
         all_down.append(down)
 
@@ -168,10 +176,27 @@ def run_radzikowski_pipeline(full_config: dict):
         plot_dir=plot_dir
     )
 
-    # Only save if we found any results
-    if not up_all.empty:
-        up_all.to_csv(csv_dir / "DEGs_upregulated_all_radzikowski.csv", index=False)
-    if not down_all.empty:
-        down_all.to_csv(csv_dir / "DEGs_downregulated_all_radzikowski.csv", index=False)
+    required_columns = ["gene", "source", "thresholds", "comparison"]
+    
+    # Tidy up the DataFrames of up- and down-regulated genes
+    up_clean = up_all.copy().rename(columns={"Gene": "gene"})
+    up_clean["source"] = "radzikowski"
+    up_clean["thresholds"] = threshold
+    up_clean = up_clean[required_columns]
 
-    print(f"[Radzikowski Pipeline] Completed. Found: {len(up_all)} up, {len(down_all)} down total.")
+    down_clean = down_all.copy().rename(columns={"Gene": "gene"})
+    down_clean["source"] = "radzikowski"
+    down_clean["thresholds"] = threshold
+    down_clean = down_clean[required_columns]
+
+    up_clean.to_csv(csv_dir / "radzikowski_upregulated_degs.csv", index=False)
+    down_clean.to_csv(csv_dir / "radzikowski_downregulated_degs.csv", index=False)
+
+    print(f"[Radzikowski et al. Pipeline] Completed. Identified DEGs across {len(comparisons)} condition pairs at log2 ≥ {threshold}: {len(up_all)} up, {len(down_all)} down.")  
+
+if __name__ == "__main__":
+    config_path = Path(__file__).parent.parent.parent / "configs" / "example.yaml"
+    with open(config_path, "r") as f:
+        full_config = yaml.safe_load(f)
+
+    run_radzikowski_pipeline(full_config)

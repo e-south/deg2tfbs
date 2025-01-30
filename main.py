@@ -1,7 +1,6 @@
 """
 --------------------------------------------------------------------------------
 <deg2tfbs project>
-
 main.py
 
 Module Author(s): Eric J. South
@@ -30,16 +29,16 @@ def main(config_file: Path):
         full_config = yaml.safe_load(f)
 
     # Run whichever pipelines are specified or we want to do in sequence
-    # run_ceroni_pipeline(full_config)
-    # run_mori_pipeline(full_config)
-    # run_wu_pipeline(full_config)
-    # run_zhu_pipeline(full_config)
-    # run_emani_pipeline(full_config)
-    # run_schmidt_pipeline(full_config)
-    # run_radzikowski_pipeline(full_config)
-    # run_bie_pipeline(full_config)
-    # run_deter_pipeline(full_config)
-    # run_jovanovic_pipeline(full_config)
+    run_ceroni_pipeline(full_config)
+    run_mori_pipeline(full_config)
+    run_wu_pipeline(full_config)
+    run_zhu_pipeline(full_config)
+    run_emani_pipeline(full_config)
+    run_schmidt_pipeline(full_config)
+    run_radzikowski_pipeline(full_config)
+    run_bie_pipeline(full_config)
+    run_deter_pipeline(full_config)
+    run_jovanovic_pipeline(full_config)
     run_rajacharya_pipeline(full_config)
 
     print("All pipelines completed.")

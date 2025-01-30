@@ -9,6 +9,9 @@ conditions, including nutrient limitations, non-metabolic stresses, and non-plan
 states. All sample descriptions are listed in Datasets EV2 and EV3, while the absolute 
 protein mass fractions are reported in Datasets EV8 and EV9.
 
+The module isolates up- and down-regulated genes based on a user-defined log2 fold 
+change threshold and saves an MA plot (average expression vs. log2 Fold Change).
+
 "From coarse to fine: the absolute Escherichia coli proteome under diverse growth conditions"
 DOI: 10.15252/msb.20209536
 
@@ -20,6 +23,7 @@ Dunlop Lab
 import os
 from pathlib import Path
 
+import yaml
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -77,7 +81,7 @@ def compare_and_plot(
     """
 
     # Safely drop rows with zero or NaN in either column
-    df_sub = df[[condition, reference]].replace(0, np.nan).dropna().copy()
+    df_sub = df[["Gene name", condition, reference]].replace(0, np.nan).dropna().copy()
 
     # Compute log2 fold change and average
     df_sub["log2_fc"] = np.log2(df_sub[condition]) - np.log2(df_sub[reference])
@@ -191,8 +195,25 @@ def run_mori_pipeline(full_config: dict):
             save_plots=True,
             plot_dir=plot_dir
         )
-        all_up.append(up)
-        all_down.append(down)
+        
+        required_columns = ["gene", "source", "thresholds", "comparison"]
+        
+        # Tidy up the DataFrames of up- and down-regulated genes
+        up_clean = up.copy()
+        up_clean["gene"] = up_clean["Gene name"]
+        up_clean["source"] = "mori"
+        up_clean["thresholds"] = threshold
+        up_clean["comparison"] = f"{comp["condition"]}_versus_{comp["reference"]}"
+        up_clean = up_clean[required_columns]
+        all_up.append(up_clean)
+
+        down_clean = down.copy()
+        down_clean["gene"] = down_clean["Gene name"] 
+        down_clean["source"] = "mori"
+        down_clean["thresholds"] = threshold
+        down_clean["comparison"] = f"{comp["condition"]}_versus_{comp["reference"]}"
+        down_clean = down_clean[required_columns]
+        all_down.append(down_clean)
 
     # Combine all up-/down-regulated
     df_up = pd.concat(all_up, ignore_index=True).drop_duplicates()
@@ -202,5 +223,12 @@ def run_mori_pipeline(full_config: dict):
     df_up.to_csv(csv_dir / "mori_upregulated_degs.csv", index=False)
     df_down.to_csv(csv_dir / "mori_downregulated_degs.csv", index=False)
 
-    print(f"[Mori et al. Pipeline] Completed. {len(config_mori['comparisons'])} condition pairs at log2 ≥ {threshold}: {len(df_up)} up, {len(df_down)} down.")
+    print(f"[Mori et al. Pipeline] Completed. Identified DEGs across {len(config_mori['comparisons'])} condition pairs at log2 ≥ {threshold}: {len(df_up)} up, {len(df_down)} down.")
+
+if __name__ == "__main__":
+    config_path = Path(__file__).parent.parent.parent / "configs" / "example.yaml"
+    with open(config_path, "r") as f:
+        full_config = yaml.safe_load(f)
+
+    run_mori_pipeline(full_config)
 

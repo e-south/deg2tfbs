@@ -3,24 +3,26 @@
 <deg2tfbs project>
 emani.py
 
-Module for reading and analyzing data described in Emani et al., which investigated
+Module for loading and analyzing data described in Emani et al., which investigated
 the relationship between growth and protein secretion in E. coli Nissle 1917 by
 secreting super-folder green fluorescent protein (sfGFP) through the native curli 
 secretion machinery. RNA sequencing data from batch culture experiments comparing
-the all_tags and N22_GFP variants provide further evidence of periplasmic stress as
-a mechanism for growth rate depression. Their results from RNA sequencing point to
-specific pathways that maybe useful targets for mitigating maladaptive stress response 
-for secretion systems.
+the all_tags and non-tagged GFP production strains provide omic snapshots of 
+periplasmic stress.
+
+The module isolates up- and down-regulated genes based on a user-defined log2 fold 
+change threshold and plots a volcano figure (MinusLog10PAd vs. log2 Fold Change).
 
 "Periplasmic stress contributes to a trade-off between protein secretion and cell 
 growth in Escherichia coli Nissle 1917"
 DOI: 10.1093/synbio/ysad013
 
-Author(s): Eric J. South
+Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
 """
 
+import yaml
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -31,8 +33,10 @@ from deg2tfbs.pipeline.dataloader.utils import load_dataset
 
 def read_emani_data(config_data: dict) -> pd.DataFrame:
     """
-    Loads Emani data from the YAML config, e.g.:
-
+    Reads the sourced Emani dataset using keys from the YAML config.
+    
+    E.g. config:
+      {
         "dataset_key": "emani_et_al",
         "sheet_name": "Figure 5_alltags v control",
         "usecols": [
@@ -41,8 +45,7 @@ def read_emani_data(config_data: dict) -> pd.DataFrame:
             "pvalue",
             "padj"
         ]
-
-    Returns a DataFrame with columns [Gene, Log2FoldChange, PValue, PAdj, MinusLog10PAdj].
+      }
     """
     df = load_dataset(
         dataset_key=config_data["dataset_key"],
@@ -64,12 +67,12 @@ def read_emani_data(config_data: dict) -> pd.DataFrame:
 
 def run_emani_pipeline(full_config: dict):
     """
-    Orchestrates loading Emani dataset, applying threshold, and storing results.
+    Loads Emani dataset, applies thresholds, and stores results.
 
     Expected structure in the YAML:
       emani:
         data:
-          dataset_key: "emani_et_al"
+          dataset_key: "emani"
           sheet_name: "Figure 5_alltags v control"
           usecols:
             - "Gene"
@@ -85,7 +88,7 @@ def run_emani_pipeline(full_config: dict):
     config_emani = full_config["emani"]
     df = read_emani_data(config_emani["data"])
 
-    # Build output paths
+    # Build output paths for CSV and plots
     project_root = Path(__file__).parent.parent.parent
     output_root = project_root / full_config["output"]["root_dir"]
     batch_id = full_config["output"]["batch_identifier"]
@@ -96,14 +99,16 @@ def run_emani_pipeline(full_config: dict):
     csv_dir.mkdir(parents=True, exist_ok=True)
     plot_dir.mkdir(parents=True, exist_ok=True)
 
-    # Threshold
+    # Threshold for up/down regulation
     threshold = config_emani["thresholds"]["log2_fc_threshold"]
+    
+    # Up- and down-regulated genes are colored red and green, respectively
     df["color"] = np.where(
         df["Log2FoldChange"] >= threshold, "red",
         np.where(df["Log2FoldChange"] <= -threshold, "green", "lightgray")
     )
 
-    # Plot a "volcano" style figure
+    # Plot a "volcano" style figure with -log10(PAdj) versus Log2FoldChange
     plt.figure(figsize=(8, 6))
     plt.scatter(
         df["Log2FoldChange"], df["MinusLog10PAdj"],
@@ -116,7 +121,7 @@ def run_emani_pipeline(full_config: dict):
     plt.ylabel("-log10(PAdj)")
     sns.despine()
 
-    plot_path = plot_dir / "emani_N22_GFP_vs_WT.png"
+    plot_path = plot_dir / "emani_N22_GFP_versus_WT.png"
     plt.savefig(plot_path, dpi=150)
     plt.close()
 
@@ -130,8 +135,37 @@ def run_emani_pipeline(full_config: dict):
     downregulated.dropna(subset=["Gene"], inplace=True)
     downregulated = downregulated[downregulated["Gene"].astype(str).str.strip().ne('?')]
 
-    # Save
-    upregulated.to_csv(csv_dir / "DEGs_upregulated_Emani_et_al.csv", index=False)
-    downregulated.to_csv(csv_dir / "DEGs_downregulated_Emani_et_al.csv", index=False)
+    required_columns = ["gene", "source", "thresholds", "comparison"]
+    
+    # Define comparison
+    target_condition = "all_tags"
+    reference_condition = "control"
+    comparison_str = f"{target_condition}_vs_{reference_condition}"
+    
+    # Tidy up the DataFrames of up- and down-regulated genes
+    up_clean = upregulated.copy()
+    up_clean["gene"] = up_clean["Gene"]
+    up_clean["source"] = "emani"
+    up_clean["thresholds"] = threshold
+    up_clean["comparison"] = comparison_str
+    up_clean = up_clean[required_columns]
 
-    print(f"[Emani Pipeline] Completed. Found: {len(upregulated)} up, {len(downregulated)} down total.")
+    down_clean = downregulated.copy()
+    down_clean["gene"] = down_clean["Gene"] 
+    down_clean["source"] = "emani"
+    down_clean["thresholds"] = threshold
+    down_clean["comparison"] = comparison_str
+    down_clean = down_clean[required_columns]
+
+    # Save filtered data
+    up_clean.to_csv(csv_dir / "emani_upregulated_degs.csv", index=False)
+    down_clean.to_csv(csv_dir / "emani_downregulated_degs.csv", index=False)
+
+    print(f"[Emani et al. Pipeline] Completed. Identified DEGs across 1 condition pair at log2 ≥ {threshold}: {len(upregulated)} up, {len(downregulated)} down.")
+
+if __name__ == "__main__":
+    config_path = Path(__file__).parent.parent.parent / "configs" / "example.yaml"
+    with open(config_path, "r") as f:
+        full_config = yaml.safe_load(f)
+
+    run_emani_pipeline(full_config)

@@ -3,15 +3,25 @@
 <deg2tfbs project>
 rajacharya.py
 
-Module for reading and analyzing data described in Rajacharya et al.
-"Proteomics and metabolic burden analysis to understand the impact 
-of recombinant protein production in E. coli"
+Module for reading and analyzing data described in Rajacharya et al., which 
+investigated parent vs. recombinant strains (induced at various time points) via 
+proteomics to track expression burden.
 
+The module isolates up- and down-regulated genes based on a user-defined log2 fold 
+change threshold and plots a volcano figure (MinusLog10PAd vs. log2 Fold Change).
+
+"Proteomics and metabolic burden analysis to understand the impact of recombinant 
+protein production in E. coli"
 DOI: 10.1038/s41598-024-63148-y
+
+Module Author(s): Eric J. South
+Dunlop Lab
 --------------------------------------------------------------------------------
 """
 
 import os
+
+import yaml
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -23,11 +33,7 @@ from deg2tfbs.pipeline.dataloader.utils import load_dataset
 
 def read_rajacharya_data(config_data: dict) -> pd.DataFrame:
     """
-    Reads Rajacharya dataset from an .xlsx file, "Sheet 1", columns U, V, W, X:
-      - Accession
-      - genes
-      - logFC
-      - PValue
+    Reads the Rajacharya dataset using keys from the YAML config.
 
     E.g. config:
       {
@@ -36,9 +42,6 @@ def read_rajacharya_data(config_data: dict) -> pd.DataFrame:
         "usecols": ["Accession","genes","logFC","PValue"],
         "header": 3
       }
-    (Because row #4 might contain actual column headers.)
-
-    Returns a DataFrame with columns [Accession, Gene, Log2FoldChange, PValue, MinusLog10PValue].
     """
     df = load_dataset(
         dataset_key=config_data["dataset_key"],
@@ -56,7 +59,7 @@ def read_rajacharya_data(config_data: dict) -> pd.DataFrame:
         "PValue": "PValue"
     }, inplace=True)
 
-    # Convert PValue to -log10(PValue) for plotting
+    # Add a column for -log10(PValue)
     df["MinusLog10PValue"] = -np.log10(df["PValue"].replace(0, np.nan))  # avoid log10(0)
 
     return df
@@ -67,11 +70,8 @@ def rajacharya_volcano_plot(df, log2_fc_col, minus_log10p_col, threshold, output
     Creates and saves a volcano plot:
       x-axis: Log2FoldChange
       y-axis: -log10(PValue)
-
-    Genes with abs(Log2FoldChange) >= threshold are colored 
-    (red for up, green for down), else gray.
     """
-    # Mark color
+    # Up- and down-regulated genes are colored red and green, respectively
     df["color"] = np.where(
         df[log2_fc_col] >= threshold, "red",
         np.where(df[log2_fc_col] <= -threshold, "green", "gray")
@@ -80,7 +80,7 @@ def rajacharya_volcano_plot(df, log2_fc_col, minus_log10p_col, threshold, output
     plt.figure(figsize=(7,6))
     sns.set_style("ticks")
 
-    # Plot
+    # Plot the volcano
     plt.scatter(
         df[log2_fc_col],
         df[minus_log10p_col],
@@ -127,10 +127,10 @@ def run_rajacharya_pipeline(full_config: dict):
         print("[Rajacharya Pipeline] No 'rajacharya' config found. Skipping.")
         return
 
-    # 1) Load data
+    # Load data
     df = read_rajacharya_data(config_raj["data"])
 
-    # 2) Build output paths
+    # Build output paths
     project_root = Path(__file__).parent.parent.parent
     output_root = project_root / full_config["output"]["root_dir"]
     batch_id = full_config["output"]["batch_identifier"]
@@ -141,10 +141,10 @@ def run_rajacharya_pipeline(full_config: dict):
     csv_dir.mkdir(parents=True, exist_ok=True)
     plot_dir.mkdir(parents=True, exist_ok=True)
 
-    # 3) Retrieve threshold
+    # Retrieve threshold
     threshold = config_raj["thresholds"].get("log2_fc_threshold", 2.0)
 
-    # 4) Make volcano plot
+    # Make volcano plot
     log2_fc_col = "Log2FoldChange"
     minus_log10p_col = "MinusLog10PValue"
     plot_fname = "rajacharya_volcano.png"
@@ -156,14 +156,43 @@ def run_rajacharya_pipeline(full_config: dict):
         output_path=plot_dir / plot_fname
     )
 
-    # 5) Filter up/down
+    # Filter up/down
     up = df[df[log2_fc_col] >= threshold].copy()
     down = df[df[log2_fc_col] <= -threshold].copy()
 
-    # 6) Save CSV
+    required_columns = ["gene", "source", "thresholds", "comparison"]
+    
+    # Define comparison
+    target_condition = "acyl-ACP_reductase_overproduction"
+    reference_condition = "control"
+    comparison_str = f"{target_condition}_vs_{reference_condition}"
+    
+    # Tidy up the DataFrames of up- and down-regulated genes
+    up_clean = up.copy()
+    up_clean["gene"] = up_clean["Gene"]
+    up_clean["source"] = "rajacharya"
+    up_clean["thresholds"] = threshold
+    up_clean["comparison"] = comparison_str
+    up_clean = up_clean[required_columns]
+
+    down_clean = down.copy()
+    down_clean["gene"] = down_clean["Gene"] 
+    down_clean["source"] = "rajacharya"
+    down_clean["thresholds"] = threshold
+    down_clean["comparison"] = comparison_str
+    down_clean = down_clean[required_columns]
+
+    # Save CSV
     up_csv = csv_dir / "rajacharya_upregulated.csv"
     down_csv = csv_dir / "rajacharya_downregulated.csv"
-    up.to_csv(up_csv, index=False)
-    down.to_csv(down_csv, index=False)
+    up_clean.to_csv(up_csv, index=False)
+    down_clean.to_csv(down_csv, index=False)
 
-    print(f"[Rajacharya Pipeline] Completed. Found {len(up)} up, {len(down)} down total.")
+    print(f"[Rajacharya et al. Pipeline] Completed. Identified DEGs across 1 condition pair at log2 ≥ {threshold}: {len(up)} up, {len(down)} down.")  
+
+if __name__ == "__main__":
+    config_path = Path(__file__).parent.parent.parent / "configs" / "example.yaml"
+    with open(config_path, "r") as f:
+        full_config = yaml.safe_load(f)
+
+    run_rajacharya_pipeline(full_config)

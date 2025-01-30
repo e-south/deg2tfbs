@@ -2,7 +2,7 @@
 
 output:
   root_dir: "pipeline/deg_fetcher"
-  batch_identifier: "batch_2025_01_30"
+  batch_identifier: "batch_20250130"
 
 # Ceroni et al. (DOI: 10.1038/nmeth.4635)
 ceroni:
@@ -14,7 +14,7 @@ ceroni:
     skiprows: 3
 
   thresholds:
-    log2_fc_threshold: 2.0
+    log2_fc_threshold: 2.5
     time_point: 15
     drop_zeros: true
     plasmid_pairs:
@@ -60,7 +60,7 @@ mori:
     "Lib-28": "Xylose + oxaloacetate"
 
   thresholds:
-    log2_fc_threshold: 2.0
+    log2_fc_threshold: 2.5
 
   output:
     csv_subdir: "csv"
@@ -73,7 +73,7 @@ wu:
     sheet_name: "Group #1 protein mass fractions"
 
   thresholds:
-    log2_fc_threshold: 2.0
+    log2_fc_threshold: 2.5
     comparisons:
       Clim_MOPS_Over_Rich_MOPS: ["M1", "N5"]
       Clim_MOPS_Over_WT_Rich_LB: ["M1", "O8"]
@@ -82,7 +82,7 @@ wu:
     csv_subdir: "csv"
     plot_subdir: "plots"
 
-# Zhus et al. (DOI: 10.1038/s41467-023-36254-0)
+# Zhu et al. (DOI: 10.1038/s41467-023-36254-0)
 zhu:
   data:
     dataset_key: "zhu"
@@ -91,7 +91,7 @@ zhu:
     header: 0
 
   thresholds:
-    log2_fc_threshold: 3
+    log2_fc_threshold: 5
 
   output:
     csv_subdir: "csv"
@@ -121,7 +121,7 @@ schmidt:
     usecols: "C:AC"
     header: 2
   thresholds:
-    log2_fc_threshold: 2.0
+    log2_fc_threshold: 2.5
     comparisons:
       Acetate_vs_Glucose: ["Acetate", "Glucose"]
       Xylose_vs_Glucose: ["Xylose", "Glucose"]
@@ -147,43 +147,46 @@ radzikowski:
     csv_subdir: "csv"
     plot_subdir: "plots"
 
+# Bie et al. (DOI: 10.1128/spectrum.00317-23)
 bie:
   data:
     dataset_key: "bie"
     sheet_name: "Sheet1"
-    usecols:
-      - "Gene_id"
-      - "Genename"
-      - "KAN_2_fpkm"
-      - "KAN_3_fpkm"
-      - "KAN_4_fpkm"
-      - "CIP_1_fpkm"
-      - "CIP_2_fpkm"
-      - "CIP_3_fpkm"
-      - "H2O_2_fpkm"
-      - "H2O_3_fpkm"
-      - "H2O_4_fpkm"
-      - "significant(KANvsH2O)"
-      - "log2FoldChange(KANvsH2O)"
-      - "significant(CIPvsH2O)"
-      - "log2FoldChange(CIPvsH2O)"
     header: 1
+    usecols:
+      - "Genename"
+      - "KAN_readcount(KANvsH2O)"
+      - "H2O_readcount(KANvsH2O)"
+      - "log2FoldChange(KANvsH2O)"
+      - "pval(KANvsH2O)"
+      - "padj(KANvsH2O)"
+      - "significant(KANvsH2O)"
+      - "CIP_readcount(CIPvsH2O)"
+      - "H2O_readcount(CIPvsH2O)"
+      - "log2FoldChange(CIPvsH2O)"
+      - "pval(CIPvsH2O)"
+      - "padj(CIPvsH2O)"
+      - "significant(CIPvsH2O)"
 
   thresholds:
-    log2_fc_threshold: 2.0
-    # Now we store replicate suffixes in a dictionary
-    replicate_dict:
-      KAN: ["_2_fpkm","_3_fpkm","_4_fpkm"]
-      CIP: ["_1_fpkm","_2_fpkm","_3_fpkm"]
-      H2O: ["_2_fpkm","_3_fpkm","_4_fpkm"]
-    water_prefix: "H2O"
-    antibiotics: ["KAN","CIP"]
-    significance_cols:
-      KAN: "significant(KANvsH2O)"
-      CIP: "significant(CIPvsH2O)"
-    log2_fc_cols:
-      KAN: "log2FoldChange(KANvsH2O)"
-      CIP: "log2FoldChange(CIPvsH2O)"
+    log2_fc_threshold: 5
+    conditions:
+      - {
+          antibiotic_name: "KAN",
+          gene_col: "Genename",
+          abx_readcount_col: "KAN_readcount(KANvsH2O)",
+          h2o_readcount_col: "H2O_readcount(KANvsH2O)",
+          log2_fc_col: "log2FoldChange(KANvsH2O)",
+          sig_col: "significant(KANvsH2O)"
+        }
+      - {
+          antibiotic_name: "CIP",
+          gene_col: "Genename",
+          abx_readcount_col: "CIP_readcount(CIPvsH2O)",
+          h2o_readcount_col: "H2O_readcount(CIPvsH2O)",
+          log2_fc_col: "log2FoldChange(CIPvsH2O)",
+          sig_col: "significant(CIPvsH2O)"
+        }
 
   output:
     csv_subdir: "csv"
@@ -250,7 +253,7 @@ rajacharya:
     header: 3
 
   thresholds:
-    log2_fc_threshold: 2.0
+    log2_fc_threshold: 2.5
 
   output:
     csv_subdir: "csv"

@@ -3,18 +3,24 @@
 <deg2tfbs project>
 jovanovic.py
 
-Module for reading and analyzing data described in Jovanovic et al., 
-where "Fold regulation" represents expression in MG1655 + PspA 
-versus MG1655 + vector. A value of 1 => no change, >1 => upregulated, 
-0 => not detected or zero expression. We ignore zero rows, 
-then convert to log2 scale and identify outliers using the boxplot IQR method.
+Module for reading and analyzing data from Jovanovic et al., which generated transcriptomic
+readouts in *E. coli* strains with and without Psp-inducing protein IV secretin stress.
 
-Author(s): Eric J. South
+The module identifies up- and down-regulated genes using IQR-based outlier detection 
+applied to the log 'Fold regulation' distribution from a microarray dataset.
+
+"Induction and Function of the Phage Shock Protein Extracytoplasmic Stress 
+Response in Escherichia coli"
+DOI: 10.1074/jbc.M602323200
+
+Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
 """
 
 import os
+
+import yaml
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -26,21 +32,21 @@ from deg2tfbs.pipeline.dataloader.utils import load_dataset
 
 def read_jovanovic_data(config_data: dict) -> pd.DataFrame:
     """
-    Reads the Jovanovic dataset from an .xls file.
-    Example config:
+    Reads the Jovanovic dataset using keys from the YAML config.
+
+    E.g. config:
       {
         "dataset_key": "jovanovic",
         "sheet_name": "Sheet1",
         "usecols": ["Gene","Product","Fold regulation"],
         "header": 2
       }
-    (Because columns start on row 3 => header=2 in Pandas)
     """
     df = load_dataset(
         dataset_key=config_data["dataset_key"],
-        sheet_name=config_data.get("sheet_name"),  # e.g. "Sheet1"
+        sheet_name=config_data.get("sheet_name"),
         usecols=config_data.get("usecols", None),
-        header=config_data.get("header", 0),       # e.g. 2
+        header=config_data.get("header", 0),
         skiprows=config_data.get("skiprows", None)
     )
     return df
@@ -55,9 +61,6 @@ def jovanovic_distribution_plot(
 ):
     """
     Plots a vertical distribution of log2 fold-change values on the y-axis.
-    Genes that are "extreme up" (index in up_idx) are colored red,
-    while "extreme down" (index in down_idx) are colored green,
-    and the rest are gray.
 
     Args:
         df (pd.DataFrame): Must contain a column [log2_fc_col].
@@ -68,24 +71,22 @@ def jovanovic_distribution_plot(
     """
     sns.set_style("ticks")
 
-    # Define colors
+    # Up- and down-regulated genes are colored red and green, respectively
     color_map = ["gray"] * len(df)  # default
     for i in up_idx:
         color_map[i] = "red"
     for i in down_idx:
         color_map[i] = "green"
 
-    # Make a vertical scatter
+    # Jitter the x-values for better visualization
     plt.figure(figsize=(5,7))
 
-    # We'll do a swarmplot or simple scatter with jitter in x
-    # to show distribution along y-axis
     xvals = np.random.uniform(-0.2, 0.2, size=len(df))  # jitter
     plt.scatter(
         xvals,
         df[log2_fc_col],
         c=color_map,
-        alpha=0.7,
+        alpha=0.5,
         edgecolors="none"
     )
 
@@ -93,20 +94,19 @@ def jovanovic_distribution_plot(
     plt.ylabel("log2(Fold Regulation)")
     plt.xticks([], [])  # remove x-axis ticks
 
-    sns.despine(left=True, bottom=True)
+    sns.despine(top=True, right=True)
     plt.savefig(output_path, dpi=150, bbox_inches="tight")
     plt.close()
 
 
 def run_jovanovic_pipeline(full_config: dict):
     """
-    Orchestrates:
-      1) Reading the Jovanovic dataset from .xls
-      2) Ignoring zero rows in "Fold regulation"
-      3) Converting to log2 scale
-      4) Identifying outliers (extreme up/down) via boxplot IQR approach
-      5) Plotting distribution on a vertical log2(FoldReg) axis
-      6) Saving CSVs + figure
+    1) Reading the Jovanovic dataset from .xls
+    2) Ignoring zero rows in "Fold regulation"
+    3) Converting to log2 scale
+    4) Identifying outliers (extreme up/down) via boxplot IQR approach
+    5) Plotting distribution on a vertical log2(FoldReg) axis
+    6) Saving CSVs + figure
 
     YAML snippet example:
       jovanovic:
@@ -129,10 +129,10 @@ def run_jovanovic_pipeline(full_config: dict):
         print("[Jovanovic Pipeline] No 'jovanovic' config found. Skipping.")
         return
 
-    # 1) Load data
+    # Load data
     df = read_jovanovic_data(config_jov["data"])
 
-    # 2) Prepare output paths
+    # Prepare output paths
     project_root = Path(__file__).parent.parent.parent
     output_root = project_root / full_config["output"]["root_dir"]
     batch_id = full_config["output"]["batch_identifier"]
@@ -143,16 +143,16 @@ def run_jovanovic_pipeline(full_config: dict):
     csv_dir.mkdir(parents=True, exist_ok=True)
     plot_dir.mkdir(parents=True, exist_ok=True)
 
-    # 3) Retrieve column name
+    # Retrieve column name
     fc_col = config_jov["thresholds"].get("fc_col", "Fold regulation")
 
-    # 4) Ignore zero rows + transform to log2
+    # Ignore zero rows + transform to log2
     #    A value of 1 => no change, >1 => up, <1 => down
     #    skip zeros because log2(0) is undefined
     df = df[df[fc_col] > 0].copy()
     df["log2_fold_reg"] = np.log2(df[fc_col])
 
-    # 5) Boxplot IQR approach for "extreme" up/down
+    # Boxplot IQR approach for "extreme" up/down
     #    Q1, Q3 => IQR => define whiskers => outliers
     q1 = df["log2_fold_reg"].quantile(0.25)
     q3 = df["log2_fold_reg"].quantile(0.75)
@@ -164,16 +164,35 @@ def run_jovanovic_pipeline(full_config: dict):
     up_df = df[df["log2_fold_reg"] > up_cutoff].copy()
     down_df = df[df["log2_fold_reg"] < down_cutoff].copy()
 
-    # 6) Save CSV for up/down
-    up_out = csv_dir / "jovanovic_upregulated_iqr.csv"
-    down_out = csv_dir / "jovanovic_downregulated_iqr.csv"
-    up_df.to_csv(up_out, index=False)
-    down_df.to_csv(down_out, index=False)
+    required_columns = ["gene", "source", "thresholds", "comparison"]
+    
+    # Define comparison
+    target_condition = "IV_secretin_overproduction"
+    reference_condition = "control"
+    comparison_str = f"{target_condition}_versus_{reference_condition}"
+    
+    # Tidy up the DataFrames of up- and down-regulated genes
+    up_clean = up_df.copy()
+    up_clean["gene"] = up_clean["Gene"]
+    up_clean["source"] = "jovanovic"
+    up_clean["thresholds"] = "IQR"
+    up_clean["comparison"] = comparison_str
+    up_clean = up_clean[required_columns]
 
-    print(f"[Jovanovic Pipeline] Up (IQR outliers) = {len(up_df)}, Down (IQR outliers) = {len(down_df)}")
+    down_clean = down_df.copy()
+    down_clean["gene"] = down_clean["Gene"] 
+    down_clean["source"] = "jovanovic"
+    down_clean["thresholds"] = "IQR"
+    down_clean["comparison"] = comparison_str
+    down_clean = down_clean[required_columns]
 
-    # 7) Make distribution plot (vertical)
-    #   highlight outliers in red/green, rest in gray
+    # Save CSV for up/down
+    up_out = csv_dir / "jovanovic_upregulated_degs.csv"
+    down_out = csv_dir / "jovanovic_downregulated_degs.csv"
+    up_clean.to_csv(up_out, index=False)
+    down_clean.to_csv(down_out, index=False)
+
+    # Plot the distribution
     up_idx = up_df.index
     down_idx = down_df.index
 
@@ -185,5 +204,12 @@ def run_jovanovic_pipeline(full_config: dict):
         down_idx=down_idx,
         output_path=plot_dir / plot_fname
     )
+    
+    print(f"[Jovanovic et al. Pipeline] Completed. Identified DEGs across 1 condition pair at with IQR-based outlier detection: {len(up_df)} up, {len(down_df)} down.")
+    
+if __name__ == "__main__":
+    config_path = Path(__file__).parent.parent.parent / "configs" / "example.yaml"
+    with open(config_path, "r") as f:
+        full_config = yaml.safe_load(f)
 
-    print("[Jovanovic Pipeline] Completed with IQR-based outlier detection.")
+    run_jovanovic_pipeline(full_config)

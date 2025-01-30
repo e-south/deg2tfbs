@@ -9,6 +9,9 @@ cells at 0 min, 20 min, 40 min, and 80 min of postshift were analyzed. T
 of relA-deficient strain at 0 min, 1.5 h, 3 h, and 4.5 h of postshift were also 
 analyzed. Supplementary Figure 5 contains iBAQ mass values.
 
+The module isolates up- and down-regulated genes based on a user-defined log2 fold 
+change threshold and saves an MA plot (average expression vs. log2 Fold Change).
+
 "Stringent response ensures the timely adaptation of bacterial growth to nutrient 
 downshift"
 DOI: 10.1038/s41467-023-36254-0
@@ -18,6 +21,7 @@ Dunlop Lab
 --------------------------------------------------------------------------------
 """
 
+import yaml
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -78,7 +82,7 @@ def zhu_threshold_analysis(df, threshold=3.0, save_plots=False, plot_dir=None):
         plt.title("Zhu et al.\n log2 (RelA Overproduction / WT)")
         plt.xlabel("Average iBAQ")
         plt.ylabel("Log2 Fold Change")
-        plt.savefig(plot_dir / "zhu_relA_overexpression_vs_WT.png", dpi=150)
+        plt.savefig(plot_dir / "zhu_relA_overexpression_versus_WT.png", dpi=150)
         plt.close()
 
     return up, down
@@ -113,9 +117,39 @@ def run_zhu_pipeline(full_config: dict):
 
     threshold = config_zhu["thresholds"]["log2_fc_threshold"]
 
+    # Perform threshold analysis 
     up, down = zhu_threshold_analysis(df, threshold=threshold, save_plots=True, plot_dir=plot_dir)
-    up.to_csv(csv_dir / "DEGs_upregulated_zhu.csv", index=False)
-    down.to_csv(csv_dir / "DEGs_downregulated_zhu.csv", index=False)
+    
+    required_columns = ["gene", "source", "thresholds", "comparison"]
+    
+    # Define comparison
+    target_condition = "RelA_Overproduction"
+    reference_condition = "WT"
+    comparison_str = f"{target_condition}_vs_{reference_condition}"
+    
+    # Tidy up the DataFrames of up- and down-regulated genes
+    up_clean = up.copy()
+    up_clean["gene"] = up_clean["Gene names"]
+    up_clean["source"] = "zhu"
+    up_clean["thresholds"] = threshold
+    up_clean["comparison"] = comparison_str
+    up_clean = up_clean[required_columns]
+
+    down_clean = down.copy()
+    down_clean["gene"] = down_clean["Gene names"] 
+    down_clean["source"] = "zhu"
+    down_clean["thresholds"] = threshold
+    down_clean["comparison"] = comparison_str
+    down_clean = down_clean[required_columns]
+    
+    up_clean.to_csv(csv_dir / "zhu_upregulated_degs.csv", index=False)
+    down_clean.to_csv(csv_dir / "zhu_downregulated_degs.csv", index=False)
 
     print(f"[Zhu et al. Pipeline] Completed. Identified DEGs across 1 condition pair at log2 ≥ {threshold}: {len(up)} up, {len(down)} down.")
 
+if __name__ == "__main__":
+    config_path = Path(__file__).parent.parent.parent / "configs" / "example.yaml"
+    with open(config_path, "r") as f:
+        full_config = yaml.safe_load(f)
+
+    run_zhu_pipeline(full_config)
