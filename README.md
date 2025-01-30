@@ -35,7 +35,19 @@ deg2tfbs/
 │       ├── zhu.py
 │       ├── emani.py
 │       ├── schmidt.py
-│       └── radzikowski.py
+│       ├── radzikowski.py
+│       ├── bie.py
+│       ├── deter.py
+│       ├── jovanovic.py
+│       ├── rajacharya.py
+│       ├── durfee.py
+│       ├── gummesson.py
+│       ├── houser.py
+│       ├── lu.py
+│       ├── sanchez_vasquez.py
+│       ├── vazulka.py
+│       ├── kim.py
+│       └── zhang.py
 ├── configs/
 │   └── example.yaml
 ├── outputs/

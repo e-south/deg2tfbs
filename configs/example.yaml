@@ -1,8 +1,9 @@
 # configs/example.yaml
 
+# Points to where CSVs and plots will be saved
 output:
-  root_dir: "pipeline/deg_fetcher"
-  batch_identifier: "batch_20250130"
+  root_dir: "pipeline/degfetcher"
+  batch_identifier: "degbatch_20250130"
 
 # Ceroni et al. (DOI: 10.1038/nmeth.4635)
 ceroni:
@@ -26,6 +27,7 @@ ceroni:
     csv_subdir: "csv"
     plot_subdir: "plots"
 
+# Mori et al. (DOI: 10.15252/msb.20209536)
 mori:
   data:
     dataset_key: "mori_ev8"
@@ -192,6 +194,7 @@ bie:
     csv_subdir: "csv"
     plot_subdir: "plots"
 
+# Deter et al. (DOI: 10.1038/s41598-021-85509-7)
 deter:
   data:
     dataset_key: "deter"
@@ -223,6 +226,7 @@ deter:
     csv_subdir: "csv"
     plot_subdir: "plots"
 
+# Jovanovic et al. (DOI: 10.1074/jbc.M602323200)
 jovanovic:
   data:
     dataset_key: "jovanovic"
@@ -240,6 +244,7 @@ jovanovic:
     csv_subdir: "csv"
     plot_subdir: "plots"
 
+# Rajacharya et al. (DOI: 10.1038/s41598-024-63148-y)
 rajacharya:
   data:
     dataset_key: "rajacharya"
@@ -259,4 +264,130 @@ rajacharya:
     csv_subdir: "csv"
     plot_subdir: "plots"
 
+# Durfee et al. (DOI: 10.1128/JB.01092-07)
+durfee:
+  data:
+    dataset_key: "durfee"
+    sheet_name: "gene_list"
+    usecols:
+      - "b_number"
+      - "gene"
+      - "regulation"
+      - "gene_product_description"
+      - "Log2_Ratio"
+      - "Log2_Signal_t0"
+      - "Log2_Signal_t5"
+    header: 0
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
 
+# Gummesson et al. (DOI: 10.3389/fgene.2020.00144)
+gummesson:
+  data:
+    dataset_key: "gummesson"
+    # Read from two sheets: 
+    # "TableS8" for up, "TableS9" for down, which is passed in the module.
+    usecols:
+      - "Locus"          # Excel column U
+      - "Name"           # Excel column V
+    header: 3
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+# Houser et al. (DOI: 10.1371/journal.pcbi.1004400)
+houser:
+  data:
+    dataset_key: "houser"
+    usecols:
+      - "Common Name"
+      - "Entrez ID"
+      - "Gene Name"
+      - "Prediction"
+      - "Sorted Category"
+    header: 0
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+# Lu et al. (DOI: 10.1039/C2MB25374G)
+lu:
+  data:
+    dataset_key: "lu"
+    sheet_name: "Sheet1"
+    usecols:
+      - "Gene name"
+      - "Gene ID"
+      - "Functional description"
+      - "Fold change"
+      - "Direction"
+    header: 0
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+# Sanchez‐Vazquez et al. (DOI: 10.1073/pnas.1819682116)
+sanchez_vasquez:
+  data:
+    dataset_key: "sanchez_vasquez"
+    sheet_name: "Data"
+    usecols:
+      - "Gene"
+      - "1+2+ 5 min"
+      - "1+2+ 5 min Category"
+      - "1+2+ 10 min"
+      - "1+2+ 10 min Category"
+    header: 0
+  thresholds:
+    fc_col: "1+2+ 5 min" 
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+# Vazulka et al. (DOI: 10.1186/s12934-023-02278-w)
+vazulka:
+  data:
+    dataset_key: "vazulka"
+    sheet_name: "Sheet1"
+    usecols:
+      - "Gene"
+      - "baseMean"
+      - "log2FoldChange"
+      - "lfcSE"
+      - "pvalue"
+      - "padj"
+    header: 0
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+# Kim et al. (DOI: 10.1038/s41598-020-74606-8)
+kim:
+  data:
+    dataset_key: "kim"
+    sheet_name: "Table_S1"
+    usecols:
+      - "Gene"
+      - "-30min"
+      - "1h"
+    header: 5
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"
+
+# Zhang et al. (DOI: 10.1021/cb5004477)
+zhang:
+  data:
+    dataset_key: "zhang"
+    sheet_name: "Sheet1"
+    usecols:
+      - "Gene"
+      - "σ32 (I54N)"
+      - "SD"
+      - "σ32 (WT)"
+      - "Heat (42ºC)"
+    header: 0
+  output:
+    csv_subdir: "csv"
+    plot_subdir: "plots"

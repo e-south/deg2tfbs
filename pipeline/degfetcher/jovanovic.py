@@ -6,8 +6,8 @@ jovanovic.py
 Module for reading and analyzing data from Jovanovic et al., which generated transcriptomic
 readouts in *E. coli* strains with and without Psp-inducing protein IV secretin stress.
 
-The module identifies up- and down-regulated genes using IQR-based outlier detection 
-applied to the log 'Fold regulation' distribution from a microarray dataset.
+The module identifies extreme up- and down-regulated genes using IQR-based outlier 
+detection applied to the log 'Fold regulation' distribution from a microarray dataset.
 
 "Induction and Function of the Phage Shock Protein Extracytoplasmic Stress 
 Response in Escherichia coli"
@@ -19,6 +19,7 @@ Dunlop Lab
 """
 
 import os
+from pathlib import Path
 
 import yaml
 import numpy as np
@@ -26,8 +27,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from pathlib import Path
-from deg2tfbs.pipeline.dataloader.utils import load_dataset
+from deg2tfbs.pipeline.degfetcher.utils import load_dataset
 
 
 def read_jovanovic_data(config_data: dict) -> pd.DataFrame:

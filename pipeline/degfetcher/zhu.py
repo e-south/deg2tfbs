@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from pathlib import Path
-from deg2tfbs.pipeline.dataloader.utils import load_dataset
+from deg2tfbs.pipeline.degfetcher.utils import load_dataset
 
 def read_zhu_data(config_data: dict) -> pd.DataFrame:
     """

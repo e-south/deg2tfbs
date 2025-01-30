@@ -26,7 +26,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from deg2tfbs.pipeline.dataloader.utils import load_dataset
+from deg2tfbs.pipeline.degfetcher.utils import load_dataset
 
 def read_schmidt_data(config_data: dict) -> pd.DataFrame:
     """
