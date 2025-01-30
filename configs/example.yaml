@@ -24,7 +24,7 @@ ceroni:
       - [ "pSB1C3-H3", "pSB1C3" ]
 
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Mori et al. (DOI: 10.15252/msb.20209536)
@@ -65,7 +65,7 @@ mori:
     log2_fc_threshold: 2.5
 
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Wu et al (DOI: 10.1038/s41564-022-01310-w)
@@ -81,7 +81,7 @@ wu:
       Clim_MOPS_Over_WT_Rich_LB: ["M1", "O8"]
 
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Zhu et al. (DOI: 10.1038/s41467-023-36254-0)
@@ -96,7 +96,7 @@ zhu:
     log2_fc_threshold: 5
 
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Emani et al (DOI: 10.1093/synbio/ysad013)
@@ -112,7 +112,7 @@ emani:
   thresholds:
     log2_fc_threshold: 2.0
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Schmidt et al. (DOI: 10.1038/nbt.3418)
@@ -130,7 +130,7 @@ schmidt:
       Chemostat_slow_vs_fast: ["Chemostat µ=0.20", "Chemostat µ=0.5"]
       Osmotic_stress_glucose_vs_Glucose: ["Osmotic-stress glucose", "Glucose"]
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Radzikowski et al. (DOI: 10.15252/msb.20166998)
@@ -146,7 +146,7 @@ radzikowski:
       Persisters_0.5h_Over_GlucoseGrowth: ["Persisters_0.5h", "GlucoseGrowth"]
       Starved_0.5h_Over_GlucoseGrowth: ["Starved_0.5h", "GlucoseGrowth"]
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Bie et al. (DOI: 10.1128/spectrum.00317-23)
@@ -191,7 +191,7 @@ bie:
         }
 
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Deter et al. (DOI: 10.1038/s41598-021-85509-7)
@@ -223,7 +223,7 @@ deter:
       # - { target: "Stationary", reference: "3h fresh media" }
 
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Jovanovic et al. (DOI: 10.1074/jbc.M602323200)
@@ -241,7 +241,7 @@ jovanovic:
     # Name of the column that has linear fold regulation
     fc_col: "Fold regulation"
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Rajacharya et al. (DOI: 10.1038/s41598-024-63148-y)
@@ -261,7 +261,7 @@ rajacharya:
     log2_fc_threshold: 2.5
 
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Durfee et al. (DOI: 10.1128/JB.01092-07)
@@ -279,7 +279,7 @@ durfee:
       - "Log2_Signal_t5"
     header: 0
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Gummesson et al. (DOI: 10.3389/fgene.2020.00144)
@@ -293,7 +293,7 @@ gummesson:
       - "Name"           # Excel column V
     header: 3
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Houser et al. (DOI: 10.1371/journal.pcbi.1004400)
@@ -308,7 +308,7 @@ houser:
       - "Sorted Category"
     header: 0
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Lu et al. (DOI: 10.1039/C2MB25374G)
@@ -324,7 +324,7 @@ lu:
       - "Direction"
     header: 0
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Sanchez‐Vazquez et al. (DOI: 10.1073/pnas.1819682116)
@@ -342,7 +342,7 @@ sanchez_vasquez:
   thresholds:
     fc_col: "1+2+ 5 min" 
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Vazulka et al. (DOI: 10.1186/s12934-023-02278-w)
@@ -359,7 +359,7 @@ vazulka:
       - "padj"
     header: 0
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Kim et al. (DOI: 10.1038/s41598-020-74606-8)
@@ -373,7 +373,7 @@ kim:
       - "1h"
     header: 5
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
 
 # Zhang et al. (DOI: 10.1021/cb5004477)
@@ -389,5 +389,5 @@ zhang:
       - "Heat (42ºC)"
     header: 0
   output:
-    csv_subdir: "csv"
+    csv_subdir: "csvs"
     plot_subdir: "plots"
