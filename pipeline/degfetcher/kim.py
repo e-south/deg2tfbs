@@ -27,7 +27,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from deg2tfbs.pipeline.degfetcher.utils import load_dataset
+from deg2tfbs.pipeline.utils import load_dataset
+
 
 def read_kim_data(config_data: dict) -> pd.DataFrame:
     """
@@ -81,7 +82,7 @@ def run_kim_pipeline(full_config: dict):
       up => > Q3 + 1.5*IQR
       down => < Q1 - 1.5*IQR
     """
-    config_kim = full_config.get("kim", None)
+    config_kim = full_config['datasets'].get("kim", None)
     if config_kim is None:
         print("[Kim Pipeline] No 'kim' config found. Skipping.")
         return
@@ -96,8 +97,8 @@ def run_kim_pipeline(full_config: dict):
 
     # Build paths
     project_root = Path(__file__).parent.parent.parent
-    output_root = project_root / full_config["output"]["root_dir"]
-    batch_id = full_config["output"]["batch_identifier"]
+    output_root = project_root / full_config['pipeline']['stages']['degfetcher']['root_dir']
+    batch_id = full_config['pipeline']['stages']['degfetcher']['batch_id']
     batch_dir = output_root / batch_id
 
     csv_dir = batch_dir / config_kim["output"]["csv_subdir"]

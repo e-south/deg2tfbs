@@ -24,11 +24,12 @@ from pathlib import Path
 
 import yaml
 import pandas as pd
-import numpy as np  # Add this import
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from deg2tfbs.pipeline.degfetcher.utils import load_dataset
+from deg2tfbs.pipeline.utils import load_dataset
+
 
 def read_sanchez_vasquez_data(config_data: dict) -> pd.DataFrame:
     """
@@ -85,7 +86,7 @@ def run_sanchez_vasquez_pipeline(full_config: dict):
     comparison => "relA_overexpression_versus_control"
     source => "sanchez_vasquez"
     """
-    config_sv = full_config.get("sanchez_vasquez", None)
+    config_sv = full_config['datasets'].get("sanchez_vasquez", None)
     if config_sv is None:
         print("[Sanchez-Vazquez Pipeline] No 'sanchez_vasquez' config found. Skipping.")
         return
@@ -99,8 +100,8 @@ def run_sanchez_vasquez_pipeline(full_config: dict):
 
     # Build output path
     project_root = Path(__file__).parent.parent.parent
-    output_root = project_root / full_config["output"]["root_dir"]
-    batch_id = full_config["output"]["batch_identifier"]
+    output_root = project_root / full_config['pipeline']['stages']['degfetcher']['root_dir']
+    batch_id = full_config['pipeline']['stages']['degfetcher']['batch_id']
     batch_dir = output_root / batch_id
 
     csv_dir = batch_dir / config_sv["output"]["csv_subdir"]

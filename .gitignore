@@ -160,6 +160,7 @@ libs/
 archived/
 prototypes/
 test_configs/
+temp.md
 
 # Ignore specific file types
 *.env

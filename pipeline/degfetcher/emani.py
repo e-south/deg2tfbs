@@ -21,6 +21,7 @@ Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
 """
+from pathlib import Path
 
 import yaml
 import numpy as np
@@ -28,8 +29,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from pathlib import Path
-from deg2tfbs.pipeline.degfetcher.utils import load_dataset
+from deg2tfbs.pipeline.utils import load_dataset
+
 
 def read_emani_data(config_data: dict) -> pd.DataFrame:
     """
@@ -85,13 +86,13 @@ def run_emani_pipeline(full_config: dict):
           csv_subdir: "csv"
           plot_subdir: "plots"
     """
-    config_emani = full_config["emani"]
+    config_emani = full_config['datasets']["emani"]
     df = read_emani_data(config_emani["data"])
 
     # Build output paths for CSV and plots
     project_root = Path(__file__).parent.parent.parent
-    output_root = project_root / full_config["output"]["root_dir"]
-    batch_id = full_config["output"]["batch_identifier"]
+    output_root = project_root / full_config['pipeline']['stages']['degfetcher']['root_dir']
+    batch_id = full_config['pipeline']['stages']['degfetcher']['batch_id']
     batch_dir = output_root / batch_id
 
     csv_dir = batch_dir / config_emani["output"]["csv_subdir"]

@@ -19,8 +19,8 @@ Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
 """
-
 import os
+from pathlib import Path
 
 import yaml
 import numpy as np
@@ -28,8 +28,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from pathlib import Path
-from deg2tfbs.pipeline.degfetcher.utils import load_dataset
+from deg2tfbs.pipeline.utils import load_dataset
+
 
 def read_bie_data(config_data: dict) -> pd.DataFrame:
     """
@@ -111,7 +111,7 @@ def run_bie_pipeline(full_config: dict):
       3) Combine up/down across all antibiotics
       4) Save final aggregated CSVs
     """
-    config_bie = full_config.get("bie", None)
+    config_bie = full_config['datasets'].get("bie", None)
     if config_bie is None:
         print("[Bie Pipeline] No 'bie' config found. Skipping.")
         return
@@ -121,8 +121,8 @@ def run_bie_pipeline(full_config: dict):
 
     # Build output paths
     project_root = Path(__file__).parent.parent.parent
-    output_root = project_root / full_config["output"]["root_dir"]
-    batch_id = full_config["output"]["batch_identifier"]
+    output_root = project_root / full_config['pipeline']['stages']['degfetcher']['root_dir']
+    batch_id = full_config['pipeline']['stages']['degfetcher']['batch_id']
     batch_dir = output_root / batch_id
 
     csv_dir = batch_dir / config_bie["output"]["csv_subdir"]

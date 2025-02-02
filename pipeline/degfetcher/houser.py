@@ -22,7 +22,8 @@ import yaml
 import pandas as pd
 from pathlib import Path
 
-from deg2tfbs.pipeline.degfetcher.utils import load_dataset
+from deg2tfbs.pipeline.utils import load_dataset
+
 
 def read_houser_data(config_data: dict) -> pd.DataFrame:
     """
@@ -48,7 +49,7 @@ def run_houser_pipeline(full_config: dict):
     comparison => "two_week_starvation_versus_control"
     source => "houser"
     """
-    config_houser = full_config.get("houser", None)
+    config_houser = full_config['datasets'].get("houser", None)
     if config_houser is None:
         print("[Houser Pipeline] No 'houser' config found. Skipping.")
         return
@@ -64,8 +65,8 @@ def run_houser_pipeline(full_config: dict):
 
     # Build output path
     project_root = Path(__file__).parent.parent.parent
-    output_root = project_root / full_config["output"]["root_dir"]
-    batch_id = full_config["output"]["batch_identifier"]
+    output_root = project_root / full_config['pipeline']['stages']['degfetcher']['root_dir']
+    batch_id = full_config['pipeline']['stages']['degfetcher']['batch_id']
     batch_dir = output_root / batch_id
 
     csv_dir = batch_dir / config_houser["output"]["csv_subdir"]

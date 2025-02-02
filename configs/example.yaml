@@ -1,393 +1,456 @@
 # configs/example.yaml
 
-# Points to where CSVs and plots will be saved
-output:
-  root_dir: "pipeline/degfetcher"
-  batch_identifier: "degbatch_20250130"
+pipeline:
+  name: "default"
 
-# Ceroni et al. (DOI: 10.1038/nmeth.4635)
-ceroni:
-  data:
-    dataset_key: "ceroni"
-    sheet_name: "Mean FPKM"
-    usecols: "A:P"
-    header: 0
-    skiprows: 3
+  stages:
+    degfetcher:
+      root_dir: "pipeline/degfetcher"
+      batch_id: "degbatch_20250130"
+      modules:
+        - ceroni
+        - mori
+        - wu
+        - zhu
+        - emani
+        - schmidt
+        - radzikowski
+        - bie
+        - deter
+        - jovanovic
+        - rajacharya
+        - durfee
+        - gummesson
+        - houser
+        - lu
+        - sanchez_vasquez
+        - vazulka
+        - kim
+        - zhang
 
-  thresholds:
-    log2_fc_threshold: 2.5
-    time_point: 15
-    drop_zeros: true
-    plasmid_pairs:
-      - [ "pLys-M1", "pLys" ]
-      - [ "pPD864-LacZ", "pPD864" ]
-      - [ "pSB1C3-H3", "pSB1C3" ]
+    tffetcher:
+      root_dir: "pipeline/tffetcher"
+      batch_id: "tfbatch_20250130"
+      input:
+        deg_batch_id: "degbatch_20250130"             # Points to a batch of DEGs to reference
+        deg_csv_subdir: "csvs"                        # Matches degfetcher’s output location
+        # deg_csv_includes:                           # E.g., uncomment to only fetch regulators for these DEGs
+        #   - "bie_downregulated_degs.csv"
+        #   - "sanchez_vasquez_upregulated_degs.csv"
+      sources:
+        regulatory_networks:
+          ecocyc:
+            path: "ecocyc_28_reg_network"  # Reference to utils.DATA_FILES
+            enabled: true
+            parser: "ecocyc_network_v28-5"
+          regulondb:
+            path: "regulondb_13_network_interactions"
+            enabled: true
+            parser: "regulondb_network_regulator_genes_v13"
+      params:
+        network_strategy: "union"                   # union|intersect|ecocyc_only|regulondb_only
+        include_master_regulators: true
+        include_sigma_factors: true
 
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
 
-# Mori et al. (DOI: 10.15252/msb.20209536)
-mori:
-  data:
-    dataset_key: "mori_ev8"
-    sheet_name: "EV8-AbsoluteMassFractions-1"
-    usecols:
-      - "Gene name"
-      - "Lib-02"
-      - "Lib-06"
-      - "Lib-14"
-      - "Lib-17"
-      - "Lib-19"
-      - "Lib-20"
-      - "Lib-28"
+    tfbsfetcher:
+      root_dir: "pipeline/tfbsfetcher"
+      batch_id: "tfbsbatch_20250130"
+      input:
+        tf_batch_id: "tfbatch_20250130"   # From tffetcher output
+      sources:
+        binding_sites:
+          regulondb_pssm: true
+          ecocyc_motifs: false
+      params:
+        # Add if needed, e.g. search windows, threshold, etc.
+        motif_confidence: "high"
+        search_upstream_bp: 200
 
-  comparisons:
-    - { condition: "Lib-17", reference: "Lib-20" }
-    - { condition: "Lib-02", reference: "Lib-20" }
-    - { condition: "Lib-06", reference: "Lib-20" }
-    - { condition: "Lib-14", reference: "Lib-20" }
-    - { condition: "Lib-19", reference: "Lib-20" }
-    - { condition: "Lib-28", reference: "Lib-20" }
-    - { condition: "Lib-19", reference: "Lib-20" }
+datasets:
+  # Ceroni et al. (DOI: 10.1038/nmeth.4635)
+  ceroni:
+    data:
+      dataset_key: "ceroni"
+      sheet_name: "Mean FPKM"
+      usecols: "A:P"
+      header: 0
+      skiprows: 3
 
-  descriptors:
-    "Lib-00-A1": "Glucose minimal medium (A1-1)"
-    "Lib-02": "High osmolarity"
-    "Lib-06": "Poor carbon (acetate)"
-    "Lib-14": "Oxidative stress"
-    "Lib-17": "Low pH (acetate)"
-    "Lib-19": "LB stationary"
-    "Lib-20": "LB log-phase"
-    "Lib-28": "Xylose + oxaloacetate"
+    thresholds:
+      log2_fc_threshold: 2.5
+      time_point: 15
+      drop_zeros: true
+      plasmid_pairs:
+        - [ "pLys-M1", "pLys" ]
+        - [ "pPD864-LacZ", "pPD864" ]
+        - [ "pSB1C3-H3", "pSB1C3" ]
 
-  thresholds:
-    log2_fc_threshold: 2.5
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+  # Mori et al. (DOI: 10.15252/msb.20209536)
+  mori:
+    data:
+      dataset_key: "mori_ev8"
+      sheet_name: "EV8-AbsoluteMassFractions-1"
+      usecols:
+        - "Gene name"
+        - "Lib-02"
+        - "Lib-06"
+        - "Lib-14"
+        - "Lib-17"
+        - "Lib-19"
+        - "Lib-20"
+        - "Lib-28"
 
-# Wu et al (DOI: 10.1038/s41564-022-01310-w)
-wu:
-  data:
-    dataset_key: "wu"
-    sheet_name: "Group #1 protein mass fractions"
-
-  thresholds:
-    log2_fc_threshold: 2.5
     comparisons:
-      Clim_MOPS_Over_Rich_MOPS: ["M1", "N5"]
-      Clim_MOPS_Over_WT_Rich_LB: ["M1", "O8"]
+      - { condition: "Lib-17", reference: "Lib-20" }
+      - { condition: "Lib-02", reference: "Lib-20" }
+      - { condition: "Lib-06", reference: "Lib-20" }
+      - { condition: "Lib-14", reference: "Lib-20" }
+      - { condition: "Lib-19", reference: "Lib-20" }
+      - { condition: "Lib-28", reference: "Lib-20" }
+      - { condition: "Lib-19", reference: "Lib-20" }
 
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+    descriptors:
+      "Lib-00-A1": "Glucose minimal medium (A1-1)"
+      "Lib-02": "High osmolarity"
+      "Lib-06": "Poor carbon (acetate)"
+      "Lib-14": "Oxidative stress"
+      "Lib-17": "Low pH (acetate)"
+      "Lib-19": "LB stationary"
+      "Lib-20": "LB log-phase"
+      "Lib-28": "Xylose + oxaloacetate"
 
-# Zhu et al. (DOI: 10.1038/s41467-023-36254-0)
-zhu:
-  data:
-    dataset_key: "zhu"
-    sheet_name: "supplementary data 2"
-    usecols: "B,C,I,K"
-    header: 0
+    thresholds:
+      log2_fc_threshold: 2.5
 
-  thresholds:
-    log2_fc_threshold: 5
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+  # Wu et al (DOI: 10.1038/s41564-022-01310-w)
+  wu:
+    data:
+      dataset_key: "wu"
+      sheet_name: "Group #1 protein mass fractions"
 
-# Emani et al (DOI: 10.1093/synbio/ysad013)
-emani:
-  data:
-    dataset_key: "emani"
-    sheet_name: "Figure 5_alltags v control"
-    usecols:
-      - "Gene"
-      - "log2FoldChange (Green = Upregulated in 10uM IPTG All Tags)"
-      - "pvalue"
-      - "padj"
-  thresholds:
-    log2_fc_threshold: 2.0
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+    thresholds:
+      log2_fc_threshold: 2.5
+      comparisons:
+        Clim_MOPS_Over_Rich_MOPS: ["M1", "N5"]
+        Clim_MOPS_Over_WT_Rich_LB: ["M1", "O8"]
 
-# Schmidt et al. (DOI: 10.1038/nbt.3418)
-schmidt:
-  data:
-    dataset_key: "schmidt"
-    sheet_name: "Schmidt et al."
-    usecols: "C:AC"
-    header: 2
-  thresholds:
-    log2_fc_threshold: 2.5
-    comparisons:
-      Acetate_vs_Glucose: ["Acetate", "Glucose"]
-      Xylose_vs_Glucose: ["Xylose", "Glucose"]
-      Chemostat_slow_vs_fast: ["Chemostat µ=0.20", "Chemostat µ=0.5"]
-      Osmotic_stress_glucose_vs_Glucose: ["Osmotic-stress glucose", "Glucose"]
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-# Radzikowski et al. (DOI: 10.15252/msb.20166998)
-radzikowski:
-  data:
-    dataset_key: "radzikowski"
-    sheet_name: "Sheet1"
-    usecols: "A:S"
-    header: 2
-  thresholds:
-    log2_fc_threshold: 2.0
-    comparisons:
-      Persisters_0.5h_Over_GlucoseGrowth: ["Persisters_0.5h", "GlucoseGrowth"]
-      Starved_0.5h_Over_GlucoseGrowth: ["Starved_0.5h", "GlucoseGrowth"]
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+  # Zhu et al. (DOI: 10.1038/s41467-023-36254-0)
+  zhu:
+    data:
+      dataset_key: "zhu"
+      sheet_name: "supplementary data 2"
+      usecols: "B,C,I,K"
+      header: 0
 
-# Bie et al. (DOI: 10.1128/spectrum.00317-23)
-bie:
-  data:
-    dataset_key: "bie"
-    sheet_name: "Sheet1"
-    header: 1
-    usecols:
-      - "Genename"
-      - "KAN_readcount(KANvsH2O)"
-      - "H2O_readcount(KANvsH2O)"
-      - "log2FoldChange(KANvsH2O)"
-      - "pval(KANvsH2O)"
-      - "padj(KANvsH2O)"
-      - "significant(KANvsH2O)"
-      - "CIP_readcount(CIPvsH2O)"
-      - "H2O_readcount(CIPvsH2O)"
-      - "log2FoldChange(CIPvsH2O)"
-      - "pval(CIPvsH2O)"
-      - "padj(CIPvsH2O)"
-      - "significant(CIPvsH2O)"
+    thresholds:
+      log2_fc_threshold: 5
 
-  thresholds:
-    log2_fc_threshold: 5
-    conditions:
-      - {
-          antibiotic_name: "KAN",
-          gene_col: "Genename",
-          abx_readcount_col: "KAN_readcount(KANvsH2O)",
-          h2o_readcount_col: "H2O_readcount(KANvsH2O)",
-          log2_fc_col: "log2FoldChange(KANvsH2O)",
-          sig_col: "significant(KANvsH2O)"
-        }
-      - {
-          antibiotic_name: "CIP",
-          gene_col: "Genename",
-          abx_readcount_col: "CIP_readcount(CIPvsH2O)",
-          h2o_readcount_col: "H2O_readcount(CIPvsH2O)",
-          log2_fc_col: "log2FoldChange(CIPvsH2O)",
-          sig_col: "significant(CIPvsH2O)"
-        }
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+  # Emani et al (DOI: 10.1093/synbio/ysad013)
+  emani:
+    data:
+      dataset_key: "emani"
+      sheet_name: "Figure 5_alltags v control"
+      usecols:
+        - "Gene"
+        - "log2FoldChange (Green = Upregulated in 10uM IPTG All Tags)"
+        - "pvalue"
+        - "padj"
+    thresholds:
+      log2_fc_threshold: 2.0
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-# Deter et al. (DOI: 10.1038/s41598-021-85509-7)
-deter:
-  data:
-    dataset_key: "deter"
-    header: 0
-    usecols:
-      - "Name"
-      - "gene"
-      - "Stationary rep1"
-      - "Stationary rep2"
-      - "Stationary rep3"
-      - "3h fresh media rep1"
-      - "3h fresh media rep2"
-      - "3h fresh media rep3"
-      - "3h amp media rep1"
-      - "3h amp media rep2"
-      - "3h amp media rep3"
+  # Schmidt et al. (DOI: 10.1038/nbt.3418)
+  schmidt:
+    data:
+      dataset_key: "schmidt"
+      sheet_name: "Schmidt et al."
+      usecols: "C:AC"
+      header: 2
+    thresholds:
+      log2_fc_threshold: 2.5
+      comparisons:
+        Acetate_vs_Glucose: ["Acetate", "Glucose"]
+        Xylose_vs_Glucose: ["Xylose", "Glucose"]
+        Chemostat_slow_vs_fast: ["Chemostat µ=0.20", "Chemostat µ=0.5"]
+        Osmotic_stress_glucose_vs_Glucose: ["Osmotic-stress glucose", "Glucose"]
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-  thresholds:
-    log2_fc_threshold: 2.0
+  # Radzikowski et al. (DOI: 10.15252/msb.20166998)
+  radzikowski:
+    data:
+      dataset_key: "radzikowski"
+      sheet_name: "Sheet1"
+      usecols: "A:S"
+      header: 2
+    thresholds:
+      log2_fc_threshold: 2.0
+      comparisons:
+        Persisters_0.5h_Over_GlucoseGrowth: ["Persisters_0.5h", "GlucoseGrowth"]
+        Starved_0.5h_Over_GlucoseGrowth: ["Starved_0.5h", "GlucoseGrowth"]
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-    # Define two comparisons:
-    #  1) 3h amp media vs 3h fresh media
-    #  2) Stationary vs 3h fresh media
-    comparisons:
-      - { target: "3h amp media", reference: "3h fresh media" }
-      # - { target: "Stationary", reference: "3h fresh media" }
+  # Bie et al. (DOI: 10.1128/spectrum.00317-23)
+  bie:
+    data:
+      dataset_key: "bie"
+      sheet_name: "Sheet1"
+      header: 1
+      usecols:
+        - "Genename"
+        - "KAN_readcount(KANvsH2O)"
+        - "H2O_readcount(KANvsH2O)"
+        - "log2FoldChange(KANvsH2O)"
+        - "pval(KANvsH2O)"
+        - "padj(KANvsH2O)"
+        - "significant(KANvsH2O)"
+        - "CIP_readcount(CIPvsH2O)"
+        - "H2O_readcount(CIPvsH2O)"
+        - "log2FoldChange(CIPvsH2O)"
+        - "pval(CIPvsH2O)"
+        - "padj(CIPvsH2O)"
+        - "significant(CIPvsH2O)"
 
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+    thresholds:
+      log2_fc_threshold: 5
+      conditions:
+        - {
+            antibiotic_name: "KAN",
+            gene_col: "Genename",
+            abx_readcount_col: "KAN_readcount(KANvsH2O)",
+            h2o_readcount_col: "H2O_readcount(KANvsH2O)",
+            log2_fc_col: "log2FoldChange(KANvsH2O)",
+            sig_col: "significant(KANvsH2O)"
+          }
+        - {
+            antibiotic_name: "CIP",
+            gene_col: "Genename",
+            abx_readcount_col: "CIP_readcount(CIPvsH2O)",
+            h2o_readcount_col: "H2O_readcount(CIPvsH2O)",
+            log2_fc_col: "log2FoldChange(CIPvsH2O)",
+            sig_col: "significant(CIPvsH2O)"
+          }
 
-# Jovanovic et al. (DOI: 10.1074/jbc.M602323200)
-jovanovic:
-  data:
-    dataset_key: "jovanovic"
-    sheet_name: "Sheet1"
-    usecols:
-      - "Gene"
-      - "Product"
-      - "Fold regulation"
-    header: 2
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-  thresholds:
-    # Name of the column that has linear fold regulation
-    fc_col: "Fold regulation"
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+  # Deter et al. (DOI: 10.1038/s41598-021-85509-7)
+  deter:
+    data:
+      dataset_key: "deter"
+      header: 0
+      usecols:
+        - "Name"
+        - "gene"
+        - "Stationary rep1"
+        - "Stationary rep2"
+        - "Stationary rep3"
+        - "3h fresh media rep1"
+        - "3h fresh media rep2"
+        - "3h fresh media rep3"
+        - "3h amp media rep1"
+        - "3h amp media rep2"
+        - "3h amp media rep3"
 
-# Rajacharya et al. (DOI: 10.1038/s41598-024-63148-y)
-rajacharya:
-  data:
-    dataset_key: "rajacharya"
-    sheet_name: "Sheet 1"
-    # columns U, V, W, X => "Accession", "genes", "logFC", "PValue"
-    usecols:
-      - "Accession"
-      - "genes"
-      - "logFC"
-      - "PValue"
-    header: 3
+    thresholds:
+      log2_fc_threshold: 2.0
 
-  thresholds:
-    log2_fc_threshold: 2.5
+      # Define two comparisons:
+      #  1) 3h amp media vs 3h fresh media
+      #  2) Stationary vs 3h fresh media
+      comparisons:
+        - { target: "3h amp media", reference: "3h fresh media" }
+        # - { target: "Stationary", reference: "3h fresh media" }
 
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-# Durfee et al. (DOI: 10.1128/JB.01092-07)
-durfee:
-  data:
-    dataset_key: "durfee"
-    sheet_name: "gene_list"
-    usecols:
-      - "b_number"
-      - "gene"
-      - "regulation"
-      - "gene_product_description"
-      - "Log2_Ratio"
-      - "Log2_Signal_t0"
-      - "Log2_Signal_t5"
-    header: 0
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+  # Jovanovic et al. (DOI: 10.1074/jbc.M602323200)
+  jovanovic:
+    data:
+      dataset_key: "jovanovic"
+      sheet_name: "Sheet1"
+      usecols:
+        - "Gene"
+        - "Product"
+        - "Fold regulation"
+      header: 2
 
-# Gummesson et al. (DOI: 10.3389/fgene.2020.00144)
-gummesson:
-  data:
-    dataset_key: "gummesson"
-    # Read from two sheets: 
-    # "TableS8" for up, "TableS9" for down, which is passed in the module.
-    usecols:
-      - "Locus"          # Excel column U
-      - "Name"           # Excel column V
-    header: 3
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+    thresholds:
+      # Name of the column that has linear fold regulation
+      fc_col: "Fold regulation"
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-# Houser et al. (DOI: 10.1371/journal.pcbi.1004400)
-houser:
-  data:
-    dataset_key: "houser"
-    usecols:
-      - "Common Name"
-      - "Entrez ID"
-      - "Gene Name"
-      - "Prediction"
-      - "Sorted Category"
-    header: 0
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+  # Rajacharya et al. (DOI: 10.1038/s41598-024-63148-y)
+  rajacharya:
+    data:
+      dataset_key: "rajacharya"
+      sheet_name: "Sheet 1"
+      # columns U, V, W, X => "Accession", "genes", "logFC", "PValue"
+      usecols:
+        - "Accession"
+        - "genes"
+        - "logFC"
+        - "PValue"
+      header: 3
 
-# Lu et al. (DOI: 10.1039/C2MB25374G)
-lu:
-  data:
-    dataset_key: "lu"
-    sheet_name: "Sheet1"
-    usecols:
-      - "Gene name"
-      - "Gene ID"
-      - "Functional description"
-      - "Fold change"
-      - "Direction"
-    header: 0
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+    thresholds:
+      log2_fc_threshold: 2.5
 
-# Sanchez‐Vazquez et al. (DOI: 10.1073/pnas.1819682116)
-sanchez_vasquez:
-  data:
-    dataset_key: "sanchez_vasquez"
-    sheet_name: "Data"
-    usecols:
-      - "Gene"
-      - "1+2+ 5 min"
-      - "1+2+ 5 min Category"
-      - "1+2+ 10 min"
-      - "1+2+ 10 min Category"
-    header: 0
-  thresholds:
-    fc_col: "1+2+ 5 min" 
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-# Vazulka et al. (DOI: 10.1186/s12934-023-02278-w)
-vazulka:
-  data:
-    dataset_key: "vazulka"
-    sheet_name: "Sheet1"
-    usecols:
-      - "Gene"
-      - "baseMean"
-      - "log2FoldChange"
-      - "lfcSE"
-      - "pvalue"
-      - "padj"
-    header: 0
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+  # Durfee et al. (DOI: 10.1128/JB.01092-07)
+  durfee:
+    data:
+      dataset_key: "durfee"
+      sheet_name: "gene_list"
+      usecols:
+        - "b_number"
+        - "gene"
+        - "regulation"
+        - "gene_product_description"
+        - "Log2_Ratio"
+        - "Log2_Signal_t0"
+        - "Log2_Signal_t5"
+      header: 0
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-# Kim et al. (DOI: 10.1038/s41598-020-74606-8)
-kim:
-  data:
-    dataset_key: "kim"
-    sheet_name: "Table_S1"
-    usecols:
-      - "Gene"
-      - "-30min"
-      - "1h"
-    header: 5
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+  # Gummesson et al. (DOI: 10.3389/fgene.2020.00144)
+  gummesson:
+    data:
+      dataset_key: "gummesson"
+      # Read from two sheets: 
+      # "TableS8" for up, "TableS9" for down, which is passed in the module.
+      usecols:
+        - "Locus"          # Excel column U
+        - "Name"           # Excel column V
+      header: 3
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
 
-# Zhang et al. (DOI: 10.1021/cb5004477)
-zhang:
-  data:
-    dataset_key: "zhang"
-    sheet_name: "Sheet1"
-    usecols:
-      - "Gene"
-      - "σ32 (I54N)"
-      - "SD"
-      - "σ32 (WT)"
-      - "Heat (42ºC)"
-    header: 0
-  output:
-    csv_subdir: "csvs"
-    plot_subdir: "plots"
+  # Houser et al. (DOI: 10.1371/journal.pcbi.1004400)
+  houser:
+    data:
+      dataset_key: "houser"
+      usecols:
+        - "Common Name"
+        - "Entrez ID"
+        - "Gene Name"
+        - "Prediction"
+        - "Sorted Category"
+      header: 0
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
+
+  # Lu et al. (DOI: 10.1039/C2MB25374G)
+  lu:
+    data:
+      dataset_key: "lu"
+      sheet_name: "Sheet1"
+      usecols:
+        - "Gene name"
+        - "Gene ID"
+        - "Functional description"
+        - "Fold change"
+        - "Direction"
+      header: 0
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
+
+  # Sanchez‐Vazquez et al. (DOI: 10.1073/pnas.1819682116)
+  sanchez_vasquez:
+    data:
+      dataset_key: "sanchez_vasquez"
+      sheet_name: "Data"
+      usecols:
+        - "Gene"
+        - "1+2+ 5 min"
+        - "1+2+ 5 min Category"
+        - "1+2+ 10 min"
+        - "1+2+ 10 min Category"
+      header: 0
+    thresholds:
+      fc_col: "1+2+ 5 min" 
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
+
+  # Vazulka et al. (DOI: 10.1186/s12934-023-02278-w)
+  vazulka:
+    data:
+      dataset_key: "vazulka"
+      sheet_name: "Sheet1"
+      usecols:
+        - "Gene"
+        - "baseMean"
+        - "log2FoldChange"
+        - "lfcSE"
+        - "pvalue"
+        - "padj"
+      header: 0
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
+
+  # Kim et al. (DOI: 10.1038/s41598-020-74606-8)
+  kim:
+    data:
+      dataset_key: "kim"
+      sheet_name: "Table_S1"
+      usecols:
+        - "Gene"
+        - "-30min"
+        - "1h"
+      header: 5
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
+
+  # Zhang et al. (DOI: 10.1021/cb5004477)
+  zhang:
+    data:
+      dataset_key: "zhang"
+      sheet_name: "Sheet1"
+      usecols:
+        - "Gene"
+        - "σ32 (I54N)"
+        - "SD"
+        - "σ32 (WT)"
+        - "Heat (42ºC)"
+      header: 0
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"

@@ -29,7 +29,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from deg2tfbs.pipeline.degfetcher.utils import load_dataset
+from deg2tfbs.pipeline.utils import load_dataset
 
 
 def read_mori_data(config_data: dict) -> pd.DataFrame:
@@ -159,7 +159,7 @@ def run_mori_pipeline(full_config: dict):
           csv_subdir: "csv"
           plot_subdir: "plots"
     """
-    config_mori = full_config["mori"]
+    config_mori = full_config['datasets']["mori"]
 
     # Load data
     df = read_mori_data(config_mori["data"])
@@ -168,8 +168,8 @@ def run_mori_pipeline(full_config: dict):
     project_root = Path(__file__).parent.parent.parent
     
     # Output folder, e.g. deg2tfbs/pipeline/deg_fetcher
-    output_root = project_root / full_config["output"]["root_dir"]
-    batch_id = full_config["output"]["batch_identifier"]
+    output_root = project_root / full_config['pipeline']['stages']['degfetcher']['root_dir']
+    batch_id = full_config['pipeline']['stages']['degfetcher']['batch_id']
     batch_dir = output_root / batch_id
 
     csv_dir = batch_dir / config_mori["output"]["csv_subdir"]

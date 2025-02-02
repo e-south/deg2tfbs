@@ -27,7 +27,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from deg2tfbs.pipeline.degfetcher.utils import load_dataset
+from deg2tfbs.pipeline.utils import load_dataset
 
 
 def read_jovanovic_data(config_data: dict) -> pd.DataFrame:
@@ -124,7 +124,7 @@ def run_jovanovic_pipeline(full_config: dict):
           csv_subdir: "csv"
           plot_subdir: "plots"
     """
-    config_jov = full_config.get("jovanovic", None)
+    config_jov = full_config['datasets'].get("jovanovic", None)
     if config_jov is None:
         print("[Jovanovic Pipeline] No 'jovanovic' config found. Skipping.")
         return
@@ -134,8 +134,8 @@ def run_jovanovic_pipeline(full_config: dict):
 
     # Prepare output paths
     project_root = Path(__file__).parent.parent.parent
-    output_root = project_root / full_config["output"]["root_dir"]
-    batch_id = full_config["output"]["batch_identifier"]
+    output_root = project_root / full_config['pipeline']['stages']['degfetcher']['root_dir']
+    batch_id = full_config['pipeline']['stages']['degfetcher']['batch_id']
     batch_dir = output_root / batch_id
 
     csv_dir = batch_dir / config_jov["output"]["csv_subdir"]

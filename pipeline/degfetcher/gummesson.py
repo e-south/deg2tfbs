@@ -24,7 +24,8 @@ import yaml
 import pandas as pd
 from pathlib import Path
 
-from deg2tfbs.pipeline.degfetcher.utils import load_dataset
+from deg2tfbs.pipeline.utils import load_dataset
+
 
 def read_gummesson_data(config_data: dict, sheet_name: str) -> pd.DataFrame:
     """
@@ -64,15 +65,15 @@ def run_gummesson_pipeline(full_config: dict):
     comparison => "isoleucine_starvation_versus_control"
     source => "gummesson"
     """
-    config_gum = full_config.get("gummesson", None)
+    config_gum = full_config['datasets'].get("gummesson", None)
     if config_gum is None:
         print("[Gummesson Pipeline] No 'gummesson' config found. Skipping.")
         return
 
     # Build output path
     project_root = Path(__file__).parent.parent.parent
-    output_root = project_root / full_config["output"]["root_dir"]
-    batch_id = full_config["output"]["batch_identifier"]
+    output_root = project_root / full_config['pipeline']['stages']['degfetcher']['root_dir']
+    batch_id = full_config['pipeline']['stages']['degfetcher']['batch_id']
     batch_dir = output_root / batch_id
 
     csv_dir = batch_dir / config_gum["output"]["csv_subdir"]

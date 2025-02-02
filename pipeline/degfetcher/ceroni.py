@@ -27,7 +27,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from deg2tfbs.pipeline.degfetcher.utils import load_dataset
+from deg2tfbs.pipeline.utils import load_dataset
+
 
 def read_ceroni_data(config_data: dict) -> pd.DataFrame:
     """
@@ -153,7 +154,7 @@ def run_ceroni_pipeline(full_config: dict):
     """
 
     # Extract the "ceroni" config subset
-    config_ceroni = full_config["ceroni"]
+    config_ceroni = full_config["datasets"]["ceroni"]
 
     # Load data
     df_melted = read_ceroni_data(config_ceroni["data"])
@@ -162,10 +163,10 @@ def run_ceroni_pipeline(full_config: dict):
     project_root = Path(__file__).parent.parent.parent
     
     # Output folder, e.g. deg2tfbs/pipeline/deg_fetcher
-    output_root = project_root / full_config["output"]["root_dir"]
+    output_root = project_root / full_config['pipeline']['stages']['degfetcher']['root_dir']
 
     # Append the batch identifier
-    batch_id = full_config["output"]["batch_identifier"]
+    batch_id = full_config['pipeline']['stages']['degfetcher']['batch_id']
     batch_dir = output_root / batch_id
 
     # Define subfolders for "csv" and "plots" values from config

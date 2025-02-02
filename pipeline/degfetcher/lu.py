@@ -25,7 +25,8 @@ import yaml
 import pandas as pd
 from pathlib import Path
 
-from deg2tfbs.pipeline.degfetcher.utils import load_dataset
+from deg2tfbs.pipeline.utils import load_dataset
+
 
 def read_lu_data(config_data: dict) -> pd.DataFrame:
     """
@@ -51,7 +52,7 @@ def run_lu_pipeline(full_config: dict):
     comparison => "glyphosate_shock_versus_control"
     source => "lu"
     """
-    config_lu = full_config.get("lu", None)
+    config_lu = full_config['datasets'].get("lu", None)
     if config_lu is None:
         print("[Lu Pipeline] No 'lu' config found. Skipping.")
         return
@@ -67,8 +68,8 @@ def run_lu_pipeline(full_config: dict):
 
     # Build output path
     project_root = Path(__file__).parent.parent.parent
-    output_root = project_root / full_config["output"]["root_dir"]
-    batch_id = full_config["output"]["batch_identifier"]
+    output_root = project_root / full_config['pipeline']['stages']['degfetcher']['root_dir']
+    batch_id = full_config['pipeline']['stages']['degfetcher']['batch_id']
     batch_dir = output_root / batch_id
 
     csv_dir = batch_dir / config_lu["output"]["csv_subdir"]

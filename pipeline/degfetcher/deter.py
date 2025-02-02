@@ -18,8 +18,8 @@ Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
 """
-
 import os
+from pathlib import Path
 
 import yaml
 import numpy as np
@@ -27,8 +27,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from pathlib import Path
-from deg2tfbs.pipeline.degfetcher.utils import load_dataset
+from deg2tfbs.pipeline.utils import load_dataset
+
 
 def read_deter_data(config_data: dict) -> pd.DataFrame:
     """
@@ -139,7 +139,7 @@ def run_deter_pipeline(full_config: dict):
           plot_subdir: "plots"
     """
 
-    config_deter = full_config.get("deter", None)
+    config_deter = full_config['datasets'].get("deter", None)
     if config_deter is None:
         print("[Deter et al. Pipeline] No 'deter' config found. Skipping.")
         return
@@ -149,8 +149,8 @@ def run_deter_pipeline(full_config: dict):
 
     # Prepare output paths
     project_root = Path(__file__).parent.parent.parent
-    output_root = project_root / full_config["output"]["root_dir"]
-    batch_id = full_config["output"]["batch_identifier"]
+    output_root = project_root / full_config['pipeline']['stages']['degfetcher']['root_dir']
+    batch_id = full_config['pipeline']['stages']['degfetcher']['batch_id']
     batch_dir = output_root / batch_id
 
     csv_dir = batch_dir / config_deter["output"]["csv_subdir"]
