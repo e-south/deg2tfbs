@@ -96,7 +96,7 @@ def bie_ma_plot(
     plt.ylabel("log2 Fold Change")
     sns.despine()
 
-    plt.savefig(output_path, dpi=150)
+    plt.savefig(output_path, dpi=300)
     plt.close()
 
 

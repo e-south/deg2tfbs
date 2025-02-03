@@ -95,12 +95,12 @@ def deter_ma_plot(
     # Extract labels from column names
     target_label = target_avg_col.replace("_avg", "")
     ref_label    = ref_avg_col.replace("_avg", "")
-    plt.title(f"Deter et al.\n{target_label} vs. {ref_label}")
+    plt.title(f"Deter et al.\n log2({target_label} / {ref_label})")
     plt.xlabel("Average Expression")
     plt.ylabel("Log2 Fold Change")
     sns.despine()
 
-    plt.savefig(plot_path, dpi=150)
+    plt.savefig(plot_path, dpi=300)
     plt.close()
 
 

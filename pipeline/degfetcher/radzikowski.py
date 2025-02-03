@@ -128,7 +128,7 @@ def radzikowski_comparisons(df, comparisons, threshold=2.0, save_plots=False, pl
             plt.ylabel("Log2 Fold Change")
             sns.despine()
             plot_file = plot_dir / f"radzikowski_{label}.png"
-            plt.savefig(plot_file, dpi=150)
+            plt.savefig(plot_file, dpi=300)
             plt.close()
 
     up_all = pd.concat(all_up, ignore_index=True).drop_duplicates() if all_up else pd.DataFrame()

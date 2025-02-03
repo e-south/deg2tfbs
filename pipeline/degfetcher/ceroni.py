@@ -111,7 +111,7 @@ def ceroni_ma_plot(
     sns.despine()
 
     if plot_path:
-        plt.savefig(plot_path, dpi=150)
+        plt.savefig(plot_path, dpi=300)
     plt.close()
 
 

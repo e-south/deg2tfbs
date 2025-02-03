@@ -102,7 +102,7 @@ def compare_and_plot(
         # Construct descriptive text if possible
         cond_label = descriptors.get(condition, condition) if descriptors else condition
         ref_label = descriptors.get(reference, reference) if descriptors else reference
-        subtitle = f"log2 ({cond_label} / {ref_label})"
+        subtitle = f"log2({cond_label} / {ref_label})"
 
         plt.figure(figsize=(6,5))
         sns.set_style("ticks")
@@ -124,7 +124,7 @@ def compare_and_plot(
 
         sns.despine()
         plot_fname = f"mori_{condition}_vs_{reference}.png"
-        plt.savefig(plot_dir / plot_fname, dpi=150)
+        plt.savefig(plot_dir / plot_fname, dpi=300)
         plt.close()
 
     return up, down

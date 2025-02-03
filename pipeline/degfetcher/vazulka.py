@@ -70,7 +70,8 @@ def vazulka_distribution_plot(
         output_path: Path to save the PNG
     """
     sns.set_style("ticks")
-    plt.figure(figsize=(5,7))
+    plt.figure(figsize=(6,5))
+
 
     # Create color mapping
     color_map = ["gray"] * len(df)
@@ -89,12 +90,13 @@ def vazulka_distribution_plot(
         alpha=0.5,
         edgecolors="none"
     )
-    plt.title("Vazulka et al. (TableS1)\nFab Overexpression (2 hours) versus control")
+    plt.title("Vazulka et al. (TableS1)\nlog2(fab overexpression (2 h) / control; Filtered via +- 1.5*IQR")
     plt.ylabel("log2(Fold Change)")
+    plt.xlabel("Gene")
     plt.xticks([], [])
 
     sns.despine(top=True, right=True)
-    plt.savefig(output_path, dpi=150, bbox_inches="tight")
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
     
 
@@ -132,9 +134,12 @@ def run_vazulka_pipeline(full_config: dict):
     df = df.groupby("Gene", as_index=False).agg({
         "log2FoldChange": "mean"
     })
-
+    
     # Remove any remaining missing values
     df = df.dropna(subset=["log2FoldChange"])
+    
+    # Reset index
+    df = df.reset_index(drop=True)
 
     # IQR detection logic
     log2_fc = df["log2FoldChange"]

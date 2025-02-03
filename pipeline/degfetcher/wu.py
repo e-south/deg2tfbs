@@ -98,7 +98,8 @@ def wu_pairwise_comparison(df, comparisons, threshold=2.0, plot_dir=None):
             plt.title(f"Wu et al.\n log2 ({num} / {den})\n{label}")
             plt.xlabel("Average Protein Mass Fraction")
             plt.ylabel("Log2 Fold Change")
-            plt.savefig(plot_dir / f"wu_{label}.png", dpi=150)
+            sns.despine(top=True, right=True)
+            plt.savefig(plot_dir / f"wu_{label}.png", dpi=300)
             plt.close()
 
     df_up = pd.concat(all_up, ignore_index=True).drop_duplicates()

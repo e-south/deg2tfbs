@@ -137,7 +137,6 @@ dist/
 *.7z
 
 # Images
-*.png
 *.jpg
 *.jpeg
 *.gif
@@ -160,6 +159,7 @@ libs/
 archived/
 prototypes/
 test_configs/
+videos/
 temp.md
 
 # Ignore specific file types

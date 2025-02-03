@@ -90,12 +90,12 @@ def schmidt_comparisons(df, comparisons, threshold=2.0, save_plots=False, plot_d
             plt.axhline(threshold, color="gray", linestyle="--")
             plt.axhline(-threshold, color="gray", linestyle="--")
             plt.xscale("log")
-            plt.title(f"Schmidt et al.\n log2 ({condition} / {reference})")
+            plt.title(f"Schmidt et al.\n log2({condition} / {reference})")
             plt.xlabel("Average Protein Copies/Cell")
             plt.ylabel("Log2 Fold Change")
             sns.despine()
             plot_file = plot_dir / f"schmidt_{label}.png"
-            plt.savefig(plot_file, dpi=150)
+            plt.savefig(plot_file, dpi=300)
             plt.close()
 
     up_all = pd.concat(all_up, ignore_index=True).drop_duplicates()

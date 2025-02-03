@@ -79,8 +79,7 @@ def jovanovic_distribution_plot(
         color_map[i] = "green"
 
     # Jitter the x-values for better visualization
-    plt.figure(figsize=(5,7))
-
+    plt.figure(figsize=(6,5))
     xvals = np.random.uniform(-0.2, 0.2, size=len(df))  # jitter
     plt.scatter(
         xvals,
@@ -90,12 +89,13 @@ def jovanovic_distribution_plot(
         edgecolors="none"
     )
 
-    plt.title("Jovanovic et al.\nDistribution of log2(Fold Regulation)")
+    plt.title("Jovanovic et al.\nlog2(IV_secretin_overproduction / control); Filtered via +- 1.5*IQR")
     plt.ylabel("log2(Fold Regulation)")
-    plt.xticks([], [])  # remove x-axis ticks
+    plt.xlabel("Gene")
+    plt.xticks([], [])
 
     sns.despine(top=True, right=True)
-    plt.savefig(output_path, dpi=150, bbox_inches="tight")
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
 
 

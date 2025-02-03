@@ -55,7 +55,8 @@ def kim_distribution_plot(
     Creates a jittered distribution plot of log2 fold changes with IQR outliers colored.
     """
     sns.set_style("ticks")
-    plt.figure(figsize=(5,7))
+    plt.figure(figsize=(6,5))
+
 
     # Create color mapping
     color_map = ["gray"] * len(df)
@@ -67,12 +68,13 @@ def kim_distribution_plot(
     xvals = np.random.uniform(-0.2, 0.2, size=len(df))
     plt.scatter(xvals, df[log2_fc_col], c=color_map, alpha=0.5, edgecolors="none")
 
-    plt.title("Kim et al.\n42°C Heat Stress versus Control (1h)")
+    plt.title("Kim et al.\n log2(42°C Heat Stress / Control (1h)); Filtered via +- 1.5*IQR")
     plt.ylabel("log2 Fold Change")
+    plt.xlabel("Gene")
     plt.xticks([], [])
 
     sns.despine(top=True, right=True)
-    plt.savefig(output_path, dpi=150, bbox_inches="tight")
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
 
 

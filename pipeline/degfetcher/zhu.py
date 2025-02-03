@@ -83,7 +83,8 @@ def zhu_threshold_analysis(df, threshold=3.0, save_plots=False, plot_dir=None):
         plt.title("Zhu et al.\n log2 (RelA Overproduction / WT)")
         plt.xlabel("Average iBAQ")
         plt.ylabel("Log2 Fold Change")
-        plt.savefig(plot_dir / "zhu_relA_overexpression_versus_WT.png", dpi=150)
+        sns.despine(top=True, right=True)
+        plt.savefig(plot_dir / "zhu_relA_overexpression_versus_WT.png", dpi=300)
         plt.close()
 
     return up, down

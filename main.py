@@ -23,12 +23,12 @@ def main(config_file: Path):
 
     # stages = full_config["pipeline"]["stages"]
 
-    # # Step 1. Isolate DEGs
-    # degfetcher_conf = full_config["pipeline"]["stages"].get("degfetcher", {})
-    # modules_to_run = degfetcher_conf.get("modules", [])
+    # Step 1. Isolate DEGs
+    degfetcher_conf = full_config["pipeline"]["stages"].get("degfetcher", {})
+    modules_to_run = degfetcher_conf.get("modules", [])
 
-    # for mod_name in modules_to_run:
-    #     run_pipeline_for(mod_name, full_config)
+    for mod_name in modules_to_run:
+        run_pipeline_for(mod_name, full_config)
 
     # Step 2. Map DEGs to TFs
     tffetcher_conf = full_config["pipeline"]["stages"].get("tffetcher", {})
@@ -36,7 +36,6 @@ def main(config_file: Path):
         run_tffetcher_stage(tffetcher_conf)
     else:
         print("No tffetcher config found in YAML. Skipping TF mapping.")
-
 
     # Step 2. Map TFBSs to TFs
     # WIP

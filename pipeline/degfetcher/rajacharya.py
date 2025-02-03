@@ -77,7 +77,7 @@ def rajacharya_volcano_plot(df, log2_fc_col, minus_log10p_col, threshold, output
         np.where(df[log2_fc_col] <= -threshold, "green", "gray")
     )
 
-    plt.figure(figsize=(7,6))
+    plt.figure(figsize=(6,5))
     sns.set_style("ticks")
 
     # Plot the volcano
@@ -94,10 +94,10 @@ def rajacharya_volcano_plot(df, log2_fc_col, minus_log10p_col, threshold, output
 
     plt.xlabel("Log2 Fold Change")
     plt.ylabel("-log10(PValue)")
-    plt.title("Rajacharya et al.\nVolcano Plot")
+    plt.title("Rajacharya et al.\n -log10(PAdj) and log2FC(acyl-ACP_reductase_overproduction / control)")
     sns.despine()
 
-    plt.savefig(output_path, dpi=150)
+    plt.savefig(output_path, dpi=300)
     plt.close()
 
 

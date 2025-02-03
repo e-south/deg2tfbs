@@ -110,20 +110,20 @@ def run_emani_pipeline(full_config: dict):
     )
 
     # Plot a "volcano" style figure with -log10(PAdj) versus Log2FoldChange
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(6,5))
     plt.scatter(
         df["Log2FoldChange"], df["MinusLog10PAdj"],
         c=df["color"], alpha=0.25, edgecolors="none"
     )
     plt.axvline(x=threshold, color='gray', linestyle='--')
     plt.axvline(x=-threshold, color='gray', linestyle='--')
-    plt.title("Emani et al.\n -log10(PAdj) versus (N22_GFP / WT)")
+    plt.title("Emani et al.\n -log10(PAdj) and log2FC(N22_GFP / WT)")
     plt.xlabel("Log2 Fold Change")
     plt.ylabel("-log10(PAdj)")
     sns.despine()
 
     plot_path = plot_dir / "emani_N22_GFP_versus_WT.png"
-    plt.savefig(plot_path, dpi=150)
+    plt.savefig(plot_path, dpi=300)
     plt.close()
 
     # Filter up/down

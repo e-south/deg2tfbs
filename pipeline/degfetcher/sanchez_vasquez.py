@@ -55,7 +55,8 @@ def sanchez_distribution_plot(
     output_path: Path
 ):
     sns.set_style("ticks")
-    plt.figure(figsize=(5,7))
+    plt.figure(figsize=(6,5))
+
 
     # Create color map using direct boolean masks
     color_map = np.select(
@@ -67,8 +68,9 @@ def sanchez_distribution_plot(
     xvals = np.random.uniform(-0.2, 0.2, size=len(df))
     plt.scatter(xvals, df[log2_fc_col], c=color_map, alpha=0.5, linewidth=0.5)
 
-    plt.title("Sanchez-Vazquez et al.\nLog2 Fold Change (5 min) with IQR Filtering")
+    plt.title("Sanchez-Vazquez et al.\nlog2(5 mins relA overexpression / control); Filtered via +- 1.5*IQR")
     plt.ylabel("log2(Fold Change)")
+    plt.xlabel("Gene")
     plt.xticks([], [])
     
     sns.despine(top=True, right=True)
