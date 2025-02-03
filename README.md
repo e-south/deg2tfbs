@@ -2,12 +2,12 @@
 
 A pipeline for processing RNA-seq and proteomic datasets, focusing on *E. coli* but extendable to other organisms. This tool identifies differentially expressed genes (DEGs) between conditions,maps them to upstream transcription factors using *RegulonDB* or *EcoCyc*, and retrieves their corresponding transcription factor binding sites (TFBSs).  
 
-- [figure]
+![Alt text](images/pipeline.png)
 
 ## **Pipeline Steps**
 
 1. **degfetcher** *(Step 1: Isolate DEGs)*  
-   - Loads comparative omics datasets (e.g., `ceroni.py`, `mori.py`) from the ```dnadesign-dna``` repository.
+   - Loads comparative omics datasets from the ```dnadesign-dna``` repository.
    - Produces tidy CSV outputs, e.g. `ceroni_upregulated_degs.csv`, containing columns:  
      - **gene** – the gene name or locus  
      - **source** – the dataset (e.g., `"ceroni"`)  
