@@ -1,6 +1,6 @@
 ## **deg2tfbs**
 
-A pipeline for processing RNA-seq and proteomic datasets, focusing on *E. coli* but extendable to other organisms. This tool identifies differentially expressed genes (DEGs) between conditions,maps them to upstream transcription factors using *RegulonDB* or *EcoCyc*, and retrieves their corresponding transcription factor binding sites (TFBSs).  
+A pipeline to derive transcription factor binding sites from comparative RNA-seq and proteomic data, focusing on *E. coli* but extendable to other organisms. This tool identifies differentially expressed genes (DEGs) between experimental conditions, maps them to upstream transcription factors using [**RegulonDB**](https://regulondb.ccg.unam.mx/) or [**EcoCyc**](https://ecocyc.org/) databases, and then retrieves their corresponding transcription factor binding sites (TFBSs) if available.  
 
 ![Alt text](images/pipeline.png)
 
@@ -8,179 +8,160 @@ A pipeline for processing RNA-seq and proteomic datasets, focusing on *E. coli* 
 
 1. **degfetcher** *(Step 1: Isolate DEGs)*  
    - Loads comparative omics datasets from the ```dnadesign-dna``` repository.
-   - Produces tidy CSV outputs, e.g. `ceroni_upregulated_degs.csv`, containing columns:  
-     - **gene** – the gene name or locus  
-     - **source** – the dataset (e.g., `"ceroni"`)  
-     - **comparison** – the target vs. reference condition (e.g., `"pLys-M1_vs_pLys"`)  
-     - **thresholds** – optional numeric or descriptive threshold used  
+   - Produces tidy CSV outputs, e.g. `mori_upregulated_degs.csv`, containing columns:  
+     - **gene** - DEG identifier
+     - **source** – the source dataset (e.g., "mori"), aliased by the author's name in the literature
+     - **comparison** – the experimental context, defining the target vs. reference condition (e.g., "acetate_vs_LB_media")
 
-2. **tf_fetcher** *(Step 2: Map DEGs to TFs)*  
+2. **tffetcher** *(Step 2: Map DEGs to TFs)*  
    - Reads the CSV outputs, saved in batches, from **degfetcher**.
-   - Loads a *regulatory interaction* dataset(s) (e.g., from **EcoCyc** or **RegulonDB**).  
-   - **Identifies** which transcription factors (TFs) regulate these DEGs (the “regulatees”).  
-   - Outputs a CSV of all `(gene, regulator, source, comparison, regulatorsource)` rows.  
-     - **example**: `dnaK, rpoH, ceroni, pLys-M1_vs_pLys, ecocyc_v28.5`  
+   - Loads *regulatory interaction* datasets (e.g., from **RegulonDB** or **EcoCyc**).  
+   - Fetches which transcription factors (TFs) reportedly regulate these DEGs (the “regulatees”).  
+   - Produces a tidy CSV output, `deg2tf_mapping`, containing columns: 
+     - **gene** - DEG identifier
+     - **regulator** - transcription factor reported to regulated target gene
+     - **polarity** - reported "type" of regulation imposed, if available
+     - **source** – record of which regulatory interaction datasets were used
+     - **is_global_regulator** – boolean indicating whether the regulator is classified as a global regulator by EcoCyc.
+     - **is_sigma_factor** – boolean indicating whether the regulator is classified as a sigma factor by EcoCyc.
+     - **deg_source** – indicating the source datasets in which this gene appears, as processed by degfetcher.
 
-3. **tfbs_fetcher** *(Step 3: Identify TF binding sites)*  
+3. **tfbsfetcher** *(Step 3: Map TFs to TFBSs)*  
+   - Reads the CSV outputs, saved in batches, from **tffetcher**.
    - Loads TFBS data from a resource (e.g. RegulonDB `.txt` or `.csv`).  
    - For each TF identified in step 2, fetch the corresponding binding site(s).  
    - Saves a final CSV that can be used downstream (e.g., in **dnadesign**).  
 
-## Project Layout
-
+#### Directory Layout
 ```text
 deg2tfbs/
 ├── README.md
 ├── __init__.py
 ├── main.py                         # CLI entry point
-├── configs/                        # User-defined variables live here
-│   └── example.yaml
+├── configs/                        # User-defined variables,
+│   └── example.yaml                # customize to process different DEGs and retrieve different TFBSs
 │   
-└── pipeline/                       
-    ├── degfetcher/                 # Step 1: Run modules to ingest and fetch DEGs from datasets
-    │   ├── __init__.py 
-    │   ├── <dataset>_module.py     # Each dataset has its own respective module
-    │   ├── <dataset>_module.py
-    │   ├── ...
-    │   └── degbatch_<date>/        # Batch of DEGs collected from degfetcher datasets
-    │       └── csvs                # In tidy format (req. cols: 'gene', 'source', and 'comparison')
-    │       └── plots               # Some modules generate plots to showcase DEGs from non-DEGs
-    │
-    ├── tffetcher/                  # Step 2: 
-    │   ├── __init__.py    
-    │   ├── tffetcher.py
-    │   ├── parsers/
-    │   │   ├── __init__.py         # get_regulatory_parser factory
-    │   │   ├── ecocyc_parser.py    # EcoCycParser class
-    │   │   ├── regdb_parser.py     # RegulonDBParser class
-    │   │   └── ...                 # Extendable to reference your own DEG->TF mapping file 
-    │   │
-    │   └── tfbatch_<date>/         # Batch of DEG-TF pairings collected from tffetcher datasets
-    │       └── csvs                # In tidy format (req. cols: XXX)
-    │       └── plots  
-    │
-    ├── tfbsfetcher/                # Step 3: 
-    │
-    └── utils.py                    # Dictionary of paths to datasets in the dnadesign-data repository
+└── pipeline/   
+   ├── utils.py                    # Dictionary of paths to datasets in the dnadesign-data repository                    
+   │
+   ├── degfetcher/                 # Step 1: Isolate DEGs
+   │   ├── __init__.py 
+   │   ├── <dataset>_module.py     # Each omics dataset has its own respective module
+   │   ├── <dataset>_module.py
+   │   ├── ...
+   │   └── degbatch_<date>/        # Batch of DEGs retrieved from degfetcher in a given run
+   │       └── csvs                # In tidy format (req. cols: 'gene', 'source', and 'comparison')
+   │       └── plots
+   │
+   ├── tffetcher/                  # Step 2: Map DEGs to TFs
+   │   ├── __init__.py    
+   │   ├── tffetcher.py            # Coordinates regulator retrieval for a given DEG batch
+   │   ├── parsers/                # Each regulatory interaction dataset has a dedicated parser module
+   │   │   ├── __init__.py
+   │   │   ├── ecocyc_parser.py
+   │   │   ├── regdb_parser.py     
+   │   │   └── ...                 # Extendable to reference your own DEG->TF mapping file 
+   │   │
+   │   └── tfbatch_<date>/         # Batch of DEG->TF pairings retrieved from tffetcher in a given run
+   │       └── deg2tf_mapping.csv                  
+   │
+   └── tfbsfetcher/                # Step 3: Map TFs to TFBSs
 ```
 
 
 ## **Usage**
 
-1. **Load** raw data from **dnadesign-data** or create your own module in ```degfetcher``` to prepare custom lists of DEGs.
-2. **Update** `configs/example.yaml` with desired datasets, thresholds, and output paths.  
-3. **Run** from the command line:  
+1. Clone the [**```dnadesign-data```**](https://github.com/e-south/dnadesign-data) repository to access a curated set of comparative omics datasets. Placing it as a sibling directory to **```deg2tfbs```** enables ```degfetcher``` to generate custom DEG lists from these sources. 
+
+2. **Install** dependencies **(WIP)**:  
+   ```bash
+   pip install -r requirements.txt
+   ```  
+
+3. **Update** `configs/mycustom.yaml` with desired datasets, thresholds, and output paths.  
+   ```yaml
+   # deg2tfbs/configs/example.yaml
+
+   pipeline:
+   name: "default"
+
+   stages:
+      degfetcher:
+         root_dir: "pipeline/degfetcher"
+         batch_id: "degbatch_20250130" # where to save isolated DEGs
+         modules: # which source datasets to reference
+            - ceroni
+            - mori
+
+      tffetcher:
+         root_dir: "pipeline/tffetcher"
+         batch_id: "tfbatch_20250130"
+         input:
+         deg_batch_id: "degbatch_20250130" # points to a degfetcher batch
+         deg_csv_subdir: "csvs"            
+            deg_csv_includes: # optional: only fetch regulators for these DEGs
+               - "bie_downregulated_degs.csv"
+               - "sanchez_vasquez_upregulated_degs.csv"
+         sources:
+         regulatory_networks:
+            ecocyc:
+               path: "ecocyc_28_reg_network" # reference to utils.DATA_FILES
+               enabled: true
+               parser: "ecocyc_network_v28-5"
+            myothersource: ...
+         params:
+         network_strategy: "union" # how to merge results from different parsers
+         include_master_regulators: true
+         include_sigma_factors: true
+
+      tfbsfetcher:
+         root_dir: "pipeline/tfbsfetcher"
+         batch_id: "tfbsbatch_20250130"
+         input:
+            tf_batch_id: "tfbatch_20250130"   # points to a tffetcher batch
+         sources:
+            binding_sites:
+               regulondb_pssm: true
+               ecocyc_motifs: false
+         params: # Extend this as needed
+            motif_confidence: "high"
+      ```
+
+4. **Run** from the command line:  
    ```bash
    cd deg2tfbs
    python main.py
    ```
+   - ```degfetcher``` will tidy up lists of DEGs and save them as CSV files.
+   
+      For example, here is the head of the ```ceroni_upregulated_degs.csv``` file:
+      | Gene  | Source  | Thresholds | Comparison                  |
+      |-------|--------|------------|------------------------------|
+      | groS  | ceroni | 2.5        | pLys-M1_versus_pLys          |
+      | gadY  | ceroni | 2.5        | pLys-M1_versus_pLys          |
+      | azuC  | ceroni | 2.5        | pLys-M1_versus_pLys          |
+      | yadL  | ceroni | 2.5        | pPD864-LacZ_versus_pPD864    |
+      | rclC  | ceroni | 2.5        | pPD864-LacZ_versus_pPD864    |
+      | rclR  | ceroni | 2.5        | pPD864-LacZ_versus_pPD864    |
 
-   this will generate csv and perhaps a plot.
-  - **[plot example]**
+      **Customize:** To use a custom list of genes, create a CSV with required columns (e.g., 'gene', 'source', 'comparison'), place it in a subdirectory within ```degfetcher```, and point to it in a custom config file. Alternatively, if you saved your custom gene list in the cloned **```dnadesign-data```** repository, update the ```utils.py``` dictionary in ```pipeline``` to ensure datasets are located via ```DATA_FILES[...]```.
 
-4. The **degfetcher** modules produce CSVs in `outputs/.../csv/`. 
+   - ```tffetcher``` will reference these CSV files to generate a ```deg2tf_mapping.csv``` file.
 
-#### Example Output from `degfetcher`
-  ```csv
-  gene,source,thresholds,comparison
-  dnaK,ceroni,2.5,pLys-M1_versus_pLys
-  yaaU,ceroni,2.5,pLys-M1_versus_pLys
-  ...
-  ```
+      | Gene  | Regulator | Polarity | Source                     | Global Regulator | Sigma Factor | DEG Source      |
+      |-------|-----------|----------|----------------------------|------------------|--------------|-----------------|
+      | aaea  | crp       | +        | ecocyc_28_AND_regdb_13     | yes              | no           | houser_up       |
+      | aaea  | aaer      | +        | ecocyc_28                  | no               | no           | houser_up       |
+      | aaeb  | crp       | +        | ecocyc_28_AND_regdb_13     | yes              | no           | houser_up       |
+      | abga  | nac       | -        | ecocyc_28_AND_regdb_13     | yes              | no           | ceroni_up       |
+      | acca  | accd      | -        | ecocyc_28                  | no               | no           | houser_down     |
+      | acca  | rpod      | +        | ecocyc_28                  | no               | yes          | houser_down     |
+      | adia  | adiy      | +        | ecocyc_28_AND_regdb_13     | no               | no           | ouser_up-lu_up  |
+      
+      **Customize:** To use a custom gene-to-regulator mapping file, create a specific parser for it and update the config. TFFetcher should automatically incorporate it.
 
-5. Then, a **tffetcher** module can read those CSVs to compute the `(gene, TF)` pairs.
-
-Extensibility: If you add more networks (e.g., a custom “MyNetworkParser”), you only need to put an additional entry in your YAML + a parser class, and tffetcher will pick it up.
-Confidence filters: If you want to filter out low-confidence RegulonDB interactions, that can be handled inside the parser class.
-
-```csv
-gene,tf,source,comparison,tf_source
-dnaK,rpoH,ceroni,pLys-M1_versus_pLys,ecocyc_v27.5
-```
-
-## Usage
-
-1. **Install** dependencies **(WIP)**:  
-   ```bash
-   pip install -r requirements.txt
-   ```  
-2. If you're interesting in loading custom datasets, **configure** your `configs/example.yaml` to set input data paths, thresholds, and network references. you can also add data to dnadesign-data and thenObtain the raw data (e.g., from **dnadesign-data**) and place it so that the ```utils.py``` dictionary can locate each dataset via ```DATA_FILES[...]```.
-      - Configure ```configs/example.yaml```:
-      - Adjust ```output.root_dir``` to point to ```outputs```.
-      - Change ```output.batch_identifier``` to e.g. ```batch_2023_08_02```.
-      - Modify each dataset’s ```data``` and ```thresholds``` as desired.
-3. **Run** the pipeline:  
-   ```bash
-   cd deg2tfbs
-   python main.py
-   ```  
-   - The **degfetcher** modules produce CSVs like `ceroni_upregulated_degs.csv`. 
-      - generates tidy DataFrames of up- and down-regulated genes,  
-      - <dataset-name>_<typ-of-regulation>_degs.csv
-
-      e.g., the head of ```ceroni_upregulated_degs.csv```
-      ```csv
-      gene	source	thresholds	comparison
-      dnaK	ceroni	2.5	pLys-M1_versus_pLys
-      yaaU	ceroni	2.5	pLys-M1_versus_pLys
-      yadK	ceroni	2.5	pLys-M1_versus_pLys
-      mmuP	ceroni	2.5	pLys-M1_versus_pLys
-      insE1	ceroni	2.5	pLys-M1_versus_pLys
-      mhpE	ceroni	2.5	pLys-M1_versus_pLys
-      ```
-
-      each batch contains .csv files indicated as either, where some source have both, some have just one:
-      <dataset-name>_upregulated_degs.csv
-      <dataset-name>_downregulated_degs.csv
-
-
-   - A **tf_fetcher** module merges these CSVs with a regulatory network, producing `tf_associations.csv`.  
-
-    The pipeline steps (DEG analysis → TF mapping → TFBS identification).
+   - ```tfbsfetcher``` will reference a ```deg2tf_mapping.csv``` file to generate a ```tf2tfbs_mapping.csv``` file.
 
 
 ### Data Source
-Requires source data from [dnadesign-data](https://github.com/e-south/dnadesign-data). Update the config file to point to the correct data paths.
-
-
-
-### Some list of all the available conditions
-Heterologous Burden
-DEGs from RNA-seq
-Heterologous expression versus empty vector
-'pLys-M1’ versus 'pLys’ (Ceroni et al., 2018)
-'pPD864-LacZ’ versus 'pPD864’ (Ceroni et al., 2018)
-'pSB1C3-H3’ versus 'pSB1C3’ (Ceroni et al., 2018)
-DiMAs from RNA-seq
-Heterologous expression versus empty vector
-M9-glucose with and without MBP expression (Lamoureux et a., 2021)
-M9-glucose with and without BRCA expression (Lamoureux et a., 2021)
-
-Membrane Integrity
-DEGs from RNA-seq
-Protein expression with and without periplasmic secretion tag (Emani et al., 2023)
-DiMAs from RNA-seq
-Exposure to cell wall-targeting antibiotic
-M9-glucose with and without Ceftriaxone (4.1mg/mL) (Lamoureux et a., 2021)
-Deletion of regulators known to be involved in membrane response
-LB MG1655 versus MG1655ΔcpxR Batch Culture (Lamoureux et a., 2021)
-LB MG1655 versus MG1655ΔbaeR Batch Culture (Lamoureux et a., 2021)
-LB MG1655 versus MG1655ΔrcsB Batch Culture (Lamoureux et a., 2021)
-
-Starvation (Stringent Response)
-DEGs from RNA-seq
-Glucose uptake rate low and high (Fragoso-Jimenez et al., 2022) 
-Grown in minimal media versus two-weeks starving (Houser et al., 2015)
-Gene expression with and without heightened ppGpp (Sanchez-Vasquez et al., 2019)
-DEGs from Comparative Proteomics
-High synthesis priority in slow- and fast-growing cells (Peebo et al., 2015)
-Persisters and non-persisters (Radzikowski et al., 2016)
-Chemostat_µ=0.20 versus Chemostat_µ=0.5 (Schmidt et al., 2016)
-Carbon limited MOPS versus Carbon Rich MOPs (Wu et al., 2023)
-Overexpression or no expression of RelA (Zhu et al., 2023)
-LB log-phase versus LB stationary (Mori et al., 2021)
-DiMAs from RNA-seq
-Deletion of regulators known to be involved in stringent response
-Fed batch BW25113 versus BW25113ΔrpoS (6h) (Lamoureux et a., 2021)
-
-
+Requires source data from [**```dnadesign-data```**](https://github.com/e-south/dnadesign-data). Update the config file to point to the correct data paths.

@@ -231,9 +231,9 @@ def run_tffetcher_stage(config: dict) -> None:
     # ------------------------------------------------------
     # STEP 5: Write out results
     # ------------------------------------------------------
-    out_dir = root_dir / batch_id / "csvs"
+    out_dir = root_dir / batch_id
     out_dir.mkdir(parents=True, exist_ok=True)
-    out_csv = out_dir / "deg_to_tf_mapping.csv"
+    out_csv = out_dir / "deg2tf_mapping.csv"
 
     df_out = pd.DataFrame(rows)
     df_out.to_csv(out_csv, index=False)

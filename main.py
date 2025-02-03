@@ -37,7 +37,7 @@ def main(config_file: Path):
     else:
         print("No tffetcher config found in YAML. Skipping TF mapping.")
 
-    # Step 2. Map TFBSs to TFs
+    # Step 2. Map TFs to TFBSs
     # WIP
 
     
