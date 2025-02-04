@@ -62,15 +62,15 @@ You can manage your Python dependencies using [conda](https://docs.conda.io/) (o
      - **deg_source**: Indicates the source datasets in which this gene appears, as processed by degfetcher.
 
       For example:
-      | gene  | regulator | polarity | source                     | is_global_regulator | is_sigma_factor | DEG Source  |
-      |-------|-----------|----------|----------------------------|---------------------|-----------------|-----------------|
-      | aaea  | crp       | +        | ecocyc_28_AND_regdb_13     | yes                 | no              | houser_up       |
-      | aaea  | aaer      | +        | ecocyc_28                  | no                  | no              | houser_up       |
-      | aaeb  | crp       | +        | ecocyc_28_AND_regdb_13     | yes                 | no              | houser_up       |
-      | abga  | nac       | -        | ecocyc_28_AND_regdb_13     | yes                 | no              | ceroni_up       |
-      | acca  | accd      | -        | ecocyc_28                  | no                  | no              | houser_down     |
-      | acca  | rpod      | +        | ecocyc_28                  | no                  | yes             | houser_down     |
-      | adia  | adiy      | +        | ecocyc_28_AND_regdb_13     | no                  | no              | ouser_up-lu_up  |
+      | gene  | regulator | polarity | source                     | is_global_regulator | is_sigma_factor | DEG Source       |
+      |-------|-----------|----------|----------------------------|---------------------|-----------------|------------------|
+      | aaea  | crp       | +        | ecocyc_28_AND_regdb_13     | yes                 | no              | houser_up        |
+      | aaea  | aaer      | +        | ecocyc_28                  | no                  | no              | houser_up        |
+      | aaeb  | crp       | +        | ecocyc_28_AND_regdb_13     | yes                 | no              | houser_up        |
+      | abga  | nac       | -        | ecocyc_28_AND_regdb_13     | yes                 | no              | ceroni_up        |
+      | acca  | accd      | -        | ecocyc_28                  | no                  | no              | houser_down      |
+      | acca  | rpod      | +        | ecocyc_28                  | no                  | yes             | houser_down      |
+      | adia  | adiy      | +        | ecocyc_28_AND_regdb_13     | no                  | no              | houser_up-lu_up  |
 
 
 3. **tfbsfetcher** *(Step 3: Map TFs to TFBSs)*  
