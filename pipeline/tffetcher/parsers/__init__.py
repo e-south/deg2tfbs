@@ -21,8 +21,6 @@ from .regdb_parser import RegulonDBParser
 def get_regulatory_parser(parser_name: str) -> Union[EcoCycParser, RegulonDBParser]:
     """
     Simple factory to return an instance of the requested parser.
-    If you want to pass extra arguments (like confidence filter),
-    you could parse them from the config here, or set them directly.
     """
     parser_name = parser_name.lower()
     if parser_name.startswith("ecocyc"):

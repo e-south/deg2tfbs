@@ -6,6 +6,14 @@ pipeline/tffetcher.py
 Maps of DEGs -> TFs using one or more regulatory network resources (e.g., files
 from EcoCyc, RegulonDB, etc.), according to the YAML config.
 
+Read a CSV(s) from degfetcher containing columns:
+  [gene, source, comparison]
+  
+Then loads either EcoCyc or RegulonDB 'regulatory network' datasets (or both),
+parses them, locates instances of target genes and grabs corresponding regulators
+from the same row, and produces a final CSV with columns (example):
+    gene, regulator, polarity, source, is_global_regulator, is_sigma_factor, deg_source
+
 Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------

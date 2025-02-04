@@ -59,15 +59,20 @@ DATA_FILES = {
     # Phage Shock Response
     'jovanovic': DNADESIGN_DATA / 'primary_literature' / 'Jovanovic_et_al' / 'Supplementary_table_4_MG1655+PspA.xls',
         
-    # EcoCyc Pathway/Genome Database Full Regulatory Network
+    # EcoCyc Pathway/Genome Database Full Regulatory Network File(s)
     'ecocyc_28_reg_network': DNADESIGN_DATA / 'EcoCyc_28' / 'ECOLI-regulatory-network.txt',
     
-    # RegulonDB regulatory Network Files
+    # RegulonDB Regulatory Network File(s)
     'regulondb_13_network_interactions': DNADESIGN_DATA / 'RegulonDB_13' / 'network_interactions' / 'NetworkRegulatorGene.tsv',
     
-    'ecocyc_genes': DNADESIGN_DATA / 'RegulonDB_11' /'genes' / 'ecocyc_genes_and_synonyms.txt',
+    # EcoCyc Transcription Factor Binding Site File(s)
+    'ecocyc_28_tfbs_smart_table': DNADESIGN_DATA / 'EcoCyc_28' / 'SmartTable_All_Transcription_Factor_Binding_Sites.txt',
     
-    # RegulonDB data sets
+    # RegulonDB Transcription Factor Binding Site File(s)
+    'regulondb_13_tf_ri_set': DNADESIGN_DATA / 'RegulonDB_13' / 'binding_sites' / 'TF-RISet.tsv',
+
+    # Other Datasets
+    'ecocyc_genes': DNADESIGN_DATA / 'RegulonDB_11' /'genes' / 'ecocyc_genes_and_synonyms.txt',
     'k_12_genome': DNADESIGN_DATA / 'RegulonDB_11' / 'K12_genome' / 'E_coli_K12_MG1655_U00096.3.txt',
     'regulondb_tf_set': DNADESIGN_DATA / 'RegulonDB_11' / 'tf_factors' / 'TFSet.csv',
     'regulondb_growth_condition_set': DNADESIGN_DATA / 'RegulonDB_11' /  'network_associations' / 'GCSet.txt',
@@ -107,3 +112,15 @@ def load_dataset(dataset_key, sheet_name=None, usecols=None, header=0, skiprows=
         raise ValueError(f"Unsupported file format for {file_path.suffix}")
 
     return df
+
+
+def load_tfbs_file(dataset_key) -> Path:
+    """
+    Return the actual file path for a binding site dataset (EcoCyc or RegulonDB).
+    """
+    if dataset_key not in DATA_FILES:
+        raise ValueError(f"Key '{dataset_key}' not found in DATA_FILES. Please add it.")
+    file_path = DATA_FILES[dataset_key]
+    if not file_path.exists():
+        raise FileNotFoundError(f"TFBS file not found: {file_path}")
+    return file_path
