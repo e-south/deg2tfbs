@@ -6,9 +6,9 @@
 
 ## **Installation**
 
-You can manage your Python dependencies using [conda](https://docs.conda.io/) (or [mamba](https://mamba.readthedocs.io/), a fast drop-in replacement for conda). 
+You can manage your Python dependencies using [conda](https://docs.conda.io/).
 
-**Using Conda/Mamba:**
+**Using Conda:**
 
 1. **Create and Activate an Environment:**
 
@@ -35,6 +35,7 @@ You can manage your Python dependencies using [conda](https://docs.conda.io/) (o
    - Produces tidy CSV outputs, such as `ceroni_upregulated_degs.csv`, containing columns:  
      - **gene**: DEG identifier.
      - **source**: The source dataset (e.g., "ceroni").
+     - **thresholds**: Optional column specifying user-defined DEG thresholds from the config file.
      - **comparison**: The experimental context defining the target vs. reference condition.
 
       For example:
@@ -49,17 +50,17 @@ You can manage your Python dependencies using [conda](https://docs.conda.io/) (o
 
 
 2. **tffetcher** *(Step 2: Map DEGs to TFs)*  
-   - Reads the CSV outputs, saved in batches, from **degfetcher**.
-   - Loads **regulatory network**-type datasets (e.g., from **RegulonDB** or **EcoCyc**).  
+   - Reads CSV outputs, saved in batches, from **degfetcher**.
+   - Loads **regulatory network**-type datasets curated from a resource (e.g., from **RegulonDB** or **EcoCyc**).  
    - Fetches TFs that reportedly regulate these DEGs (the “regulatees”).  
    - Produces a tidy CSV output, `deg2tf_mapping`, containing columns: 
      - **gene** - DEG identifier.
      - **regulator**: TFs reported to regulated target gene.
-     - **polarity**: Reported "type" of regulation imposed, if available.
-     - **source**: Record of which regulatory interaction datasets were used.
+     - **polarity**: Reported "type" of regulation applied to gene, if available.
+     - **source**: Record of which regulatory network dataset(s) were used.
      - **is_global_regulator**: Boolean indicating whether the regulator is classified as a global regulator by EcoCyc.
      - **is_sigma_factor**: Boolean indicating whether the regulator is classified as a sigma factor by EcoCyc.
-     - **deg_source**: Indicates the source datasets in which this gene appears, as processed by degfetcher.
+     - **deg_source**: Indicates the source dataset(s) in which this gene appears, as processed by degfetcher.
 
       For example:
       | gene  | regulator | polarity | source                     | is_global_regulator | is_sigma_factor | DEG Source       |
@@ -74,10 +75,10 @@ You can manage your Python dependencies using [conda](https://docs.conda.io/) (o
 
 
 3. **tfbsfetcher** *(Step 3: Map TFs to TFBSs)*  
-   - Reads the CSV outputs, saved in batches, from **tffetcher**.
-   - Loads *TFBS data* from a resource (e.g. RegulonDB `.txt` or `.csv`).  
+   - Reads CSV outputs, saved in batches, from **tffetcher**.
+   - Loads **TFBS**-type data curated from a resource (e.g. RegulonDB `.txt` or `.csv`).  
    - For each TF identified in step 2, fetch the corresponding binding site(s).  
-   - Saves a final CSV output, `tf2tfbs_mapping`, containing the following information:
+   - Saves a final CSV output, `tf2tfbs_mapping`, containing:
   
       | Column              | Description |
       |---------------------|--------------------------------------------------------------------------------------------------|
@@ -90,7 +91,7 @@ You can manage your Python dependencies using [conda](https://docs.conda.io/) (o
       | **is_sigma_factor** | Boolean flag (e.g., "no") indicating whether the TF is a sigma factor                            |
       | **is_global_regulator** | Boolean flag (e.g., "no") indicating whether the TF is a global regulator                    |
 
-   ***Warning:*** In ```tfbsfetcher.py```, the TFBS duplication check is stringent and does not account for cases where binding sites differ by ±1 nucleotide at either end.
+   ***Caution:*** In ```tfbsfetcher.py```, there is a final TFBS deduplication check that is stringent and does not account for cases where binding sites differ by ±1 nucleotide at either end.
 
 
 #### Directory Layout
@@ -134,7 +135,7 @@ deg2tfbs/
 
 1. Clone the [**dnadesign-data**](https://github.com/e-south/dnadesign-data) repository to access a curated set of comparative omics datasets. Placing it as a sibling directory to **deg2tfbs** enables **degfetcher** to generate custom DEG tables from these sources. 
 
-2. Update `configs/mycustomparams.yaml` with desired pointers to omics datasets, thresholds, and I/O paths.  
+2. Update ```configs/mycustomparams.yaml``` with the desired I/O paths and batch IDs to chain the three pipeline stages. You can modify the pointers in the pipeline dictionary to process any subset of omics datasets, enabling more refined TFBS curation.
    ```yaml
    # deg2tfbs/configs/example.yaml
 
@@ -194,7 +195,7 @@ deg2tfbs/
    ```
    - **degfetcher** will process tables of genes, isolate DEGs, and then save them as tidy CSV files.
    
-   - **tffetcher** will reference upstream CSV files to generate a ```deg2tf_mapping.csv``` file.
+   - **tffetcher** will reference these upstream CSV files to generate a ```deg2tf_mapping.csv``` file.
     
    - **tfbsfetcher** will reference a ```deg2tf_mapping.csv``` file to generate a ```tf2tfbs_mapping.csv``` file.
 
@@ -203,19 +204,19 @@ deg2tfbs/
 
 The **degfetcher**, **tffetcher**, and **tfbsfetcher** steps are designed to be extendable. You can add your own dataset ingestion modules for **degfetcher** or develop custom parser modules for **tffetcher** and **tfbsfetcher**.
 
-To use your own custom input genes, create a CSV with required columns: 'gene', 'source', 'comparison'. Then place it in a "batch" subdirectory within **degfetcher**, and point to it in your custom config file. Alternatively, if you added a new gene table in a cloned **dnadesign-data** repository, then update the ```utils.py``` dictionary in ```pipeline``` to ensure datasets can be found via ```DATA_FILES[...]```.
+To use your own custom input genes, create a CSV with required columns: 'gene', 'source', 'comparison'. Then place it in a "batch" subdirectory within **degfetcher**, and point to it in your custom config file. Alternatively, if you added a new gene table in a cloned **dnadesign-data** repository, update the ```utils.py``` dictionary in ```pipeline``` to ensure datasets can be found via ```DATA_FILES[...]```.
 
 When creating a custom parser, make sure it conforms to one of the following interfaces:
 
 - For **tffetcher** parsers:  
-  Implement: gene, (TF, polarity)
+  Implement: Dict[gene, Set[Tuple[TF, polarity]]])
   ```python
   parse(...) -> Dict[str, Set[Tuple[str, str]]]
   ```
   This signature allows **tffetcher.py** to process new **regulatory network** data the same.
 
 - For **tfbsfetcher** parsers:  
-  Implement: TF, Set(TFBS_1, TFBS_2, TFBS_3, ...)
+  Implement: Dict[TF, Set[TFBS_1, TFBS_2, TFBS_3, ...]]
   ```python
   parse(...) -> Dict[str, Set[str]]
   ```
