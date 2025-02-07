@@ -93,8 +93,27 @@ You can manage your Python dependencies using [conda](https://docs.conda.io/).
 
    ***Caution:*** In ```tfbsfetcher.py```, there is a final TFBS deduplication check that is stringent and does not account for cases where binding sites differ by ±1 nucleotide at either end.
 
+## Custom DEG CSV Grouping
+In addition to a default “process all available DEGs” approach, you can specify custom combinations of DEG CSVs using the **deg_csv_groups** key within the **tffetcher** configuration. This functionality lets you define exactly which subset(s) of DEG CSVs to process downstream. There are three ways to define a group:
 
-#### Directory Layout
+- **Global:**  
+  An empty group (e.g. `all: {}`) processes all DEG CSV files in a degbatch subdirectory.
+
+- **Filter-Based:**  
+  Define a filter pattern (e.g. `all_up: { filter: "up" }`) to select only those CSVs whose filenames contain the specified substring.
+
+- **Explicit Combination:**  
+  Specify an explicit list of files. For example:
+  
+  ```yaml
+  deg_csv_groups:
+    heat_shock_up:
+      files:
+        - { file: "kim_upregulated_degs.csv", comparison: "42C_versus_control" }
+        - { file: "zhang_upregulated_degs.csv", comparison: "sigma32-I54N_expression_versus_control" }
+  ```
+
+## Directory Layout
 ```text
 deg2tfbs/
 ├── README.md
@@ -121,83 +140,85 @@ deg2tfbs/
    │   └── tfbatch_<date>/         
    │       └── deg2tf_mapping.csv  
    └── tfbsfetcher/                # Step 3: Map TFs to TFBSs
-   │   ├── __init__.py    
-   │   ├── tfbsfetcher.py          # Coordinates TFBS retrieval for a given set of TFs
-   │   ├── parsers/                
-   │   │   ├── __init__.py
-   │   │   ├── ecocyc_tfbs_parser.py
-   │   │   ├── regdb_tfbs_parser.py    
-   │   │   └── ...                 
-   │   └── tfbsbatch_<date>/  
+       ├── __init__.py    
+       ├── tfbsfetcher.py          # Coordinates TFBS retrieval for a given set of TFs
+       ├── parsers/                
+       │   ├── __init__.py
+       │   ├── ecocyc_tfbs_parser.py
+       │   ├── regdb_tfbs_parser.py    
+       │   └── ...                 
+       └── tfbsbatch_<date>/  
 ```
 
 ## **Usage Example**
 
 1. Clone the [**dnadesign-data**](https://github.com/e-south/dnadesign-data) repository to access a curated set of comparative omics datasets. Placing it as a sibling directory to **deg2tfbs** enables **degfetcher** to generate custom DEG tables from these sources. 
 
-2. Update ```configs/mycustomparams.yaml``` with the desired I/O paths and batch IDs to chain the three pipeline stages. You can modify the pointers in the pipeline dictionary to process any subset of omics datasets, enabling more refined TFBS curation.
+2. Update ```configs/mycustomparams.yaml``` with the desired I/O paths, batch IDs, and custom DEG CSV groups. For instance:
    ```yaml
    # deg2tfbs/configs/example.yaml
+    pipeline:
+        name: "default"
 
-   pipeline:
-   name: "default"
+        stages:
+            degfetcher:
+                root_dir: "pipeline/degfetcher"
+                batch_id: "degbatch_20250130"
+                modules:
+                    - ceroni
+                    - mori
 
-   stages:
-      degfetcher:
-         root_dir: "pipeline/degfetcher"
-         batch_id: "degbatch_20250130"  # Where to save isolated DEGs
-         modules:                       # Which source datasets to reference
-            - ceroni
-            - mori
+            tffetcher:
+                root_dir: "pipeline/tffetcher"
+                batch_id: "tfbatch_20250130"
+                input:
+                    deg_batch_id: "degbatch_20250130"
+                    deg_csv_subdir: "csvs"
+                    # Define custom groups:
+                    deg_csv_groups:
+                        all: {}  # Process all CSVs
+                        all_up:
+                            filter: "up"  # Process all CSVs with "up" in the name
+                        heat_shock_up:
+                            files:
+                            - { file: "kim_upregulated_degs.csv", comparison: "42C_versus_control" }
+                            - { file: "zhang_upregulated_degs.csv", comparison: "s32-I54N_vs_control" }
+                sources:
+                    regulatory_networks:
+                        ecocyc:
+                            path: "ecocyc_28_reg_network"
+                            enabled: true
+                            parser: "ecocyc_network_v28-5"
+                params:
+                    network_strategy: "union"
+                    include_master_regulators: true
+                    include_sigma_factors: true
 
-      tffetcher:
-         root_dir: "pipeline/tffetcher"
-         batch_id: "tfbatch_20250130"
-         input:
-         deg_batch_id: "degbatch_20250130" # Points to a degfetcher batch
-         deg_csv_subdir: "csvs"            
-            deg_csv_includes:              # Optional: "Only fetch TFs from these lists"
-               - "bie_downregulated_degs.csv"
-               - "sanchez_vasquez_upregulated_degs.csv"
-         sources:
-         regulatory_networks:
-            ecocyc:
-               path: "ecocyc_28_reg_network" # Reference to utils.DATA_FILES
-               enabled: true
-               parser: "ecocyc_network_v28-5"
-            myothersource: ...
-         params:
-         network_strategy: "union"     # How to merge results from different parsers
-         include_master_regulators: true
-         include_sigma_factors: true
-
-      tfbsfetcher:
-         root_dir: "pipeline/tfbsfetcher"
-         batch_id: "tfbsbatch_20250130"
-         input:
-            tf_batch_id: "tfbatch_20250130" # Points to a tffetcher batch
-         sources:
-            binding_sites:
-            ecocyc:
-               path: "ecocyc_28_tfbs_smart_table"  # Reference to utils.DATA_FILES
-               ecocyc_motifs: true
-            regdb:
-               path: "regulondb_13_tf_ri_set"
-               regulondb_pssm: false
-         params:  # extend as needed
-            pass
-      ```
+            tfbsfetcher:
+                root_dir: "pipeline/tfbsfetcher"
+                batch_id: "tfbsbatch_20250130"
+                input:
+                    tf_batch_id: "tfbatch_20250130"  # This pointer is updated per group
+                sources:
+                    binding_sites:
+                    ecocyc:
+                        path: "ecocyc_28_tfbs_smart_table"
+                        ecocyc_motifs: true
+                    regdb:
+                        path: "regulondb_13_tf_ri_set"
+                        regulondb_pssm: false
+                params:
+                    pass
+    ```
 
 3. After configuring your `mycustomparams.yaml`, run the pipeline as follows:
    ```bash
    cd deg2tfbs
    python main.py # Make sure that the bottom of this module references your config file.
    ```
-   - **degfetcher** will process tables of genes, isolate DEGs, and then save them as tidy CSV files.
-   
-   - **tffetcher** will reference these upstream CSV files to generate a ```deg2tf_mapping.csv``` file.
-    
-   - **tfbsfetcher** will reference a ```deg2tf_mapping.csv``` file to generate a ```tf2tfbs_mapping.csv``` file.
+   - **degfetcher** processes the datasets and outputs DEG CSVs.
+   - **tffetcher** then processes these CSVs in each custom group (using **deg_csv_groups**) to produce distinct `deg2tf_mapping.csv` files.
+   - **tfbsfetcher** uses the appropriate TF mapping to produce a final `tf2tfbs_mapping.csv` for each group.
 
 
 ### **Extendability**

@@ -34,9 +34,149 @@ pipeline:
       input:
         deg_batch_id: "degbatch_20250130"             # Points to a batch of DEGs to reference
         deg_csv_subdir: "csvs"                        # Matches degfetcher’s output location
-        # deg_csv_includes:                           # E.g., uncomment to only fetch regulators for these DEGs
-        #   - "bie_downregulated_degs.csv"
-        #   - "sanchez_vasquez_upregulated_degs.csv"
+        # Define groups to process.
+        deg_csv_groups:
+          # Global approach: process all DEG CSV files.
+          all: {}
+          # Process all files whose names include 'up' (e.g. upregulated).
+          all_up:
+            filter: "up"
+          # Process all files whose names include 'down' (e.g. downregulated).
+          all_down:
+            filter: "down"
+          # Tailored groups (explicitly specify file names and desired comparisons).
+          heat_shock_up:
+            files:
+              - { file: "kim_upregulated_degs.csv", comparison: "42C_versus_control" }
+              - { file: "zhang_upregulated_degs.csv", comparison: "sigma32-I54N_expression_versus_control" }
+          heat_shock_down:
+            files:
+              - { file: "kim_downregulated_degs.csv", comparison: "42C_versus_control" }
+          membrane_stress_up:
+            files:
+              - { file: "emani_upregulated_degs.csv", comparison: "all_tags_vs_control" }
+              - { file: "jovanovic_upregulated_degs.csv", comparison: "IV_secretin_overproduction_versus_control" }
+              - { file: "vazulka_upregulated_degs.csv", comparison: "fab_production_2h_versus_control" }
+          membrane_stress_down:
+            files:
+              - { file: "emani_downregulated_degs.csv", comparison: "all_tags_vs_control" }
+              - { file: "jovanovic_downregulated_degs.csv", comparison: "IV_secretin_overproduction_versus_control" }
+              - { file: "vazulka_downregulated_degs.csv", comparison: "fab_production_2h_versus_control" }
+          heterologous_up:
+            files:
+              - { file: "ceroni_upregulated_degs.csv", comparison: "pLys-M1_versus_pLys" }
+              - { file: "ceroni_upregulated_degs.csv", comparison: "pPD864-LacZ_versus_pPD864" }
+              - { file: "ceroni_upregulated_degs.csv", comparison: "pSB1C3-H3_versus_pSB1C3" }
+              - { file: "jovanovic_upregulated_degs.csv", comparison: "IV_secretin_overproduction_versus_control" }
+              - { file: "vazulka_upregulated_degs.csv", comparison: "fab_production_2h_versus_control" }
+              - { file: "rajacharya_upregulated.csv", comparison: "acyl-ACP_reductase_overproduction_vs_control" }
+          heterologous_down:
+            files:
+              - { file: "ceroni_downregulated_degs.csv", comparison: "pLys-M1_versus_pLys" }
+              - { file: "ceroni_downregulated_degs.csv", comparison: "pPD864-LacZ_versus_pPD864" }
+              - { file: "ceroni_downregulated_degs.csv", comparison: "pSB1C3-H3_versus_pSB1C3" }
+              - { file: "jovanovic_downregulated_degs.csv", comparison: "IV_secretin_overproduction_versus_control" }
+              - { file: "vazulka_downregulated_degs.csv", comparison: "fab_production_2h_versus_control" }
+              - { file: "rajacharya_downregulated.csv", comparison: "acyl-ACP_reductase_overproduction_vs_control" }
+          phage_shock_up:
+            files:
+              - { file: "jovanovic_upregulated_degs.csv", comparison: "IV_secretin_overproduction_versus_control" }
+          phage_shock_down:
+            files:
+              - { file: "jovanovic_downregulated_degs.csv", comparison: "IV_secretin_overproduction_versus_control" }
+          kanamycin_up:
+            files:
+              - { file: "bie_upregulated_degs.csv", comparison: "KANvsH2O" }
+          kanamycin_down:
+            files:
+              - { file: "bie_downregulated_degs.csv", comparison: "KANvsH2O" }
+          ciprofloxacin_up:
+            files:
+              - { file: "bie_upregulated_degs.csv", comparison: "CIPvsH2O" }
+          ciprofloxacin_down:
+            files:
+              - { file: "bie_downregulated_degs.csv", comparison: "CIPvsH2O" }
+          ampicillin_up:
+            files:
+              - { file: "deter_upregulated_degs.csv", comparison: "3h amp media_versus_3h fresh media" }
+          ampicillin_down:
+            files:
+              - { file: "deter_downregulated_degs.csv", comparison: "3h amp media_versus_3h fresh media" }
+          antibiotics_up:
+            files:
+              - { file: "bie_upregulated_degs.csv", comparison: "KANvsH2O" }
+              - { file: "bie_upregulated_degs.csv", comparison: "CIPvsH2O" }
+              - { file: "deter_upregulated_degs.csv", comparison: "3h amp media_versus_3h fresh media" }
+          antibiotics_down:
+            files:
+              - { file: "bie_downregulated_degs.csv", comparison: "KANvsH2O" }
+              - { file: "bie_downregulated_degs.csv", comparison: "CIPvsH2O" }
+              - { file: "deter_downregulated_degs.csv", comparison: "3h amp media_versus_3h fresh media" }
+          persisters_up:
+            files:
+              - { file: "radzikowski_upregulated_degs.csv", comparison: "Persisters_0.5h_Over_GlucoseGrowth" }
+          persisters_down:
+            files:
+              - { file: "radzikowski_downregulated_degs.csv", comparison: "Persisters_0.5h_Over_GlucoseGrowth" }
+          nutrient_lim_up:
+            files:
+              - { file: "gummesson_upregulated_degs.csv", comparison: "isoleucine_starvation_versus_control" }
+              - { file: "houser_upregulated_degs.csv", comparison: "two_week_starvation_versus_control" }
+              - { file: "schmidt_upregulated_degs.csv", comparison: "Chemostat_slow_vs_fast" }
+              - { file: "wu_upregulated_degs.csv", comparison: "Clim_MOPS_Over_WT_Rich_LB" }
+          nutrient_lim_down:
+            files:
+              - { file: "gummesson_downregulated_degs.csv", comparison: "isoleucine_starvation_versus_control" }
+              - { file: "houser_downregulated_degs.csv", comparison: "two_week_starvation_versus_control" }
+              - { file: "schmidt_downregulated_degs.csv", comparison: "Chemostat_slow_vs_fast" }
+              - { file: "wu_downregulated_degs.csv", comparison: "Clim_MOPS_Over_WT_Rich_LB" }
+          stringent_up:
+            files:
+              - { file: "durfee_upregulated_degs.csv", comparison: "ppGpp_versus_control" }
+              - { file: "lu_upregulated_degs.csv", comparison: "glyphosate_shock_versus_control" }
+              - { file: "sanchez_vasquez_upregulated_degs.csv", comparison: "relA_overexpression_versus_control" }
+              - { file: "zhu_upregulated_degs.csv", comparison: "RelA_Overproduction_vs_WT" }
+          stringent_down:
+            files:
+              - { file: "durfee_downregulated_degs.csv", comparison: "ppGpp_versus_control" }
+              - { file: "lu_downregulated_degs.csv", comparison: "glyphosate_shock_versus_control" }
+              - { file: "sanchez_vasquez_downregulated_degs.csv", comparison: "relA_overexpression_versus_control" }
+              - { file: "zhu_downregulated_degs.csv", comparison: "RelA_Overproduction_vs_WT" }
+          osmolarity_up:
+            files:
+              - { file: "mori_upregulated_degs.csv", comparison: "Lib-02_versus_Lib-20" }
+          osmolarity_down:
+            files:
+              - { file: "mori_downregulated_degs.csv", comparison: "Lib-02_versus_Lib-20" }
+          stationary_up:
+            files:
+              - { file: "mori_upregulated_degs.csv", comparison: "Lib-19_versus_Lib-20" }
+          stationary_down:
+            files:
+              - { file: "mori_downregulated_degs.csv", comparison: "Lib-19_versus_Lib-20" }
+          poor_carbon_acetate_up:
+            files:
+              - { file: "mori_upregulated_degs.csv", comparison: "Lib-06_versus_Lib-20" }
+              - { file: "schmidt_upregulated_degs.csv", comparison: "Acetate_vs_Glucose" }
+          poor_carbon_acetate_down:
+            files:
+              - { file: "mori_downregulated_degs.csv", comparison: "Lib-06_versus_Lib-20" }
+              - { file: "schmidt_downregulated_degs.csv", comparison: "Acetate_vs_Glucose" }
+          oxidative_stress_up:
+            files:
+              - { file: "mori_upregulated_degs.csv", comparison: "Lib-14_versus_Lib-20" }
+              - { file: "schmidt_upregulated_degs.csv", comparison: "Osmotic_stress_glucose_vs_Glucose" }
+          oxidative_stress_down:
+            files:
+              - { file: "mori_downregulated_degs.csv", comparison: "Lib-14_versus_Lib-20" }
+              - { file: "schmidt_downregulated_degs.csv", comparison: "Osmotic_stress_glucose_vs_Glucose" }
+          low_pH_acetate_up:
+            files:
+              - { file: "mori_upregulated_degs.csv", comparison: "Lib-17_versus_Lib-20" }
+          low_pH_acetate_down:
+            files:
+              - { file: "mori_downregulated_degs.csv", comparison: "Lib-17_versus_Lib-20" }
+
       sources:
         regulatory_networks:
           ecocyc:
@@ -56,7 +196,7 @@ pipeline:
       root_dir: "pipeline/tfbsfetcher"
       batch_id: "tfbsbatch_20250130"
       input:
-        tf_batch_id: "tfbatch_20250130"
+        tf_batch_id: "tfbatch_20250130"         # This pointer is dynamically updated
       sources:
         binding_sites:
           ecocyc:

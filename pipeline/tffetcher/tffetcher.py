@@ -74,8 +74,25 @@ def run_tffetcher_stage(config: dict) -> None:
     input_conf = config.get("input", {})
     deg_batch_id = input_conf.get("deg_batch_id")
     deg_csv_subdir = input_conf.get("deg_csv_subdir", "csvs")
-    deg_includes = input_conf.get("deg_csv_includes", [])
-
+    
+    # Look for a group override
+    group_def = input_conf.get("deg_csv_group")
+    if group_def:
+        # If a filter is provided, create a glob pattern that matches CSV files with that substring.
+        if "filter" in group_def:
+            filter_str = group_def["filter"]
+            deg_includes = [f"*{filter_str}*.csv"]
+        # If an explicit file list is provided, extract the file names.
+        elif "files" in group_def:
+            # Each file entry is expected to be a dict with at least a "file" key.
+            deg_includes = [entry["file"] for entry in group_def.get("files", []) if "file" in entry]
+        else:
+            # If the group exists but has no recognized key, default to an empty list (or you could default to all CSVs).
+            deg_includes = []
+    else:
+        # No group override provided: use the legacy key if it exists.
+        deg_includes = input_conf.get("deg_csv_includes", [])
+    
     if not deg_batch_id:
         raise ValueError("tffetcher config missing 'deg_batch_id' in 'input'")
 

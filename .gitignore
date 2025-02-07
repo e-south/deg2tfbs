@@ -158,7 +158,8 @@ libs/
 # Ignore specific directories
 archived/
 prototypes/
-test_configs/
+tfbatch_*/
+tfbsbatch_*/
 videos/
 temp.md
 
