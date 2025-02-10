@@ -167,6 +167,5 @@ dependencies:
   - yaml=0.2.5
   - yaml-cpp=0.8.0
   - zstd=1.5.6
-  - pip:
-      - deg2tfbs==0.1.0
+  - pip
 prefix: /opt/miniconda3/envs/deg2tfbs
