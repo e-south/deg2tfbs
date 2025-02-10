@@ -6,7 +6,7 @@ pipeline:
   stages:
     degfetcher:
       root_dir: "pipeline/degfetcher"
-      batch_id: "degbatch_20250130"
+      batch_id: "degbatch_20250209"
       modules:
         - ceroni
         - mori
@@ -30,9 +30,9 @@ pipeline:
 
     tffetcher:
       root_dir: "pipeline/tffetcher"
-      batch_id: "tfbatch_20250130"
+      batch_id: "tfbatch_20250209"
       input:
-        deg_batch_id: "degbatch_20250130"             # Points to a batch of DEGs to reference
+        deg_batch_id: "degbatch_20250209"             # Points to a batch of DEGs to reference
         deg_csv_subdir: "csvs"                        # Matches degfetcher’s output location
         # Define groups to process.
         deg_csv_groups:
@@ -194,9 +194,9 @@ pipeline:
 
     tfbsfetcher:
       root_dir: "pipeline/tfbsfetcher"
-      batch_id: "tfbsbatch_20250130"
+      batch_id: "tfbsbatch_20250209"
       input:
-        tf_batch_id: "tfbatch_20250130"         # This pointer is dynamically updated
+        tf_batch_id: "tfbatch_20250209"         # This pointer is dynamically updated
       sources:
         binding_sites:
           ecocyc:

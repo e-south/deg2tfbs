@@ -8,9 +8,8 @@
 
 **Prerequisites**
 
-1. [Conda](https://docs.conda.io/) (or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) is recommended)
-2.  (Optional) [Mamba](https://mamba.readthedocs.io/) for faster dependency resolution
-
+- [Conda](https://docs.conda.io/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
+- (Optional) [Mamba](https://mamba.readthedocs.io/) for faster dependency resolution
 
 
 **Step 1.** Clone the Repository
@@ -29,6 +28,56 @@ This command will read the ```environment.yml``` file and create a Conda environ
 ```bash
 conda activate deg2tfbs
 ```
+
+**Step 4.** Install the Local `deg2tfbs` Package in Editable Mode
+```bash
+(deg2tfbs) cd deg2tfbs
+(deg2tfbs) pip install -e .
+```
+This allows Python to recognize **deg2tfbs** as an installed package while still linking directly to the source files in the repository. Any changes made to the source code will be immediately available without requiring reinstallation.
+
+## Directory Layout
+```text
+deg2tfbs/
+├── README.md
+├── pyproject.toml
+├── environment.yml
+├── LICENSE
+└── src/
+    └── deg2tfbs/
+        ├── __init__.py
+        ├── main.py                         # CLI entry point
+        ├── configs/                        # User-defined configurations
+        │   └── example.yaml                # Customize to process different DEGs and retrieve different TFBSs
+        └── pipeline/
+            ├── utils.py                    # Dictionary of paths to datasets (from dnadesign-data)
+            ├── degfetcher/                 # Step 1: Isolate DEGs
+            │   ├── __init__.py 
+            │   ├── <dataset>_module.py     # Each omics dataset has its own respective module
+            │   └── degbatch_<date>/        # Batch of DEGs retrieved from degfetcher in a given run
+            │       ├── csvs                
+            │       └── plots
+            ├── tffetcher/                  # Step 2: Map DEGs to TFs
+            │   ├── __init__.py    
+            │   ├── tffetcher.py            # Coordinates TF retrieval for a given DEG batch
+            │   ├── parsers/                
+            │   │   ├── __init__.py
+            │   │   ├── ecocyc_parser.py
+            │   │   ├── regdb_parser.py     
+            │   │   └── ...                 
+            │   └── tfbatch_<date>/         
+            │       └── deg2tf_mapping.csv  
+            └── tfbsfetcher/                # Step 3: Map TFs to TFBSs
+                ├── __init__.py    
+                ├── tfbsfetcher.py          # Coordinates TFBS retrieval for a given set of TFs
+                ├── parsers/                
+                │   ├── __init__.py
+                │   ├── ecocyc_tfbs_parser.py
+                │   ├── regdb_tfbs_parser.py    
+                │   └── ...                 
+                └── tfbsbatch_<date>/  
+```
+
 
 ## **Pipeline Steps**
 
@@ -114,43 +163,6 @@ In addition to a default “process all available DEGs” approach, you can spec
         - { file: "kim_upregulated_degs.csv", comparison: "42C_versus_control" }
         - { file: "zhang_upregulated_degs.csv", comparison: "sigma32-I54N_expression_versus_control" }
   ```
-
-## Directory Layout
-```text
-deg2tfbs/
-├── README.md
-├── __init__.py
-├── main.py                         # CLI entry point
-├── configs/                        # User-defined configurations
-│   └── example.yaml                # Customize to process different DEGs and retrieve different TFBSs
-└── pipeline/
-   ├── utils.py                    # Dictionary of paths to datasets (from dnadesign-data)
-   ├── degfetcher/                 # Step 1: Isolate DEGs
-   │   ├── __init__.py 
-   │   ├── <dataset>_module.py     # Each omics dataset has its own respective module
-   │   └── degbatch_<date>/        # Batch of DEGs retrieved from degfetcher in a given run
-   │       ├── csvs                
-   │       └── plots
-   ├── tffetcher/                  # Step 2: Map DEGs to TFs
-   │   ├── __init__.py    
-   │   ├── tffetcher.py            # Coordinates TF retrieval for a given DEG batch
-   │   ├── parsers/                
-   │   │   ├── __init__.py
-   │   │   ├── ecocyc_parser.py
-   │   │   ├── regdb_parser.py     
-   │   │   └── ...                 
-   │   └── tfbatch_<date>/         
-   │       └── deg2tf_mapping.csv  
-   └── tfbsfetcher/                # Step 3: Map TFs to TFBSs
-       ├── __init__.py    
-       ├── tfbsfetcher.py          # Coordinates TFBS retrieval for a given set of TFs
-       ├── parsers/                
-       │   ├── __init__.py
-       │   ├── ecocyc_tfbs_parser.py
-       │   ├── regdb_tfbs_parser.py    
-       │   └── ...                 
-       └── tfbsbatch_<date>/  
-```
 
 ## **Usage Example**
 

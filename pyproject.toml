@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deg2tfbs"
+version = "0.1.0"
+description = "Pipeline for differential expression analysis, transcription factor mapping, and TFBS identification."
+authors = [
+    { name = "Eric South", email = "ericjohnsouth@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    # List your runtime dependencies here if desired.
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

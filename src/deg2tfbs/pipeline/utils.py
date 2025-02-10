@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 import pandas as pd
 
-DNADESIGN_DATA = Path(__file__).parent.parent.parent / 'dnadesign-data'
+DNADESIGN_DATA = Path(__file__).parent.parent.parent.parent.parent / 'dnadesign-data'
 
 # A simple dictionary mapping keys to actual file paths:
 DATA_FILES = {
