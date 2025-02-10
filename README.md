@@ -6,27 +6,29 @@
 
 ## **Installation**
 
-You can manage your Python dependencies using [conda](https://docs.conda.io/).
+**Prerequisites**
 
-**Using Conda:**
+1. [Conda](https://docs.conda.io/) (or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) is recommended)
+2.  (Optional) [Mamba](https://mamba.readthedocs.io/) for faster dependency resolution
 
-1. **Create and Activate an Environment:**
 
-   ```bash
-   conda create -n deg2tfbs_env python
-   conda activate deg2tfbs_env
-   ```
 
-2. **Install Dependencies:**
+**Step 1.** Clone the Repository
+```bash
+git clone https://github.com/e-south/deg2tfbs.git
+cd deg2tfbs
+```
 
-   If you are using conda, you can install packages from the `requirements.txt` or use pip:
-   
-   ```bash
-   cd deg2tfbs
-   conda install --file requirements.txt
-   # or
-   pip install -r requirements.txt
-   ```
+**Step 2.** Create the Conda Environment
+```bash
+conda env create -f environment.yml
+```
+This command will read the ```environment.yml``` file and create a Conda environment named ```deg2tfbs``` with all the necessary packages installed.
+
+**Step 3.** Activate the Environment
+```bash
+conda activate deg2tfbs
+```
 
 ## **Pipeline Steps**
 
