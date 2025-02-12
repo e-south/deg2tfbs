@@ -208,6 +208,41 @@ pipeline:
       params: # Extend as needed
         pass
 
+analysis:
+  tfbsfetcher_dir: "pipeline/tfbsfetcher"
+  plot_output_dir: "analysis/tfbsbatch_rosters/plots"
+  csv_output_dir: "analysis/tfbsbatch_rosters/csvs"
+
+  # The reference set is explicitly defined.
+  reference_set: "tfbsbatch_20250209_all"
+  
+  # Explicit pairings as a list of 2‐tuples.
+  comparisons:
+    - [ "tfbsbatch_20250209_all_up", "tfbsbatch_20250209_all_down" ]
+    - [ "tfbsbatch_20250209_ampicillin_up", "tfbsbatch_20250209_ampicillin_down" ]
+    - [ "tfbsbatch_20250209_antibiotics_up", "tfbsbatch_20250209_antibiotics_down" ]
+    - [ "tfbsbatch_20250209_ciprofloxacin_up", "tfbsbatch_20250209_ciprofloxacin_down" ]
+    - [ "tfbsbatch_20250209_heterologous_up", "tfbsbatch_20250209_heterologous_down" ]
+    - [ "tfbsbatch_20250209_kanamycin_up", "tfbsbatch_20250209_kanamycin_down" ]
+    - [ "tfbsbatch_20250209_low_pH_acetate_up", "tfbsbatch_20250209_low_pH_acetate_down" ]
+    - [ "tfbsbatch_20250209_membrane_stress_up", "tfbsbatch_20250209_membrane_stress_down" ]
+    - [ "tfbsbatch_20250209_nutrient_lim_up", "tfbsbatch_20250209_nutrient_lim_down" ]
+    - [ "tfbsbatch_20250209_osmolarity_up", "tfbsbatch_20250209_osmolarity_down" ]
+    - [ "tfbsbatch_20250209_oxidative_stress_up", "tfbsbatch_20250209_oxidative_stress_down" ]
+    - [ "tfbsbatch_20250209_persisters_up", "tfbsbatch_20250209_persisters_down" ]
+    - [ "tfbsbatch_20250209_phage_shock_up", "tfbsbatch_20250209_phage_shock_down" ]
+    - [ "tfbsbatch_20250209_poor_carbon_acetate_up", "tfbsbatch_20250209_poor_carbon_acetate_down" ]
+    - [ "tfbsbatch_20250209_stationary_up", "tfbsbatch_20250209_stationary_down" ]
+    - [ "tfbsbatch_20250209_stringent_up", "tfbsbatch_20250209_stringent_down" ]
+  
+  exclude_intersections: true
+    
+  umap_n_neighbors: 15
+  umap_min_dist: 0.1
+  umap_figsize: [8, 6]
+  umap_alpha: 0.5
+  umap_dpi: 150
+  umap_hue: "sample"
 
 datasets:
   # Ceroni et al. (DOI: 10.1038/nmeth.4635)

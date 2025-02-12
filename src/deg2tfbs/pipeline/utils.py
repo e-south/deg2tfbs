@@ -1,7 +1,7 @@
 """
 --------------------------------------------------------------------------------
 <deg2tfbs project>
-tffetcher/utils.py
+pipeline/utils.py
 
 Author(s): Eric J. South
 Dunlop Lab
@@ -9,6 +9,7 @@ Dunlop Lab
 """
 
 import os
+import yaml
 from pathlib import Path
 import pandas as pd
 
@@ -124,3 +125,21 @@ def load_tfbs_file(dataset_key) -> Path:
     if not file_path.exists():
         raise FileNotFoundError(f"TFBS file not found: {file_path}")
     return file_path
+
+
+def load_config(config_path: str) -> dict:
+    """Load and parse a YAML configuration file."""
+    path = Path(config_path)
+    if not path.exists():
+        raise FileNotFoundError(f"Config file not found: {path}")
+    with path.open("r") as f:
+        config = yaml.safe_load(f)
+    return config
+
+
+def resolve_path(relative_path: str, base: Path) -> Path:
+    """Resolve a relative or absolute path using the given base directory."""
+    p = Path(relative_path)
+    if p.is_absolute():
+        return p
+    return (base / p).resolve()

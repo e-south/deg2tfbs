@@ -257,6 +257,50 @@ When creating a custom parser, make sure it conforms to one of the following int
   ```
   This signature allows **tfbsfetcher.py** to process new **TFBS** data the same.
 
+
+## Analysis of Transcription Factor Rosters
+
+The **analysis** folder contains scripts that process output directories to generate TF rosters from fetched DEG data-exploring the question: 
+
+> "Does fetching different sets of DEGs lead to different sets of transcription factors?"
+
+1. The scripts read the `tf2tfbs_mapping.csv` files produced by **tfbsfetcher** and generate a binary TF roster for each output directory. You define which directories to include by listing them under the `comparisons` key in the configuration file (e.g., `configs/example.yaml`):
+   ```yaml
+   analysis:
+     comparisons:
+       - [ "tfbsbatch_20250209_ciprofloxacin_up", "tfbsbatch_20250209_ciprofloxacin_down" ]
+       - [ ... ]
+   ```
+   
+   Each generated roster file is a tab-delimited text file with the following columns:
+    ```text
+    regulator   group1   group2   intersection   group1_only   group2_only
+    acrr        1        0        0              1             0
+    ada         0        1        0              0             1
+    agar        1        0        0              1             0
+    aidb        0        1        0              0             1
+    allr        0        0        0              0             0
+    alls        0        0        0              0             0
+    arac        0        0        0              0             0
+    arca        1        1        1              0             0
+    argp        0        0        0              0             0
+    ```
+
+  2. For each specified pair, the scripts compute the extent of TF overlap:
+      ```bash
+      # Pairing tfbsbatch_20250209:
+      ciprofloxacin_up vs. ciprofloxacin_down:
+      Group1: 53 regulators (27.5% of total TFs fetched)
+      Group2: 61 regulators (31.6% of total TFs fetched)
+      Intersection: 30 regulators
+      ```
+
+  3. UMAP plots can be generated for the TF rosters. In each plot:
+   - Points are colored by their Leiden cluster.
+   - Marker shapes are assigned based on the DEG category (defined in the configuration file)
+
+  ![Alt text](images/umap_excluded.png)
+
 ---
 
 ### Data Source
