@@ -1,0 +1,80 @@
+Pairing tfbsbatch_20250209_all_up_vs_tfbsbatch_20250209_all_down:
+  Group1: 22 regulators (11.4% of reference)
+  Group2: 13 regulators (6.7% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_ampicillin_up_vs_tfbsbatch_20250209_ampicillin_down:
+  Group1: 25 regulators (13.0% of reference)
+  Group2: 4 regulators (2.1% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_antibiotics_up_vs_tfbsbatch_20250209_antibiotics_down:
+  Group1: 26 regulators (13.5% of reference)
+  Group2: 29 regulators (15.0% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_ciprofloxacin_up_vs_tfbsbatch_20250209_ciprofloxacin_down:
+  Group1: 23 regulators (11.9% of reference)
+  Group2: 31 regulators (16.1% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_heterologous_up_vs_tfbsbatch_20250209_heterologous_down:
+  Group1: 14 regulators (7.3% of reference)
+  Group2: 75 regulators (38.9% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_kanamycin_up_vs_tfbsbatch_20250209_kanamycin_down:
+  Group1: 23 regulators (11.9% of reference)
+  Group2: 31 regulators (16.1% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_low_pH_acetate_up_vs_tfbsbatch_20250209_low_pH_acetate_down:
+  Group1: 45 regulators (23.3% of reference)
+  Group2: 18 regulators (9.3% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_membrane_stress_up_vs_tfbsbatch_20250209_membrane_stress_down:
+  Group1: 29 regulators (15.0% of reference)
+  Group2: 31 regulators (16.1% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_nutrient_lim_up_vs_tfbsbatch_20250209_nutrient_lim_down:
+  Group1: 39 regulators (20.2% of reference)
+  Group2: 33 regulators (17.1% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_osmolarity_up_vs_tfbsbatch_20250209_osmolarity_down:
+  Group1: 45 regulators (23.3% of reference)
+  Group2: 18 regulators (9.3% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_oxidative_stress_up_vs_tfbsbatch_20250209_oxidative_stress_down:
+  Group1: 30 regulators (15.5% of reference)
+  Group2: 31 regulators (16.1% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_persisters_up_vs_tfbsbatch_20250209_persisters_down:
+  Group1: 24 regulators (12.4% of reference)
+  Group2: 10 regulators (5.2% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_phage_shock_up_vs_tfbsbatch_20250209_phage_shock_down:
+  Group1: 14 regulators (7.3% of reference)
+  Group2: 26 regulators (13.5% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_poor_carbon_acetate_up_vs_tfbsbatch_20250209_poor_carbon_acetate_down:
+  Group1: 30 regulators (15.5% of reference)
+  Group2: 31 regulators (16.1% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_stationary_up_vs_tfbsbatch_20250209_stationary_down:
+  Group1: 45 regulators (23.3% of reference)
+  Group2: 18 regulators (9.3% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
+Pairing tfbsbatch_20250209_stringent_up_vs_tfbsbatch_20250209_stringent_down:
+  Group1: 68 regulators (35.2% of reference)
+  Group2: 17 regulators (8.8% of reference)
+  Intersection: 0 regulators (0.0% of reference)
+
