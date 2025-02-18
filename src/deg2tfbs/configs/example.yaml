@@ -210,8 +210,8 @@ pipeline:
 
 analysis:
   tfbsfetcher_dir: "pipeline/tfbsfetcher"
-  plot_output_dir: "analysis/tfbsbatch_rosters/plots"
-  csv_output_dir: "analysis/tfbsbatch_rosters/csvs"
+  plot_output_dir: "analysis/plots"
+  csv_output_dir: "analysis/data"
 
   # The reference set is explicitly defined.
   reference_set: "tfbsbatch_20250209_all"
@@ -236,6 +236,7 @@ analysis:
     - [ "tfbsbatch_20250209_stringent_up", "tfbsbatch_20250209_stringent_down" ]
   
   exclude_intersections: true
+  include_unassigned: false
     
   umap_n_neighbors: 15
   umap_min_dist: 0.1

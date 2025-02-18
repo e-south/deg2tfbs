@@ -158,8 +158,8 @@ libs/
 # Ignore specific directories
 archived/
 prototypes/
-tfbatch_*/
-tfbsbatch_*/
+tfbatch_2*/
+tfbsbatch_2*/
 videos/
 temp.md
 
