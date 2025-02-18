@@ -1,0 +1,5 @@
+tfbsbatch_20250209_all
+tfbsbatch_20250209_all_up
+tfbsbatch_20250209_heterologous_down
+tfbsbatch_20250209_nutrient_lim_up
+tfbsbatch_20250209_stringent_up

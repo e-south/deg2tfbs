@@ -14,6 +14,10 @@ computed after removing intersections, and all downstream analyses (including
 Leiden clustering) use these modified rosters. The results are saved in a subdirectory
 named "intersects_removed". Otherwise, results are saved in a subdirectory named "all_regs".
   
+After the analysis and plotting, the script also merges the original
+tf2tfbs_mapping.csv files by cluster (using the same clustering from UMAP/Leiden)
+and writes merged, deduplicated CSVs into analysis/outputs.
+
 Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
@@ -24,8 +28,10 @@ import argparse
 import logging
 from pathlib import Path
 
+import pandas as pd
+
 from deg2tfbs.pipeline.utils import load_config, resolve_path
-from deg2tfbs.analysis import data, roster, compare
+from deg2tfbs.analysis import data, roster, compare, tf_cluster_merger
 from deg2tfbs.analysis import plot_tf_roster_clustering, plot_tf_roster_heatmap, plot_tfbs_counts
 
 logger = logging.getLogger(__name__)
@@ -38,6 +44,9 @@ def run_analysis(rosters, regs_reference, total_regs, output_root: Path, run_lab
     
     The title of the UMAP plot is augmented with title_suffix to indicate whether
     intersections were removed.
+
+    Returns:
+      cluster_mapping: A dict mapping each source (roster) to its Leiden cluster label.
     """
     out_dir = output_root / run_label
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -123,8 +132,6 @@ def run_analysis(rosters, regs_reference, total_regs, output_root: Path, run_lab
             # If intersections are excluded, compute the set of regulators removed.
             exclude_set = None
             if exclude_intersections:
-                # For each regulator, if in the original roster it is 1 but in the 
-                # modified roster (rosters_to_use) it is 0, then mark it for exclusion.
                 orig = all_rosters[key]
                 mod = rosters_to_use[key]
                 exclude_set = {reg for reg, o, m in zip(regs_reference, orig, mod) if o==1 and m==0}
@@ -136,7 +143,8 @@ def run_analysis(rosters, regs_reference, total_regs, output_root: Path, run_lab
             )
         except Exception as e:
             logger.error(f"Error generating TFBS counts plot for {key}: {e}")
-
+    
+    return cluster_mapping
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="TFBS Batch Analysis and Plotting")
@@ -223,6 +231,17 @@ if __name__ == "__main__":
         title_suffix = "(All Regulators)"
         run_label = "all_regs"
     
-    run_analysis(rosters_to_use, regs_reference, total_regs, base_plot_output_dir, run_label, reference_set, title_suffix)
+    # Compute final TF sets based on the filtered binary vectors.
+    final_tf_sets = { source: { reg for reg, val in zip(regs_reference, vec) if val == 1 }
+                      for source, vec in rosters_to_use.items() }
     
-    logger.info("TFBS batch analysis and plotting complete.")
+    # Run the analysis (which returns the cluster mapping)
+    cluster_mapping = run_analysis(rosters_to_use, regs_reference, total_regs, base_plot_output_dir, 
+                                   run_label, reference_set, title_suffix)
+    
+    # Merge tf2tfbs_mapping.csv files by cluster using the merger module.
+    # Pass the final_tf_sets so that only rows corresponding to a final '1' are retained.
+    merged_outputs_dir = resolve_path("analysis/outputs", repo_root)
+    tf_cluster_merger.merge_tfbs_by_cluster(mapping, cluster_mapping, merged_outputs_dir, run_label, final_tf_sets)
+    
+    logger.info("TFBS batch analysis, plotting, and merged CSV creation complete.")

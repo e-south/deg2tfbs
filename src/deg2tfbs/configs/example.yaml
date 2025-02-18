@@ -235,7 +235,7 @@ analysis:
     - [ "tfbsbatch_20250209_stationary_up", "tfbsbatch_20250209_stationary_down" ]
     - [ "tfbsbatch_20250209_stringent_up", "tfbsbatch_20250209_stringent_down" ]
   
-  exclude_intersections: true
+  exclude_intersections: false
   include_unassigned: false
     
   umap_n_neighbors: 15

@@ -1,0 +1,5 @@
+tfbsbatch_20250209_low_pH_acetate_down
+tfbsbatch_20250209_osmolarity_down
+tfbsbatch_20250209_oxidative_stress_down
+tfbsbatch_20250209_poor_carbon_acetate_down
+tfbsbatch_20250209_stationary_down

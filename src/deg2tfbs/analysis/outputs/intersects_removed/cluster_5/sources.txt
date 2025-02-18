@@ -1,0 +1,3 @@
+tfbsbatch_20250209_antibiotics_up
+tfbsbatch_20250209_ciprofloxacin_up
+tfbsbatch_20250209_kanamycin_up
