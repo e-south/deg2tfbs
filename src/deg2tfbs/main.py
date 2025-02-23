@@ -89,6 +89,7 @@ def run_downstream(full_config: dict):
 
         # Run stage 2: Map DEGs to TFs.
         run_tffetcher_stage(group_tffetcher_conf)
+        
         # Run stage 3: Map TFs to TFBSs.
         run_tfbsfetcher_stage(group_tfbs_conf)
         print(f"Completed group '{group_name}'\n")

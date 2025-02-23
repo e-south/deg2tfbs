@@ -96,24 +96,61 @@ def compute_pairing_details(vector1: np.array, vector2: np.array) -> Dict:
     }
     return details
 
-def exclude_intersections(rosters: Dict[str, np.array]) -> Dict[str, np.array]:
+def get_group_key(source: str) -> str:
     """
-    For paired sources (determined by a common prefix before the last underscore),
-    remove the intersection. For each group with more than one source, if a regulator is present
-    in every source in the group, set that value to 0 in every source.
+    Extract a group key from a source name by:
+      1. Removing a common prefix such as "tfbsbatch_".
+      2. Removing the batch ID (assumed to be the first token) if present.
+      3. Splitting the remaining string on underscores and returning the portion
+         before the first occurrence of "up" or "down" (case-insensitive).
+    If neither "up" nor "down" is found, returns the remaining tokens joined by underscores.
+    
+    Examples:
+      "tfbsbatch_20250223_42C_up_kim_et_al"  -> "42C"
+      "tfbsbatch_20250223_42C_down_kim_et_al"-> "42C"
+    """
+    prefix = "tfbsbatch_"
+    if source.startswith(prefix):
+        source = source[len(prefix):]
+    # Split into tokens.
+    tokens = source.split("_")
+    # Remove the batch id (first token) if there is more than one token.
+    if len(tokens) > 1:
+        tokens = tokens[1:]
+    # Look for the first occurrence of 'up' or 'down' (case-insensitive).
+    for i, token in enumerate(tokens):
+        if token.lower() in {"up", "down"}:
+            return "_".join(tokens[:i])
+    # If not found, return all tokens joined.
+    return "_".join(tokens)
+
+
+def exclude_intersections(rosters: dict) -> dict:
+    """
+    For paired sources (determined by a common group key using get_group_key()),
+    remove the intersection. For each group with more than one source, if a regulator is
+    present in every source in the group, set that value to 0 in every source.
+    
+    This implementation groups keys such as:
+      "tfbsbatch_20250223_42C_up_kim_et_al" and "tfbsbatch_20250223_42C_down_kim_et_al"
+    together (both yielding group key "42C").
+    
+    Returns:
+      A new dictionary of rosters with intersections removed for groups of related sources.
     """
     groups = {}
     for source in rosters.keys():
-        parts = source.rsplit("_", 1)
-        group_key = parts[0] if len(parts) == 2 else source
+        group_key = get_group_key(source)
         groups.setdefault(group_key, []).append(source)
     
     updated_rosters = {}
     for group, sources in groups.items():
         if len(sources) > 1:
+            # Compute the elementwise intersection across all sources in the group.
             intersection = rosters[sources[0]].copy()
             for src in sources[1:]:
                 intersection = intersection & rosters[src]
+            # Remove regulators present in every source.
             for src in sources:
                 updated_rosters[src] = rosters[src] * (1 - intersection)
         else:

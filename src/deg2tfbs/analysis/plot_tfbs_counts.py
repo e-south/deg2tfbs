@@ -21,10 +21,20 @@ import seaborn as sns
 import pandas as pd
 from pathlib import Path
 import logging
-from typing import Union, Optional
+from typing import Union, Optional, Dict
 import matplotlib.patches as mpatches
 
 logger = logging.getLogger(__name__)
+
+def trim_label(label: str) -> str:
+    """
+    Trim the given label so that only the text after the second underscore is returned.
+    If there are fewer than 2 underscores, return the original label.
+    """
+    parts = label.split("_")
+    if len(parts) > 2:
+        return "_".join(parts[2:])
+    return label
 
 def plot_tfbs_counts(source_csv: Union[str, Path],
                      mapping_csv: Union[str, Path],
@@ -34,9 +44,13 @@ def plot_tfbs_counts(source_csv: Union[str, Path],
                      global_regulator_color: str = "#a9a9a9",
                      sigma_factor_color: str = "#696969",
                      log_scale: bool = False,
-                     exclude_regulators: Optional[set] = None) -> None:
+                     exclude_regulators: Optional[set] = None,
+                     group_labels: Optional[Dict[str, str]] = None) -> None:
     """
     Generate a bar plot of TF counts for a given TFBS source CSV.
+    
+    If a group_labels dictionary is provided, the plot title will be augmented with the
+    custom group name (looked up via a trimmed version of the parent folder name).
     """
     # Load source data.
     df_source = pd.read_csv(source_csv)
@@ -75,9 +89,11 @@ def plot_tfbs_counts(source_csv: Union[str, Path],
     if log_scale:
         ax.set_yscale("log")
     
-    # Title from parent folder name.
-    parent_name = Path(source_csv).parent.name
-    ax.set_title(f"TFBS Counts for {parent_name}")
+    # Determine the plot title.
+    parent_name = Path(source_csv).parent.name  # e.g., "tfbsbatch_20250223_42C_up_kim_et_al"
+    trimmed = trim_label(parent_name)           # e.g., "42C_up_kim_et_al"
+    group_title = group_labels.get(trimmed, trimmed) if group_labels else trimmed
+    ax.set_title(f"TFBS Counts for {group_title}")
     ax.set_xlabel("Transcription Factor")
     ax.set_ylabel("Unique TFBS Count")
     ax.tick_params(axis='x', rotation=90)

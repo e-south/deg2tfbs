@@ -24,6 +24,10 @@ from pathlib import Path
 import logging
 from typing import Dict, List, Optional
 
+import warnings
+warnings.filterwarnings("ignore", message="Glyph 8208")
+
+
 logger = logging.getLogger(__name__)
 
 def lighten_color(color, amount=0.5):
@@ -57,10 +61,11 @@ def plot_heatmap(rosters: Dict[str, np.array],
                  output_file: str,
                  figsize: tuple = (20, 8),
                  xlabel: str = "Transcription Factor",
-                 ylabel: str = "Enriched Experimental Condition",
-                 title: str = "Sets of transcription factors associated with isolated DEGs",
+                 ylabel: str = "Comparative Experimental Condition",
+                 title: str = "Transcription Factors Associated with Isolated DEGs",
                  cell_edge_color: str = "white",
-                 reference_set: Optional[str] = None) -> None:
+                 reference_set: Optional[str] = None,
+                 group_labels: Optional[Dict[str, str]] = None) -> None:
     """
     Generate a heatmap of TF rosters.
 
@@ -75,6 +80,7 @@ def plot_heatmap(rosters: Dict[str, np.array],
       - title: Plot title (default: "Sets of transcription factors associated with isolated DEGs").
       - cell_edge_color: Color for the outline of each cell.
       - reference_set: Name of the reference source. If provided, its row is forced to be at the top.
+      - group_labels: Optional mapping from roster keys to plot names (from the YAML). If provided, these names will be used as y-axis labels.
     """
     # Ensure every roster has a cluster label.
     for key in rosters.keys():
@@ -124,11 +130,15 @@ def plot_heatmap(rosters: Dict[str, np.array],
     
     # Set tick labels.
     ax.set_xticks(np.arange(n_cols) + 0.5)
-    ax.set_xticklabels(regs_reference, rotation=90, fontsize=8, fontweight="normal")
+    ax.set_xticklabels(regs_reference, rotation=90, fontsize=7, fontweight="normal")
     
-    y_labels = [trim_label(src) for src in ordered_sources]
+    # Use the provided plot names (if available) for y labels; otherwise, default to trimmed keys.
+    if group_labels is not None:
+        y_labels = [group_labels.get(trim_label(src), trim_label(src)) for src in ordered_sources]
+    else:
+        y_labels = [trim_label(src) for src in ordered_sources]
     ax.set_yticks(np.arange(n_rows) + 0.5)
-    ax.set_yticklabels(y_labels, rotation=0, fontsize=8, fontweight="normal")
+    ax.set_yticklabels(y_labels, rotation=0, fontsize=7, fontweight="normal")
     
     # Set emboldened axis labels and title.
     ax.set_xlabel(xlabel, fontweight="bold")

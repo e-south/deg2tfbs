@@ -113,12 +113,18 @@ def run_analysis(rosters, regs_reference, total_regs, output_root: Path, run_lab
     # Heatmap.
     cluster_mapping = dict(zip(adata_raw.obs["sample"], adata_raw.obs["leiden"]))
     heatmap_output_file = out_dir / "tf_roster_heatmap.png"
+    
+    group_defs = config["pipeline"]["stages"]["tffetcher"]["input"]["deg_csv_groups"]
+    group_labels = { key: group_def.get("plot_name", key) 
+                 for key, group_def in group_defs.items() if isinstance(group_def, dict) }
+
     plot_tf_roster_heatmap.plot_heatmap(
         rosters=rosters,
         regs_reference=regs_reference,
         cluster_mapping=cluster_mapping,
         output_file=str(heatmap_output_file),
-        reference_set=reference_set
+        reference_set=reference_set,
+        group_labels=group_labels
     )
     
     # TFBS Counts plots.
@@ -139,7 +145,8 @@ def run_analysis(rosters, regs_reference, total_regs, output_root: Path, run_lab
                 source_csv=roster_csv,
                 mapping_csv=mapping_file,
                 output_file=str(out_file),
-                exclude_regulators=exclude_set
+                exclude_regulators=exclude_set,
+                group_labels=group_labels
             )
         except Exception as e:
             logger.error(f"Error generating TFBS counts plot for {key}: {e}")

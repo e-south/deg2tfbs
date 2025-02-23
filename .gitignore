@@ -160,6 +160,7 @@ archived/
 prototypes/
 videos/
 temp.md
+example2.yaml
 
 # Ignore specific file types
 *.env

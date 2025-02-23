@@ -114,7 +114,7 @@ def custom_umap_plot(ax, adata, title: str, alpha: float = 0.8,
             if label not in legend_dict:
                 legend_dict[label] = Line2D([], [], marker=cluster_marker_dict[sample],
                                               color=cluster_colors[cl],
-                                              linestyle='', markersize=8)
+                                              linestyle='', markersize=4)
     
     # Overplot reference points (if provided) in bright red.
     if reference_set is not None:
@@ -155,7 +155,7 @@ def custom_umap_plot(ax, adata, title: str, alpha: float = 0.8,
         labels = list(legend_dict.keys())
         ax.legend(handles, labels, title="Cluster: Sample",
                   bbox_to_anchor=(1.05, 1), loc='upper left',
-                  frameon=False, fontsize=7, title_fontsize=8)
+                  frameon=False, fontsize=4, title_fontsize=5)
     
     return ax
 

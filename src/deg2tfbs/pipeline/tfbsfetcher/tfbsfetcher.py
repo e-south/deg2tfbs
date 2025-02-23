@@ -209,7 +209,7 @@ def run_tfbsfetcher_stage(config: dict):
         aggregation_rules = {
             "gene": lambda x: "_".join(sorted(set(x))),
             "deg_source": aggregate_deg_source,
-            "polarity": lambda x: x.mode()[0] if not x.empty else "NA",
+            "polarity": lambda x: x.mode().iloc[0] if not x.mode().empty else "NA",
             "tfbs_source": lambda x: "_".join(sorted(set(x))),
             "is_sigma_factor": "first",
             "is_global_regulator": "first"
