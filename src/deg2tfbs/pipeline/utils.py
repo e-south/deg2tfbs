@@ -26,7 +26,9 @@ DATA_FILES = {
     # Diverse Media Conditions
     'mori_ev8': DNADESIGN_DATA / 'primary_literature' /'Mori_et_al' / 'msb20209536-sup-0009-datasetev8.xlsx',
     'mori_ev9': DNADESIGN_DATA / 'primary_literature' /'Mori_et_al' / 'msb20209536-sup-0010-datasetev9.xlsx',
-    'schmidt': DNADESIGN_DATA / 'primary_literature' / 'Schmidt_et_al' / 'table_s6.xlsx',
+    'schmidt': DNADESIGN_DATA / 'primary_literature' / 'Schmidt_et_al' / 'table_s6.xlsx',    
+    'calgar': DNADESIGN_DATA / 'primary_literature' / 'Calgar_et_al' / '41598_2017_BFsrep45303_MOESM59_ESM.csv',
+    'treitz': DNADESIGN_DATA / 'primary_literature' / 'Treitz_et_al' / 'pmic12496-sup-0002-supmat.xlsx',
     
     # Stringent Response and Nutrient Limitation
     'durfee': DNADESIGN_DATA / 'primary_literature' / 'Durfee_et_al' / 'ST1_durfee_degs.xlsx',

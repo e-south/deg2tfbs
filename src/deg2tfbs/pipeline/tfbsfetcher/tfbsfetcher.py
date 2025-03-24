@@ -32,7 +32,7 @@ from deg2tfbs.pipeline.tfbsfetcher.parsers import get_tfbs_parser
 # Configure the module-level logger with a simple formatter.
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-logger.propagate = False  # Disable propagation to avoid duplicate logs.
+logger.propagate = False  # Avoid duplicate logs.
 if not logger.handlers:
     handler = logging.StreamHandler()
     handler.setFormatter(logging.Formatter("%(message)s"))
@@ -42,16 +42,6 @@ else:
         h.setFormatter(logging.Formatter("%(message)s"))
 
 def aggregate_deg_source(series: pd.Series) -> str:
-    """
-    Custom aggregator for the 'deg_source' column.
-
-    Each row's deg_source string (from degfetcher) is expected to be in the form
-      source_regulation
-    or a compound string where tokens are separated by hyphens (e.g.,
-      "gummesson_down-houser_down-rajacharya_downregulated").
-    Split only on hyphens so that the association between source and regulation is maintained,
-    then remove duplicates while preserving the order in which tokens are encountered.
-    """
     seen = []
     for s in series.dropna():
         s = s.strip()
@@ -67,23 +57,28 @@ def aggregate_deg_source(series: pd.Series) -> str:
 def run_tfbsfetcher_stage(config: dict):
     """
     Main entry point for the TFBS-fetcher stage.
-
+    
     Steps:
       1. Validate configuration and determine output directories.
       2. Load the TF mapping CSV from the tffetcher stage.
-      3. Load and parse each enabled TFBS dataset (e.g., EcoCyc, RegulonDB).
-      4. Merge the TF mapping with the parsed TFBS data.
-      5. Deduplicate the merged results (grouping by tf and tfbs).
-      6. Log summary counts.
-      7. Write the final CSV output.
+      3. If the configuration option 'use_only_enriched_tfs' is True,
+          load the TF enrichment summary and filter the mapping to include only
+          enriched TFs that:
+             - Appear in the enrichment 'regulator' column,
+             - Do NOT have "yes" in the 'is_sigma_factor' column,
+             - Do NOT have "yes" in the 'is_nucleoid_regulator' column.
+          Then, sort these rows by the 'fdr' column in ascending order and select
+          the top N rows based on the 'top_n' parameter in config.
+      4. Load and parse each enabled TFBS dataset.
+      5. Merge the TF mapping with the parsed TFBS data.
+      6. Deduplicate and write the final TFBS mapping CSV.
     """
-    # Validate basic configuration keys.
+    # Validate configuration keys.
     if "root_dir" not in config or "batch_id" not in config:
         raise ValueError("tfbsfetcher config must have 'root_dir' and 'batch_id' keys")
 
     root_dir = config["root_dir"]
     batch_id = config["batch_id"]
-    # Define project_root as three directories above this file.
     project_root = Path(__file__).parent.parent.parent
     tfbs_root_dir = (project_root / root_dir).resolve()
     tfbs_out_dir = tfbs_root_dir / batch_id
@@ -95,8 +90,9 @@ def run_tfbsfetcher_stage(config: dict):
     if not tf_batch_id:
         raise ValueError("[TFBSFetcher] No 'tf_batch_id' specified in config under 'input'.")
 
+    # Look for the mapping CSV inside the "csvs" subdirectory.
     tf_mapping_csv = (
-        tfbs_out_dir.parent.parent / "tffetcher" / tf_batch_id / "deg2tf_mapping.csv"
+        tfbs_out_dir.parent.parent / "tffetcher" / tf_batch_id / "csvs" / "deg2tf_mapping.csv"
     )
     if not tf_mapping_csv.exists():
         raise FileNotFoundError(f"[TFBSFetcher] Cannot find TF mapping CSV: {tf_mapping_csv.relative_to(project_root)}")
@@ -104,15 +100,53 @@ def run_tfbsfetcher_stage(config: dict):
     logger.info(f"[TFBSFetcher] Reading TF mapping from {tf_mapping_csv.relative_to(project_root)}")
     df_tfmap = pd.read_csv(tf_mapping_csv)
 
-    # Verify required columns are present.
+    # Verify required columns.
     required_cols = {"gene", "regulator", "deg_source"}
     missing = required_cols - set(df_tfmap.columns)
     if missing:
         raise ValueError(f"[TFBSFetcher] deg2tf mapping is missing columns: {missing}")
 
-    # Standardize the TF (regulator) names and deg_source to lowercase with no extra whitespace.
+    # Standardize the TF names and deg_source.
     df_tfmap["regulator"] = df_tfmap["regulator"].str.lower().str.strip()
     df_tfmap["deg_source"] = df_tfmap["deg_source"].astype(str).str.lower().str.strip()
+
+    # Check for user-defined option "use_only_enriched_tfs"
+    use_only_enriched = config.get("use_only_enriched_tfs", False)
+    enriched_tfs = set()
+    if use_only_enriched:
+        # Assume the enrichment summary is located in the same tfbatch as tffetcher output.
+        tf_enrichment_csv = (
+            tfbs_out_dir.parent.parent / "tffetcher" / tf_batch_id / "csvs" / "tf_enrichment_summary.csv"
+        )
+        if not tf_enrichment_csv.exists():
+            raise FileNotFoundError(f"[TFBSFetcher] Cannot find TF enrichment summary CSV: {tf_enrichment_csv.relative_to(project_root)}")
+        df_enrich = pd.read_csv(tf_enrichment_csv)
+        
+        # Standardize relevant columns.
+        df_enrich["regulator"] = df_enrich["regulator"].str.lower().str.strip()
+        df_enrich["is_sigma_factor"] = df_enrich["is_sigma_factor"].str.lower().str.strip()
+        df_enrich["is_nucleoid_regulator"] = df_enrich["is_nucleoid_regulator"].str.lower().str.strip()
+        
+        # Apply filtering: retain rows where neither 'is_sigma_factor' nor 'is_nucleoid_regulator' is "yes".
+        df_enrich_filtered = df_enrich[
+            (df_enrich["is_sigma_factor"] != "yes") &
+            (df_enrich["is_nucleoid_regulator"] != "yes")
+        ]
+        
+        # Sort the filtered enrichment data by the 'fdr' column (ascending).
+        df_enrich_filtered = df_enrich_filtered.sort_values(by="fdr", ascending=True)
+        
+        # Get the top N rows if specified in config.
+        top_n = config.get("params", {}).get("top_n", None)
+        if top_n is not None:
+            df_enrich_filtered = df_enrich_filtered.head(top_n)
+        
+        # Create a set of enriched TFs from the filtered enrichment summary.
+        enriched_tfs = set(df_enrich_filtered["regulator"])
+        
+        original_count = len(df_tfmap)
+        df_tfmap = df_tfmap[df_tfmap["regulator"].isin(enriched_tfs)]
+        logger.info(f"[TFBSFetcher] use_only_enriched_tfs enabled: Filtered mapping from {original_count} to {len(df_tfmap)} rows based on enriched TFs (top {top_n} by fdr).")
 
     # Load each TFBS dataset as configured.
     sources_conf = config.get("sources", {}).get("binding_sites", {})
@@ -120,14 +154,12 @@ def run_tfbsfetcher_stage(config: dict):
         logger.info("[TFBSFetcher] No TFBS binding_sites sources configured, skipping.")
         return
 
-    tfbs_sources = []  # List of tuples: (parser_label, parsed_tfbs_data)
+    tfbs_sources = []
     for key, conf in sources_conf.items():
-        # Check for an 'enabled' flag; default is True.
         enabled = conf.get("enabled", True) if isinstance(conf, dict) else conf
         if not enabled:
             logger.info(f"[TFBSFetcher] Skipping TFBS dataset: {key} (not enabled).")
             continue
-        # Retrieve the parser label from the YAML value (if defined) instead of the key.
         parser_label = conf.get("parser", key)
         try:
             parser = get_tfbs_parser(key)
@@ -139,7 +171,6 @@ def run_tfbsfetcher_stage(config: dict):
             raise
 
     # Merge TFBS data and track which source provided each binding site.
-    # Only non-empty TFBS values will be added.
     source_tracker = defaultdict(lambda: defaultdict(set))
     empty_tfbs_count = 0
     empty_tfbs_by_source = defaultdict(int)
@@ -154,6 +185,14 @@ def run_tfbsfetcher_stage(config: dict):
     if empty_tfbs_count:
         breakdown = ", ".join([f"{src}: {cnt}" for src, cnt in empty_tfbs_by_source.items()])
         logger.info(f"[TFBSFetcher] Skipped {empty_tfbs_count} empty TFBS entries during merge (breakdown by source: {breakdown}).")
+    
+    # If filtering by enriched TFs, warn if any enriched TF does not have TFBS information.
+    if use_only_enriched:
+        missing_tfs = enriched_tfs - set(source_tracker.keys())
+        if missing_tfs:
+            logger.warning("[TFBSFetcher] Warning: The following enriched TFs do not have any TFBS information:")
+            for tf in sorted(missing_tfs):
+                logger.warning(f" - {tf}")
 
     # Join the TF mapping with TFBS data.
     rows = []
@@ -250,7 +289,6 @@ def run_tfbsfetcher_stage(config: dict):
     # Log relative path for output.
     logger.info(f"[TFBSFetcher] Saved {len(df_clean)} unique TFBS mappings to {out_csv.relative_to(project_root)}")
     df_clean.to_csv(out_csv, index=False)
-
 
 def merge_tfbs_dicts(tfbs_list: List[Dict[str, Set[str]]]) -> Dict[str, Set[str]]:
     """

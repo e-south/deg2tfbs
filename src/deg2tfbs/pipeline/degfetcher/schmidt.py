@@ -5,7 +5,7 @@ schmidt.py
 
 Module for loading and analyzing data from Schmidt et al., Table S6, which contains 
 global absolute abundance estimations for over 2,300 proteins in E. coli under 22
-different experimental condition.
+different experimental conditions.
 
 The module isolates up- and down-regulated genes based on a user-defined log2 fold 
 change threshold and saves an MA plot (average expression vs. log2 Fold Change).
@@ -19,7 +19,6 @@ Dunlop Lab
 """
 
 from pathlib import Path
-
 import yaml
 import numpy as np
 import pandas as pd
@@ -54,36 +53,38 @@ def read_schmidt_data(config_data: dict) -> pd.DataFrame:
 def schmidt_comparisons(df, comparisons, threshold=2.0, save_plots=False, plot_dir=None):
     """
     For each comparison label in 'comparisons':
-      - log2FC = log2( df[condition] + 1 ) - log2( df[reference] + 1 )
-      - average protein abundance = ( condition + reference ) / 2
-      - classify up/down using a defined threshold
+      - Computes log2 fold change = log2( df[condition] + 1 ) - log2( df[reference] + 1 )
+      - Computes average protein abundance = ( condition + reference ) / 2
+      - Classifies up/down using a defined threshold.
 
-    Returns a combined up/down DataFrame across all comparisons.
+    Returns two DataFrames: combined up- and down-regulated genes across all comparisons.
     """
     all_up = []
     all_down = []
+    # Also collect the raw (tidy) data for a particular comparison if needed.
+    raw_data = {}
 
     for label, (condition, reference) in comparisons.items():
-        # Avoid zero with small offset
-        offset = 1.0
+        offset = 1.0  # small offset to avoid log(0)
         df_sub = df[["Gene", condition, reference]].dropna().copy()
         df_sub["log2FC"] = np.log2(df_sub[condition] + offset) - np.log2(df_sub[reference] + offset)
         df_sub["avg_exp"] = (df_sub[condition] + df_sub[reference]) / 2
-
-        # Up- and down-regulated genes are colored red and green, respectively
+        # Color points: red for up, green for down, gray for values in between.
         df_sub["color"] = np.where(
             df_sub["log2FC"] >= threshold, "red",
             np.where(df_sub["log2FC"] <= -threshold, "green", "gray")
         )
+        # Save the raw tidy data for later export if needed.
+        raw_data[label] = df_sub.copy()
+
         up = df_sub[df_sub["log2FC"] >= threshold].copy()
         up["comparison"] = label
         down = df_sub[df_sub["log2FC"] <= -threshold].copy()
         down["comparison"] = label
-        
+
         all_up.append(up)
         all_down.append(down)
 
-        # Optional plot
         if save_plots and plot_dir is not None:
             plt.figure(figsize=(6,5))
             plt.scatter(df_sub["avg_exp"], df_sub["log2FC"], c=df_sub["color"], alpha=0.25, edgecolors="none")
@@ -100,7 +101,8 @@ def schmidt_comparisons(df, comparisons, threshold=2.0, save_plots=False, plot_d
 
     up_all = pd.concat(all_up, ignore_index=True).drop_duplicates()
     down_all = pd.concat(all_down, ignore_index=True).drop_duplicates()
-    return up_all, down_all
+    return up_all, down_all, raw_data
+
 
 def run_schmidt_pipeline(full_config: dict):
     """
@@ -114,9 +116,10 @@ def run_schmidt_pipeline(full_config: dict):
         thresholds:
           log2_fc_threshold: 2.0
           comparisons:
-            "Acetate_vs_Glucose": [ "Acetate", "Glucose" ]
-            "Xylose_vs_Glucose": [ "Xylose", "Glucose" ]
-            ...
+            Acetate_vs_Glucose: [ "Acetate", "Glucose" ]
+            Xylose_vs_Glucose: [ "Xylose", "Glucose" ]
+            Chemostat_slow_vs_fast: [ "Chemostat µ=0.20", "Chemostat µ=0.5" ]
+            Osmotic_stress_glucose_vs_Glucose: [ "Osmotic-stress glucose", "Glucose" ]
         output:
           csv_subdir: "csv"
           plot_subdir: "plots"
@@ -137,7 +140,7 @@ def run_schmidt_pipeline(full_config: dict):
     threshold = config_schmidt["thresholds"]["log2_fc_threshold"]
     comparisons = config_schmidt["thresholds"]["comparisons"]
 
-    up_all, down_all = schmidt_comparisons(
+    up_all, down_all, raw_data = schmidt_comparisons(
         df,
         comparisons=comparisons,
         threshold=threshold,
@@ -147,7 +150,7 @@ def run_schmidt_pipeline(full_config: dict):
 
     required_columns = ["gene", "source", "thresholds", "comparison"]
     
-    # Tidy up the DataFrames of up- and down-regulated genes
+    # Tidy up the DataFrames of up- and down-regulated genes.
     up_clean = up_all.copy().rename(columns={"Gene": "gene"})
     up_clean["source"] = "schmidt"
     up_clean["thresholds"] = threshold
@@ -161,11 +164,21 @@ def run_schmidt_pipeline(full_config: dict):
     up_clean.to_csv(csv_dir / "schmidt_upregulated_degs.csv", index=False)
     down_clean.to_csv(csv_dir / "schmidt_downregulated_degs.csv", index=False)
 
-    print(f"[Schmidt et al. Pipeline] Completed. Identified DEGs across {len(comparisons)} condition pairs at log2 ≥ {threshold}: {len(up_all)} up, {len(down_all)} down.")
-    
-if __name__ == "__main__":
-  config_path = Path(__file__).parent.parent.parent / "configs" / "example.yaml"
-  with open(config_path, "r") as f:
-      full_config = yaml.safe_load(f)
+    # ---- New Tidy Output for Acetate_vs_Glucose ----
+    # Save the raw (non-threshold filtered) data for the "Acetate_vs_Glucose" comparison.
+    if "Acetate_vs_Glucose" in comparisons:
+        df_tidy = raw_data["Acetate_vs_Glucose"]
+        # Rename "Gene" to "gene" for consistency.
+        df_tidy = df_tidy.rename(columns={"Gene": "gene"})
+        tidy_csv_path = csv_dir / "schmidt_acetate_vs_glucose_tidy.csv"
+        df_tidy.to_csv(tidy_csv_path, index=False)
+    # --------------------------------------------------
 
-  run_schmidt_pipeline(full_config)
+    print(f"[Schmidt et al. Pipeline] Completed. Identified DEGs across {len(comparisons)} condition pairs at log2 ≥ {threshold}: {len(up_all)} up, {len(down_all)} down.")
+
+
+if __name__ == "__main__":
+    config_path = Path(__file__).parent.parent.parent / "configs" / "example.yaml"
+    with open(config_path, "r") as f:
+        full_config = yaml.safe_load(f)
+    run_schmidt_pipeline(full_config)

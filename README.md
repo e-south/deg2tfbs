@@ -85,7 +85,7 @@ deg2tfbs/
    - Loads comparative omics datasets from the [**dnadesign-dna**](https://github.com/e-south/dnadesign-data) repository.
    - Produces tidy CSV outputs, such as `ceroni_upregulated_degs.csv`, containing columns:  
      - **gene**: DEG identifier.
-     - **source**: The source dataset (e.g., "ceroni").
+     - **source**: The source dataset (e.g., "schmidt").
      - **thresholds**: Optional column specifying user-defined DEG thresholds from the config file.
      - **comparison**: The experimental context defining the target vs. reference condition.
 

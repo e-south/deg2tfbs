@@ -1,0 +1,11 @@
+gene,source,thresholds,comparison
+plaP ,treitz,1.5,Acetate_over_Glucose
+ptsG ,treitz,1.5,Acetate_over_Glucose
+uidC ,treitz,1.5,Acetate_over_Glucose
+yccF ,treitz,1.5,Acetate_over_Glucose
+yihQ ,treitz,1.5,Acetate_over_Glucose
+manX ,treitz,1.5,Acetate_over_Glucose
+manZ ,treitz,1.5,Acetate_over_Glucose
+frc ,treitz,1.5,Acetate_over_Glucose
+yneF ,treitz,1.5,Acetate_over_Glucose
+brnQ ,treitz,1.5,Acetate_over_Glucose

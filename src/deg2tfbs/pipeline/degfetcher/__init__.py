@@ -28,6 +28,8 @@ from deg2tfbs.pipeline.degfetcher.sanchez_vasquez import run_sanchez_vasquez_pip
 from deg2tfbs.pipeline.degfetcher.vazulka import run_vazulka_pipeline
 from deg2tfbs.pipeline.degfetcher.kim import run_kim_pipeline
 from deg2tfbs.pipeline.degfetcher.zhang import run_zhang_pipeline
+from deg2tfbs.pipeline.degfetcher.treitz import run_treitz_pipeline
+from deg2tfbs.pipeline.degfetcher.treitz_schmidt_concordant import run_treitz_schmidt_concordant_pipeline
 
 # A dictionary mapping each key in your config to the actual function
 MODULE_MAP: Dict[str, Callable] = {
@@ -50,6 +52,8 @@ MODULE_MAP: Dict[str, Callable] = {
     "vazulka": run_vazulka_pipeline,
     "kim": run_kim_pipeline,
     "zhang": run_zhang_pipeline,
+    "treitz": run_treitz_pipeline,
+    "treitz_schmidt_concordant": run_treitz_schmidt_concordant_pipeline
 }
 
 def run_pipeline_for(module_name: str, full_config: dict) -> None:

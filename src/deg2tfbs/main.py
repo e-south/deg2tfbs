@@ -43,56 +43,14 @@ def run_downstream(full_config: dict):
     """
     For each group defined in tffetcher.input.deg_csv_groups, update the tffetcher
     and tfbsfetcher configurations and run the downstream stages.
-    
-    Groups can be defined in one of three ways:
-      - A group with an empty definition (or not defined) means use all CSVs in a degbatch subdirectory.
-      - A group with a "filter" key to automatically select CSVs by substring.
-      - A group with a "files" key listing one or more dictionaries of the form:
-           { file: "<csv_filename>", comparison: "<desired_comparison>" }
     """
     base_tffetcher_conf = full_config["pipeline"]["stages"].get("tffetcher", {})
     base_tfbs_conf = full_config["pipeline"]["stages"].get("tfbsfetcher", {})
 
-    input_conf = base_tffetcher_conf.get("input", {})
-
-    # Look for grouping key in config file
-    groups = input_conf.get("deg_csv_groups", None)    
-    if not isinstance(groups, dict):
-        raise ValueError("`deg_csv_groups` must be a mapping (dictionary) of group names to definitions.")
-
-    total = len(groups)
-    for idx, (group_name, group_def) in enumerate(groups.items(), start=1):
-        # Each group definition can be:
-        #   {} or None: process all CSVs.
-        #   { filter: "<substring>" }: filter filenames.
-        #   { files: [ {file: <name>, comparison: <override>}, ... ] }: explicit list.
-        if group_def is None:
-            group_def = {}
-
-        # (At this point, group_def is a dict, and its contents will be handled by the stage code.)
-        print(f"Processing group {idx} of {total}: '{group_name}'")
-
-        # Deep-copy the base configurations so each group is processed independently.
-        group_tffetcher_conf = copy.deepcopy(base_tffetcher_conf)
-        group_tfbs_conf = copy.deepcopy(base_tfbs_conf)
-
-        # Inject the group definition into tffetcher configuration.
-        # (The tffetcher stage should check for the key 'deg_csv_group' and act accordingly.)
-        group_tffetcher_conf.setdefault("input", {})["deg_csv_group"] = group_def
-
-        # Update batch IDs to include the group name so output directories (and files) don’t collide.
-        base_tf_batch_id = group_tffetcher_conf.get("batch_id", "tfbatch_default")
-        group_tffetcher_conf["batch_id"] = f"{base_tf_batch_id}_{group_name}"
-        group_tfbs_conf.setdefault("input", {})["tf_batch_id"] = group_tffetcher_conf["batch_id"]
-        base_tfbs_batch_id = group_tfbs_conf.get("batch_id", "tfbsbatch_default")
-        group_tfbs_conf["batch_id"] = f"{base_tfbs_batch_id}_{group_name}"
-
-        # Run stage 2: Map DEGs to TFs.
-        run_tffetcher_stage(group_tffetcher_conf)
-        
-        # Run stage 3: Map TFs to TFBSs.
-        run_tfbsfetcher_stage(group_tfbs_conf)
-        print(f"Completed group '{group_name}'\n")
+    print("Processing consolidated deg_csv_groups:")
+    run_tffetcher_stage(base_tffetcher_conf)
+    run_tfbsfetcher_stage(base_tfbs_conf)
+    print("Completed downstream processing.\n")
 
 
 def main(config_file: Path):
@@ -108,6 +66,5 @@ def main(config_file: Path):
 
 
 if __name__ == "__main__":
-    # The config file is assumed to be in deg2tfbs/configs/example.yaml
     config_path = Path(__file__).parent / "configs" / "example.yaml"
     main(config_path)
