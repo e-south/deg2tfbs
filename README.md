@@ -145,7 +145,7 @@ deg2tfbs/
       | aceb  | cra       | +        | ecocyc_28_AND_regdb_13     | yes                 | no              | no                    |
       | aceb  | lrp       | +        | ecocyc_28_AND_regdb_13     | yes                 | no              | no                    |
 
-      In addition to the mapping file, tffetcher can perform statistical testing (e.g., a Fisher Exact Test) to prioritize TFs that are enriched for regulating DEGs. For each TF, we construct a 2x2 continguency table to assess enrichment of DEGs among its targets:
+      In addition to the mapping file, tffetcher can perform statistical testing (e.g., a Fisher's Exact Test) to prioritize TFs that are enriched for regulating DEGs. For each TF, we construct a 2x2 continguency table to assess enrichment of DEGs among its targets:
       |                 | DEG (Observed) | Non-DEG (Not observed) | 
       |-----------------|----------------|------------------------|
       | TF Targets      | a              | K - a                  |
@@ -159,7 +159,7 @@ deg2tfbs/
       
       ***Note:*** *In enrichment analysis, the term background (i.e., the entire population) refers to the set of all genes that could theoretically be detected as DEGs in the experiment. In our case, the curated regulatory networks (from EcoCyc and RegulonDB) include over 3,000 genes, yet an experimental dataset from **degfetcher** may contains only a subset (e.g., the 1,881 genes in the above Treitz-Schmidt concordant plot). Therefore, we would filter the regulatory network to include only genes present in the concordant plot. This ensures that only measurable genes contribute to the background, preventing an inflated denominator.*
 
-      A one‑tailed Fisher exact test (testing for overrepresentation) is applied to the above table to yield a raw p‑value for each TF. P‑values are then adjusted for multiple testing using the Benjamini–Hochberg (BH) method. TFs can then be ranked in ascending order by their FDR-corrected p‑values. This “Top-N” method enables prioritization of TFs by focusing on those with the strongest evidence of enrichment in regulating DEGs.
+      A one‑tailed Fisher's Exact Test (testing for overrepresentation) was applied to yield a raw p‑value for each TF. P‑values are then adjusted for multiple testing using the Benjamini–Hochberg (BH) method. TFs can then be ranked in ascending order by their FDR-corrected p‑values. This “Top-N” method prioritizes TFs showing the strongest enrichment of regulated DEGs, based on the assumption that such overrepresentation may indicate condition-specific regulatory activity (e.g., between M9-acetate and M9-glucose).
 
       ***Note:*** Enrichment scores (a/K) and p-values from the Fisher's Exact Test are related—but they’re not the same, and they don’t always move together.
       - The enrichment fraction (a/K) - This measures what proportion of a TF's targets are differentially expressed
