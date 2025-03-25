@@ -157,15 +157,18 @@ deg2tfbs/
       - M is the number of DEGs present in the background.
       - N is the total number of genes in the background.
       
-      ****Technical Note:*** In enrichment analysis, the term background (i.e., the entire population) refers to the set of all genes that could theoretically be detected as DEGs in the experiment. In our case, the curated regulatory networks (from EcoCyc and RegulonDB) include over 3,000 genes, yet an experimental dataset from **degfetcher** may contains only a subset (e.g., the 1,881 genes in the above Treitz-Schmidt concordant plot). Therefore, we would filter the regulatory network to include only genes present in the concordant plot. This ensures that only measurable genes contribute to the background, preventing an inflated denominator.
+      ***Note:*** *In enrichment analysis, the term background (i.e., the entire population) refers to the set of all genes that could theoretically be detected as DEGs in the experiment. In our case, the curated regulatory networks (from EcoCyc and RegulonDB) include over 3,000 genes, yet an experimental dataset from **degfetcher** may contains only a subset (e.g., the 1,881 genes in the above Treitz-Schmidt concordant plot). Therefore, we would filter the regulatory network to include only genes present in the concordant plot. This ensures that only measurable genes contribute to the background, preventing an inflated denominator.*
 
-      A one‑tailed Fisher exact test (testing for overrepresentation) is applied to this table to yield a raw p‑value for each TF. P‑values are then adjusted for multiple testing using the Benjamini–Hochberg (BH) method.
+      A one‑tailed Fisher exact test (testing for overrepresentation) is applied to the above table to yield a raw p‑value for each TF. P‑values are then adjusted for multiple testing using the Benjamini–Hochberg (BH) method. TFs can then be ranked in ascending order by their FDR-corrected p‑values. This “Top-N” method enables prioritization of TFs by focusing on those with the strongest evidence of enrichment in regulating DEGs.
 
-      The enrichment score is calculated as a/K, which represents the proportion of a TF’s known targets that are observed among the DEGs. A higher enrichment score suggests that a larger fraction of the TF's targets are differentially expressed, implying that the TF might be actively involved in condition-dependent regulation.
+      ***Note:*** Enrichment scores (a/K) and p-values from the Fisher's Exact Test are related—but they’re not the same, and they don’t always move together.
+      - The enrichment fraction (a/K) - This measures what proportion of a TF's targets are differentially expressed
+      - The absolute number of gene targets - This affects statistical power and confidence
 
       ![TF Enrichment](images/tf_consolidated_enrichment.png)
 
-      TFs can then be ranked in ascending order by their FDR-corrected p‑values. This “Top-N” method enables prioritization of TFs by focusing on those with the strongest evidence of enrichment in regulating DEGs.
+      The Fisher's Exact Test is sensitive to both the proportion and the total counts.
+    
      
 3. **tfbsfetcher** *(Step 3: Map TFs to TFBSs)*  
    - Reads CSV outputs, saved in batches, from **tffetcher**.

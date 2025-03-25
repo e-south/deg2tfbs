@@ -35,14 +35,16 @@ The module outputs:
        regulator_type, a, K, M, N, and a boolean "topN" indicating whether the TF is among the top-N
        (lowest FDR among non-sigma, non-nucleoid candidates).
   2. A consolidated enrichment plot with two subplots sharing the same x-axis:
-       - Top subplot: a barplot of enrichment scores with y-axis label 
-         "Enrichment Score (DEG targets / total targets)". Each bar is annotated with a two‐line text:
-         the first line shows the number of DEG targets (a), a horizontal line ("────") is drawn, and the second line
-         shows the total targets (K). A composite annotation is placed in the top right explaining these values.
-       - Bottom subplot: a barplot of negative FDR values. Top-N candidates are colored in darker pastel red (#ff5555)
-         and the remaining ones in light gray (#d3d3d3). A vertical dashed line (in the same red hue) marks the top-N partition,
-         with a rotated annotation "Top {N}" (without a colon) positioned to the left of the line.
-       - X-tick labels are uniformly black, with a slight margin between the y-axis and the first x tick.
+       - Top subplot: a scatter plot of enrichment scores.
+         * x-axis: Transcription factors (TFs) ranked by p-value (from the bottom subplot).
+         * y-axis: Enrichment score (DEG targets / total targets).
+         * Dot size encodes total targets (K) for each TF.
+         * Dot color is red for top-N regulators and gray for the others.
+         * A legend shows that point size equates to total gene targets.
+       - Bottom subplot: a barplot of negative FDR values.
+         Top-N candidates are colored in darker pastel red (#ff5555) and the remaining ones in light gray (#d3d3d3).
+         A vertical dashed line (in the same red hue) marks the top-N partition, with a rotated annotation "Top {N}".
+       - X-tick labels are uniformly black and shared between subplots.
        
 TF Target Enrichment in DEGs: Scores and BH-FDR Adjusted Significance
 --------------------------------------------------------------------------------
@@ -58,8 +60,7 @@ from scipy.stats import fisher_exact
 from statsmodels.stats.multitest import multipletests
 import matplotlib.pyplot as plt
 import seaborn as sns
-from matplotlib.patches import Patch
-
+from matplotlib.ticker import FormatStrFormatter
 
 # Set random seed for reproducibility.
 np.random.seed(42)
@@ -179,41 +180,60 @@ def run_enrichment(merged_network, mapping_rows, all_degs, out_dir: Path, params
     # Allow user control over figure dimensions.
     plot_figsize = params.get("plot_figsize", (18, 10))
     
-    # Plotting: create two subplots.
+    # Plotting: create two subplots with shared x-axis.
     fig, (ax_top, ax_bottom) = plt.subplots(nrows=2, sharex=True, figsize=plot_figsize,
-                                            gridspec_kw={"height_ratios": [3, 1]})
+                                             gridspec_kw={"height_ratios": [3, 1]})
     # Provide outer margins.
     plt.subplots_adjust(left=0.07, right=0.93, top=0.93, bottom=0.12, hspace=0.05)
     x = np.arange(len(df_plot))
-    bar_width = 0.6
-
-    # TOP SUBPLOT: Plot barplot of enrichment scores.
-    bars = ax_top.bar(x, df_plot["enrichment_score"], width=bar_width, color="#7f7f7f", alpha=0.8)
+    
+    # --- TOP SUBPLOT: Scatter plot for enrichment values ---
+    # Each point represents a TF, where:
+    #   - x-axis: TF index (ranked by p-value)
+    #   - y-axis: Enrichment score (a/K)
+    #   - Dot size encodes total targets (K)
+    #   - Dot color: Red if in top-N; gray otherwise.
+    sizes = df_plot["K"] * 10  # Adjust multiplier as needed.
+    def get_point_color(topN):
+        return "#ff5555" if topN else "#d3d3d3"
+    point_colors = [get_point_color(top) for top in df_plot["topN"]]
+    ax_top.scatter(x, df_plot["enrichment_score"],
+                   s=sizes,
+                   color=point_colors,
+                   alpha=0.8)
     ax_top.set_ylabel("Enrichment Score (DEG targets / total targets)", fontsize=14)
-    ax_top.set_title("TF Target Enrichment in DEGs: Scores and BH-FDR Adjusted Significance", fontsize=16)
-    # Increase margin between title and plot by shifting title upward.
-    ax_top.title.set_position([0.5, 1.20])
+    # Set main title and add a subtitle with a smaller font.
+    ax_top.set_title("Prioritizing Transcription Factors", fontsize=16, pad=20)
+    ax_top.text(0.5, 0.99, "Integrating Enrichment Scores, Target Abundance, and Statistical Significance", 
+                transform=ax_top.transAxes, ha="center", fontsize=14)
     ax_top.tick_params(axis="both", labelsize=12)
-    # Annotate each bar with a two-line annotation: top line = DEG targets count, bottom line = total targets.
-    for i, row in df_plot.iterrows():
-        es = row["enrichment_score"]
-        annotation = f"{row['a']}\n─\n{row['K']}"
-        ax_top.text(x[i], es + 0.01, annotation, ha="center", va="bottom", fontsize=10, color="gray")
-    # Composite legend (custom annotation) placed in the top right, vertically centered.
-    composite_text = "DEG targets for TF\n────────────\nTotal number of targets for TF"
-    ax_top.text(0.88, 0.5, composite_text, transform=ax_top.transAxes, ha="center", va="center",
-                fontsize=14, color="black", bbox=dict(facecolor="white", edgecolor="none", alpha=0.7))
+    # Ensure y-axis ticks show two decimal places
+    ax_top.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    
+    # --- Add custom legend for point size ---
+    # Select representative K values (min, median, max)
+    min_k = df_plot["K"].min()
+    med_k = int(np.median(df_plot["K"]))
+    max_k = df_plot["K"].max()
+    # Create dummy scatter handles for the legend
+    handles = [plt.scatter([], [], s=sz, color="gray", alpha=0.8) 
+               for sz in [min_k*10, med_k*10, max_k*10]]
+    labels = [f"{min_k} targets", f"{med_k} targets", f"{max_k} targets"]
+    ax_top.legend(handles, labels, title="Total gene targets", loc="upper right", 
+                  labelspacing=1.5, frameon=False)
+    
     sns.despine(ax=ax_top, top=True, right=True)
     
-    # BOTTOM SUBPLOT: Plot negative FDR values.
+    # --- BOTTOM SUBPLOT: Bar plot for negative FDR values ---
     def get_bar_color(topN):
         return "#ff5555" if topN else "#d3d3d3"
     bar_colors = [get_bar_color(top) for top in df_plot["topN"]]
-    ax_bottom.bar(x, -df_plot["fdr"], width=bar_width, color=bar_colors, alpha=0.8)
+    ax_bottom.bar(x, -df_plot["fdr"], width=0.6, color=bar_colors, alpha=0.8)
     ax_bottom.set_ylabel("BH-FDR corrected p-value", fontsize=14)
     ax_bottom.tick_params(axis="both", labelsize=12)
     ax_bottom.set_ylim(-1, 0)
     ax_bottom.set_yticks(np.linspace(-1, 0, 6))
+    # Set y-axis tick labels with two decimal places (using absolute values)
     ax_bottom.set_yticklabels([f"{abs(y):.2f}" for y in np.linspace(-1, 0, 6)], fontsize=12)
     ax_bottom.set_xlabel("Transcription Factor", fontsize=14)
     
@@ -224,11 +244,10 @@ def run_enrichment(merged_network, mapping_rows, all_degs, out_dir: Path, params
     if len(df_plot) >= top_n:
         partition_x = top_n - 0.5
         ax_bottom.axvline(x=partition_x, color="#ff5555", linestyle="--", linewidth=1)
-        # Annotate the vertical line with rotated "Top {N}" (without colon) positioned to the left.
         ax_bottom.text(partition_x - 0.2, -0.95, f"Top {top_n}", color="#ff5555",
                        fontsize=14, ha="right", va="bottom", rotation=90)
     
-    # Set x-axis tick labels uniformly in black.
+    # Set x-axis tick labels uniformly in black and shared between subplots.
     ax_bottom.set_xticks(x)
     ax_bottom.set_xticklabels(df_plot["regulator"], rotation=90, fontsize=12, color="black")
     sns.despine(ax=ax_bottom, top=True, right=True)
