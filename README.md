@@ -48,7 +48,7 @@ deg2tfbs/
         ├── __init__.py
         ├── main.py                         # CLI entry point
         ├── configs/                        # User-defined configurations
-        │   └── example.yaml                # Customize to process different DEGs and retrieve different TFBSs
+        │   └── example.yaml                # Customize to process different DEGs and retrieve different TFs and TFBSs
         └── pipeline/
             ├── utils.py                    # Dictionary of paths to datasets (from dnadesign-data)
             ├── degfetcher/                 # Step 1: Isolate DEGs
@@ -79,30 +79,51 @@ deg2tfbs/
 ```
 
 
-## **Pipeline Steps**
+## **Pipeline Steps and Example Use Case**
 
 1. **degfetcher** *(Step 1: Isolate DEGs)*  
    - Loads comparative omics datasets from the [**dnadesign-dna**](https://github.com/e-south/dnadesign-data) repository.
-   - Produces tidy CSV outputs, such as `ceroni_upregulated_degs.csv`, containing columns:  
+   - Produces tidy CSV outputs, such as `schmidt_upregulated_degs.csv`, containing columns:  
      - **gene**: DEG identifier.
      - **source**: The source dataset (e.g., "schmidt").
      - **thresholds**: Optional column specifying user-defined DEG thresholds from the config file.
      - **comparison**: The experimental context defining the target vs. reference condition.
 
       For example:
-      | gene  | source  | thresholds | comparison                  |
-      |-------|--------|------------|------------------------------|
-      | groS  | ceroni | 2.5        | pLys-M1_versus_pLys          |
-      | gadY  | ceroni | 2.5        | pLys-M1_versus_pLys          |
-      | azuC  | ceroni | 2.5        | pLys-M1_versus_pLys          |
-      | yadL  | ceroni | 2.5        | pPD864-LacZ_versus_pPD864    |
-      | rclC  | ceroni | 2.5        | pPD864-LacZ_versus_pPD864    |
-      | rclR  | ceroni | 2.5        | pPD864-LacZ_versus_pPD864    |
+      | gene  | source  | thresholds | comparison                |
+      |-------|---------|------------|---------------------------|
+      | acnB  | schmidt | 1.5        | Acetate_vs_Glucose        |
+      | maeB  | schmidt | 1.5        | Acetate_vs_Glucose        |
+      | aldA  | schmidt | 1.5        | Acetate_vs_Glucose        |
+      | aceB  | schmidt | 1.5        | Chemostat_slow_vs_fast    |
+      | gltA  | schmidt | 1.5        | Chemostat_slow_vs_fast    |
+      | gatY  | schmidt | 1.5        | Chemostat_slow_vs_fast    |
 
+    Beyond outputting thresholded DEGs as CSV files, many **degfetcher** data ingestion modules also generate plots to visualize the full dataset for added context.
+
+    ![Schmidt MA Plot](images/schmidt_ma_plot.png)
+
+    **A quick use case:**
+
+    The example above highlights up- and down-regulated genes during *E. coli* growth in M9-acetate versus M9-glucose, using proteomic data from [**Schmidt *et al.***](https://www.nature.com/articles/nbt.3418). The `schmidt.py` module processes this dataset to identify DEGs and generate the corresponding MA plot.
+
+    To further increase confidence in DEG selection, we wrote another module in **degfetcher** to threshold on data from [**Treitz *et al.***](https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/10.1002/pmic.201600303), which also collected *E. coli* protein abundance data, grown in either M9-acetate to M9-glucose. 
+    
+    ![Treitz Volcano Plot](images/treitz_volcano.png)
+    
+    Among these two datasets, 1881 genes are shared, and their log₂ fold-change values can be visualized in a concordance plot:
+
+    ![Treitz-Schmidt Concordant Plot](images/treitz_schmidt_concordant.png)
+
+    We then generated two CSVs detailing the purple points:
+    - `treitz_schmidt_concordant_up.csv`
+    - `treitz_schmidt_concordant_down.csv`
+    
+    The next step is to find which transcription factors are associated with these DEGs.
 
 2. **tffetcher** *(Step 2: Map DEGs to TFs)*  
    - Reads CSV outputs, saved in batches, from **degfetcher**.
-   - Loads **regulatory network**-type datasets curated from a resource (e.g., from **RegulonDB** or **EcoCyc**).  
+   - Loads **regulatory network**-type datasets (i.e., TF-gene connections) curated from a database (e.g., from **RegulonDB** or **EcoCyc**).  
    - Fetches TFs that reportedly regulate these DEGs (the “regulatees”).  
    - Produces a tidy CSV output, `deg2tf_mapping`, containing columns: 
      - **gene** - DEG identifier.
@@ -114,17 +135,38 @@ deg2tfbs/
      - **deg_source**: Indicates the source dataset(s) in which this gene appears, as processed by degfetcher.
 
       For example:
-      | gene  | regulator | polarity | source                     | is_global_regulator | is_sigma_factor | DEG Source       |
-      |-------|-----------|----------|----------------------------|---------------------|-----------------|------------------|
-      | aaea  | crp       | +        | ecocyc_28_AND_regdb_13     | yes                 | no              | houser_up        |
-      | aaea  | aaer      | +        | ecocyc_28                  | no                  | no              | houser_up        |
-      | aaeb  | crp       | +        | ecocyc_28_AND_regdb_13     | yes                 | no              | houser_up        |
-      | abga  | nac       | -        | ecocyc_28_AND_regdb_13     | yes                 | no              | ceroni_up        |
-      | acca  | accd      | -        | ecocyc_28                  | no                  | no              | houser_down      |
-      | acca  | rpod      | +        | ecocyc_28                  | no                  | yes             | houser_down      |
-      | adia  | adiy      | +        | ecocyc_28_AND_regdb_13     | no                  | no              | houser_up-lu_up  |
+      | gene  | regulator | polarity | source                     | is_global_regulator | is_sigma_factor | is_nucleoid_regulator |
+      |-------|-----------|----------|----------------------------|---------------------|-----------------|-----------------------|
+      | acea  | arca      | -        | ecocyc_28                  | yes                 | no              | no                    |
+      | acea  | ihfa      | +        | ecocyc_28                  | yes                 | no              | yes                   |
+      | acea  | iclr      | -        | ecocyc_28_AND_regdb_13     | no                  | no              | no                    |
+      | acea  | ihf       | +        | regdb_13                   | no                  | no              | yes                   |
+      | aceb  | rpod      | +        | ecocyc_28                  | no                  | yes             | no                    |
+      | aceb  | cra       | +        | ecocyc_28_AND_regdb_13     | yes                 | no              | no                    |
+      | aceb  | lrp       | +        | ecocyc_28_AND_regdb_13     | yes                 | no              | no                    |
 
+      In addition to the mapping file, tffetcher can perform statistical testing (e.g., a Fisher Exact Test) to prioritize TFs that are enriched for regulating DEGs. For each TF, we construct a 2x2 continguency table to assess enrichment of DEGs among its targets:
+      |                 | DEG (Observed) | Non-DEG (Not observed) | 
+      |-----------------|----------------|------------------------|
+      | TF Targets      | a              | K - a                  |
+      | Non-TF Targets  | M - a          | N - K - (M - a)        |
 
+      where:
+      - a is the number of DEGs that are targets of the TF.
+      - K is the total number of targets for the TF (as defined in the regulatory network).*
+      - M is the number of DEGs present in the background.
+      - N is the total number of genes in the background.
+      
+      ****Technical Note:*** In enrichment analysis, the term background (i.e., the entire population) refers to the set of all genes that could theoretically be detected as DEGs in the experiment. In our case, the curated regulatory networks (from EcoCyc and RegulonDB) include over 3,000 genes, yet an experimental dataset from **degfetcher** may contains only a subset (e.g., the 1,881 genes in the above Treitz-Schmidt concordant plot). Therefore, we would filter the regulatory network to include only genes present in the concordant plot. This ensures that only measurable genes contribute to the background, preventing an inflated denominator.
+
+      A one‑tailed Fisher exact test (testing for overrepresentation) is applied to this table to yield a raw p‑value for each TF. P‑values are then adjusted for multiple testing using the Benjamini–Hochberg (BH) method.
+
+      The enrichment score is calculated as a/K, which represents the proportion of a TF’s known targets that are observed among the DEGs. A higher enrichment score suggests that a larger fraction of the TF's targets are differentially expressed, implying that the TF might be actively involved in condition-dependent regulation.
+
+      ![TF Enrichment](images/tf_consolidated_enrichment.png)
+
+      TFs can then be ranked in ascending order by their FDR-corrected p‑values. This “Top-N” method enables prioritization of TFs by focusing on those with the strongest evidence of enrichment in regulating DEGs.
+     
 3. **tfbsfetcher** *(Step 3: Map TFs to TFBSs)*  
    - Reads CSV outputs, saved in batches, from **tffetcher**.
    - Loads **TFBS**-type data curated from a resource (e.g. RegulonDB `.txt` or `.csv`).  
@@ -136,7 +178,7 @@ deg2tfbs/
       | **tf**              | The transcription factor name (lowercase)                                                        |
       | **tfbs**            | The TF binding site sequence (normalized to uppercase letters)                                   |
       | **gene**            | The DEG (or gene) associated with this TF mapping                                                |
-      | **deg_source**      | A hyphen-delimited string indicating the source DEG datasets. For example, `houser_down-schmidt_down-durfee_down-bie_up` shows that multiple DEG datasets contributed to this mapping.                                                                                             |
+      | **deg_source**      | A hyphen-delimited string indicating the source DEG datasets. For example, `treitz_schmidt_concordant_up` shows that multiple DEG datasets contributed to this mapping.                                                                                             |
       | **polarity**        | The regulatory polarity (e.g., "-" for repression, "+" for activation)                           |
       | **tfbs_source**     | A string indicating which TFBS resource(s) supplied the binding site (e.g., "regdb" or "ecocyc") |
       | **is_sigma_factor** | Boolean flag (e.g., "no") indicating whether the TF is a sigma factor                            |
@@ -144,87 +186,17 @@ deg2tfbs/
 
    ***Caution:*** In ```tfbsfetcher.py```, there is a final TFBS deduplication check that is stringent and does not account for cases where binding sites differ by ±1 nucleotide at either end.
 
-## Custom DEG CSV Grouping
-In addition to a default “process all available DEGs” approach, you can specify custom combinations of DEG CSVs using the **deg_csv_groups** key within the **tffetcher** configuration. This functionality lets you define exactly which subset(s) of DEG CSVs to process downstream. There are three ways to define a group:
+    The extent of unique TF binding sites for each TF (from the `tf2tfbs_mapping.csv` file) can be visualized, as shown below, or used in downstream analyses beyond the scope of *deg2tfbs*.
 
-- **Global:**  
-  An empty group (e.g. `all: {}`) processes all DEG CSV files in a degbatch subdirectory.
+    ![TFBS Counts Plot](images/tfbs_counts.png)
 
-- **Filter-Based:**  
-  Define a filter pattern (e.g. `all_up: { filter: "up" }`) to select only those CSVs whose filenames contain the specified substring.
-
-- **Explicit Combination:**  
-  Specify an explicit list of files. For example:
-  
-  ```yaml
-  deg_csv_groups:
-    heat_shock_up:
-      files:
-        - { file: "kim_upregulated_degs.csv", comparison: "42C_versus_control" }
-        - { file: "zhang_upregulated_degs.csv", comparison: "sigma32-I54N_expression_versus_control" }
-  ```
 
 ## **Running the Pipeline**
 
 1. Clone the [**dnadesign-data**](https://github.com/e-south/dnadesign-data) repository to access a curated set of comparative omics datasets. Placing it as a sibling directory to **deg2tfbs** enables **degfetcher** to generate custom DEG tables from these sources. 
 
-2. Update ```configs/mycustomparams.yaml``` with the desired I/O paths, batch IDs, and custom DEG CSV groups. For instance:
-   ```yaml
-   # deg2tfbs/configs/example.yaml
-    pipeline:
-        name: "default"
-
-        stages:
-            degfetcher:
-                root_dir: "pipeline/degfetcher"
-                batch_id: "degbatch_20250130"
-                modules:
-                    - ceroni
-                    - mori
-
-            tffetcher:
-                root_dir: "pipeline/tffetcher"
-                batch_id: "tfbatch_20250130"
-                input:
-                    deg_batch_id: "degbatch_20250130"
-                    deg_csv_subdir: "csvs"
-                    # Define custom groups:
-                    deg_csv_groups:
-                        all: {}  # Process all CSVs
-                        all_up:
-                            filter: "up"  # Process all CSVs with "up" in the name
-                        heat_shock_up:
-                            files:
-                            - { file: "kim_upregulated_degs.csv", comparison: "42C_versus_control" }
-                            - { file: "zhang_upregulated_degs.csv", comparison: "s32-I54N_vs_control" }
-                sources:
-                    regulatory_networks:
-                        ecocyc:
-                            path: "ecocyc_28_reg_network"
-                            enabled: true
-                            parser: "ecocyc_network_v28-5"
-                params:
-                    network_strategy: "union"
-                    include_master_regulators: true
-                    include_sigma_factors: true
-
-            tfbsfetcher:
-                root_dir: "pipeline/tfbsfetcher"
-                batch_id: "tfbsbatch_20250130"
-                input:
-                    tf_batch_id: "tfbatch_20250130"  # This pointer is updated per group
-                sources:
-                    binding_sites:
-                    ecocyc:
-                        path: "ecocyc_28_tfbs_smart_table"
-                        ecocyc_motifs: true
-                    regdb:
-                        path: "regulondb_13_tf_ri_set"
-                        regulondb_pssm: false
-                params:
-                    pass
-    ```
-
+2. Update ```configs/mycustomparams.yaml``` with the desired I/O paths, batch IDs, and custom DEG CSV groups.
+   
 3. After configuring your `mycustomparams.yaml`, run the pipeline as follows:
    ```bash
    cd deg2tfbs
@@ -256,60 +228,6 @@ When creating a custom parser, make sure it conforms to one of the following int
   parse(...) -> Dict[str, Set[str]]
   ```
   This signature allows **tfbsfetcher.py** to process new **TFBS** data the same.
-
-
-## Analysis of Pipeline Results
-
-The **analysis** folder contains scripts that visualize the results generated by the **pipeline**. These visualizations help answer the question:
-
-> "Does fetching different sets of DEGs lead to different sets of transcription factors?"
-
-#### Generating TF Rosters
-
-The analysis scripts read the `tf2tfbs_mapping.csv` files produced by **tfbsfetcher**. For each of these files—which are derived from a specific set of DEGs—a binary TF roster is generated. Each roster is a vector whose length equals the total number of unique transcription factors identified by the pipeline. An option is provided to remove “intersections” (i.e., to exclude transcription factors that appear in two defined sets) before further analysis. You specify which directories to include by listing them under the `comparisons` key in your configuration file (e.g., `configs/example.yaml`):
-
-```yaml
-analysis:
-  comparisons:
-    - [ "tfbsbatch_20250209_ciprofloxacin_up", "tfbsbatch_20250209_ciprofloxacin_down" ]
-    - [ "tfbsbatch_20250209_ampicillin_up", "tfbsbatch_20250209_ampicillin_down" ]
-    - ...
-  # When true, transcription factors that appear in both comparison groups 
-  # (i.e., the intersection) are removed from the roster.
-  exclude_intersections: true
-```
-
-Each roster is saved as a tab-delimited file with columns such as:
-
-```text
-regulator   group1   group2   intersection   group1_only   group2_only
-acrr        1        0        0              1             0
-ada         0        1        0              0             1
-agar        1        0        0              1             0
-aidb        0        1        0              0             1
-allr        0        0        0              0             0
-alls        0        0        0              0             0
-arac        0        0        0              0             0
-arca        1        1        1              0             0
-argp        0        0        0              0             0
-```
-
-#### Visualization
-
-The `main.py` script in **analysis** produces several plots that are saved in **analysis/plots**. One of two possible subdirectories are created based on the `exclude_intersections` flag in your configuration:
-
-- **all_regs:** When intersecting transcription factors are **not** removed.
-- **intersects_removed:** When intersecting transcription factors **are** removed.
-
-A heatmap is generated to provide a global view of all the TF rosters (representing the presence or absence of transcription factors). Each roster is treated as a multidimensional vector and then clustered using the Leiden algorithm. For example:
-
-![TF Roster Heatmap (Intersections Removed)](images/tf_roster_heatmap_intersects_removed.png)
-
-*This clustering approach helps to determine whether different sets of DEGs, enriched under distinct environmental conditions, are associated with similar transcription factors. For instance, the TF rosters identified for DEGs downregulated in the presence of kanamycin and ciprofloxacin are similar. In contrast, these rosters are distinct from the transcription factors associated with DEGs upregulated under nutrient limitation.*
-
-Beyond viewing all TF rosters together, the value counts of unique TF binding sites for each TF roster (derived from `tf2tfbs_mapping.csv` files) can also be visualized. For example:
-
-![TFBS Counts Plot](images/tfbs_counts.png)
 
 ---
 

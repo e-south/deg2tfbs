@@ -152,9 +152,9 @@ def run_treitz_schmidt_concordant_pipeline(full_config: dict):
     
     plt.axvline(0, color="gray", linestyle="--")
     plt.axhline(0, color="gray", linestyle="--")
-    plt.xlabel("mRNA Log2 Fold Change (Treitz et al.)")
+    plt.xlabel("Protein Log2 Fold Change (Treitz et al.)")
     plt.ylabel("Protein Log2 Fold Change (Schmidt et al.)")
-    plt.title("Concordance of transcriptomic and proteomic datasets\nM9-Acetate versus M9-Glucose")
+    plt.title("Concordance of proteomic datasets\nM9-Acetate versus M9-Glucose")
     plt.legend(frameon=False)
     plt.annotate(f"Pearson r = {r_val:.2f}", xy=(0.05, 0.95), xycoords="axes fraction",
                  fontsize=12, color="black")

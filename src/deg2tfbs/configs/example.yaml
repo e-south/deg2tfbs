@@ -66,16 +66,14 @@ analysis:
   plot_output_dir: "analysis/plots"
   csv_output_dir: "analysis/data"
 
-  # The reference set is explicitly defined.
-  reference_set: "tfbsbatch_20250223_All"
-  
-  # Explicit pairings as a list of 2‐tuples.
+  # Flag for switching between multi-comparison and single-batch analysis
+  multi_comparison: false
+  reference_set: "tfbsbatch_20250321"
   comparisons:
-    - ["tfbsbatch_20250223_42C_up_kim_et_al", "tfbsbatch_20250223_42C_down_kim_et_al"]
+    - ["tfbsbatch_20250321", "tfbsbatch_20250321"]
   
   exclude_intersections: false
   include_unassigned: false
-    
   umap_n_neighbors: 15
   umap_min_dist: 0.1
   umap_figsize: [8, 6]

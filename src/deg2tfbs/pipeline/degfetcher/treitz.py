@@ -126,7 +126,7 @@ def run_treitz_pipeline(full_config: dict):
     )
     plt.axvline(x=threshold, color='gray', linestyle='--')
     plt.axvline(x=-threshold, color='gray', linestyle='--')
-    plt.title("Protein abundances (M9-acetate versus M9-glucose)")
+    plt.title("Treitz et al.\nProtein abundances (M9-acetate versus M9-glucose)")
     plt.xlabel("log2(Acetate/Glucose)")
     plt.ylabel("-log p-value")
     sns.despine()
