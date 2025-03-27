@@ -78,7 +78,6 @@ deg2tfbs/
                 └── tfbsbatch_<date>/  
 ```
 
-
 ## **Pipeline Steps and Example Use Case**
 
 1. **degfetcher** *(Step 1: Isolate DEGs)*  
@@ -101,7 +100,7 @@ deg2tfbs/
 
     Beyond outputting thresholded DEGs as CSV files, many **degfetcher** data ingestion modules also generate plots to visualize the full dataset for added context.
 
-    ![Schmidt MA Plot](images/schmidt_ma_plot.png)
+    <img src="images/schmidt_ma_plot.png" alt="Schmidt MA Plot" width="600"/>
 
     **A quick use case:**
 
@@ -109,11 +108,11 @@ deg2tfbs/
 
     To further increase confidence in DEG selection, we wrote another module in **degfetcher** to threshold on data from [**Treitz *et al.***](https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/10.1002/pmic.201600303), which also collected *E. coli* protein abundance data, grown in either M9-acetate to M9-glucose. 
     
-    ![Treitz Volcano Plot](images/treitz_volcano.png)
-    
-    Among these two datasets, 1881 genes are shared, and their log₂ fold-change values can be visualized in a concordance plot:
+    <img src="images/treitz_volcano.png" alt="Treitz Volcano Plot" width="600"/>
 
-    ![Treitz-Schmidt Concordant Plot](images/treitz_schmidt_concordant.png)
+    Among these two datasets, 1881 genes are shared, and their log₂ fold-change values can be visualized in a concordance plot:
+    
+    <img src="images/treitz_schmidt_concordant.png" alt="Treitz-Schmidt Concordant Plot" width="600"/>
 
     We then generated two CSVs detailing the purple points:
     - `treitz_schmidt_concordant_up.csv`
@@ -165,7 +164,7 @@ deg2tfbs/
       - The enrichment fraction (a/K) - This measures what proportion of a TF's targets are differentially expressed
       - The absolute number of gene targets - This affects statistical power and confidence
 
-      ![TF Enrichment](images/tf_consolidated_enrichment.png)
+      <img src="images/tf_consolidated_enrichment.png" alt="TF Enrichment" width="700"/>
 
       The Fisher's Exact Test is sensitive to both the proportion and the total counts.
     
@@ -187,12 +186,31 @@ deg2tfbs/
       | **is_sigma_factor** | Boolean flag (e.g., "no") indicating whether the TF is a sigma factor                            |
       | **is_global_regulator** | Boolean flag (e.g., "no") indicating whether the TF is a global regulator                    |
 
-   ***Caution:*** In ```tfbsfetcher.py```, there is a final TFBS deduplication check that is stringent and does not account for cases where binding sites differ by ±1 nucleotide at either end.
+    The counts of unique TF binding sites for each TF (from the `tf2tfbs_mapping.csv` file) can be visualized, as shown below, or used in downstream analyses beyond the scope of **deg2tfbs**.
 
-    The extent of unique TF binding sites for each TF (from the `tf2tfbs_mapping.csv` file) can be visualized, as shown below, or used in downstream analyses beyond the scope of *deg2tfbs*.
+    <img src="images/tfbs_counts.png" alt="TFBS Counts Plot" width="600"/>
 
-    ![TFBS Counts Plot](images/tfbs_counts.png)
+    **Jaccard Similarity in TFBS Deduplication**
+    
+    In ```tfbsfetcher.py```, binding sites are identified by checking if a transcription factor has any annotated binding site sequences (e.g., in EcoCyc or RegulonDB). Collected binding sites are then deduplicated based on exact string matches—only unique TF–TFBS sequence pairs are retained. No alignment or motif inference is performed, so even near-identical binding sites (e.g., differing by ±1 nucleotide) are treated as distinct, which may not be desired.
 
+    To address redundancy among highly similar sequences, an optional deduplication step based on the **Jaccard similarity index** is included. This method groups sequences with high compositional similarity and retains a single representative from each group.
+
+    For sets A and B, it is defined as:
+
+    <div align="center"><code>J(A, B) = |A ∩ B| / |A ∪ B|</code></div>
+
+    In the context of DNA sequences, each sequence is treated as a set of k-mers (short substrings of length k). For example, with k = 6, the sequence ACGTGCTT yields the set:
+
+    <div align="center"><code>{ACGTGC, CGTGCT, GTGCTT}</code></div>
+
+    A set of all possible 6-mers is generated for each sequence, and pairwise comparisons are made based on the overlap of these k-mers. The resulting Jaccard similarity score ranges from 0 to 1, with higher scores indicating stronger compositional similarity between sequences.
+
+    <img src="images/tfbs_jaccard_summary.png" alt="Jaccard Workflow" width="700"/>
+    
+    Above is a visual summary of the Jaccard-based deduplication process for TFBSs. The left panel shows pairwise Jaccard similarities among binding sites, grouped by transcription factor. Similarities above the 0.80 threshold (dashed line) are considered redundant. The center panel depicts a similarity network for a randomly selected TF (`fadr`), where nodes represent sequences and edges indicate high-similarity relationships. The right panel shows a representative cluster, with the centroid—retained in the final dataset—highlighted, and similar neighbors removed.
+
+    This approach offers a principled method to define a representative site from near-duplicate sequences while allowing for flexibility through configurable parameters.
 
 ## **Running the Pipeline**
 

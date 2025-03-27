@@ -48,18 +48,27 @@ pipeline:
       root_dir: "pipeline/tfbsfetcher"
       batch_id: "tfbsbatch_20250321"
       input:
-        tf_batch_id: "tfbatch_20250321"             # This pointer is dynamically updated
-      use_only_enriched_tfs: true  
+        tf_batch_id: "tfbatch_20250321"
+      use_only_enriched_tfs: true
       sources:
         binding_sites:
           ecocyc:
-            path: "ecocyc_28_tfbs_smart_table"      # Reference to utils.DATA_FILES
+            path: "ecocyc_28_tfbs_smart_table"
             ecocyc_motifs: true
           regdb:
             path: "regulondb_13_tf_ri_set"
             regulondb_pssm: false
       params:
         top_n: 25
+      apply_jaccard_filter: true
+      kmer_size: 6
+      jaccard_similarity_threshold: 0.8
+      selected_tf: "fadr"
+      umap_n_neighbors: 15
+      umap_min_dist: 0.1
+      umap_figsize: [8, 6]
+      umap_alpha: 0.5
+      umap_dpi: 500
 
 analysis:
   tfbsfetcher_dir: "pipeline/tfbsfetcher"
