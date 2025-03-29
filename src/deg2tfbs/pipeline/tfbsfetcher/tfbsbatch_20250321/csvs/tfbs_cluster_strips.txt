@@ -53,50 +53,50 @@ TF: arca
     AAACATACTTGCAAC   <-- RETAINED
     AAACATACTTGCAACA
   Cluster ID: arca_cluster_10
-    CAATAAAATCCATTT   <-- RETAINED
-    ACAATAAAATCCATTT
+    ACAAACTGATTATTAA  <-- RETAINED
+    CAAACTGATTATTAA 
   Cluster ID: arca_cluster_100
+    GTTATCAAATCGTTA   <-- RETAINED
+    GTTATCAAATCGTTAC
+  Cluster ID: arca_cluster_101
     GTTATTGACAGTTAG   <-- RETAINED
     TGTTATTGACAGTTAG
-  Cluster ID: arca_cluster_101
+  Cluster ID: arca_cluster_102
     GTTGAAACGTGATAG   <-- RETAINED
     GTTGAAACGTGATAGC
-  Cluster ID: arca_cluster_102
+  Cluster ID: arca_cluster_103
     GTTGAGAAAGGTGAT   <-- RETAINED
     GTTGAGAAAGGTGATT
-  Cluster ID: arca_cluster_103
+  Cluster ID: arca_cluster_104
     GTTGATATTATGTAA   <-- RETAINED
     TGTTGATATTATGTAA
-  Cluster ID: arca_cluster_104
+  Cluster ID: arca_cluster_105
     GTTGCTTTTTTGTAA   <-- RETAINED
     GTTGCTTTTTTGTAAA
-  Cluster ID: arca_cluster_105
+  Cluster ID: arca_cluster_106
     TTTATCAATATAATA   <-- RETAINED
     GTTTATCAATATAATA
-  Cluster ID: arca_cluster_106
+  Cluster ID: arca_cluster_107
     TGTTTCTAATATGTTA  <-- RETAINED
     GTTTCTAATATGTTA 
-  Cluster ID: arca_cluster_107
+  Cluster ID: arca_cluster_108
     GTTTTGTCAAAATGT   <-- RETAINED
     GTTTTGTCAAAATGTG
-  Cluster ID: arca_cluster_108
+  Cluster ID: arca_cluster_109
     TAAACATAAAATTAA   <-- RETAINED
     TAAACATAAAATTAAC
-  Cluster ID: arca_cluster_109
+  Cluster ID: arca_cluster_11
+    CAATAAAATCCATTT   <-- RETAINED
+    ACAATAAAATCCATTT
+  Cluster ID: arca_cluster_110
     TAAACATAAATGTCA   <-- RETAINED
     TAAACATAAATGTCAC
-  Cluster ID: arca_cluster_11
-    ACATCAATTTGATAA   <-- RETAINED
-    ACATCAATTTGATAAC
-  Cluster ID: arca_cluster_110
+  Cluster ID: arca_cluster_111
     TAACAATGTATTCAC   <-- RETAINED
     TAACAATGTATTCACC
-  Cluster ID: arca_cluster_111
+  Cluster ID: arca_cluster_112
     TAACAATTATTTTAC   <-- RETAINED
     TAACAATTATTTTACA
-  Cluster ID: arca_cluster_112
-    TAACAATTGGTTAAT   <-- RETAINED
-    TAACAATTGGTTAATA
   Cluster ID: arca_cluster_113
     TAACCATTAATTAACA  <-- RETAINED
     TAACCATTAATTAAC 
@@ -106,6 +106,7 @@ TF: arca
   Cluster ID: arca_cluster_115
     TAACTTTTATTTAAC   <-- RETAINED
     TAACTTTTATTTAACC
+    TACTTTTATTTAACA 
   Cluster ID: arca_cluster_116
     TACACACTTTTTTAA   <-- RETAINED
     TACACACTTTTTTAAC
@@ -119,8 +120,8 @@ TF: arca
     TTCAACAAAGTTGTTA  <-- RETAINED
     TCAACAAAGTTGTTA 
   Cluster ID: arca_cluster_12
-    ACTTTATAATTAACAG  <-- RETAINED
-    CTTTATAATTAACAG 
+    ACATCAATTTGATAA   <-- RETAINED
+    ACATCAATTTGATAAC
   Cluster ID: arca_cluster_120
     TCAACATTTTATACAC  <-- RETAINED
     TCAACATTTTATACA 
@@ -152,8 +153,8 @@ TF: arca
     TGTAACCTATTAGTT   <-- RETAINED
     TGTAACCTATTAGTTT
   Cluster ID: arca_cluster_13
-    ACTTTTGCTATAAATA  <-- RETAINED
-    CTTTTGCTATAAATA 
+    ACTTTATAATTAACAG  <-- RETAINED
+    CTTTATAATTAACAG 
   Cluster ID: arca_cluster_130
     TGTCAAAGAAATGTA   <-- RETAINED
     TGTCAAAGAAATGTAA
@@ -167,368 +168,374 @@ TF: arca
     TGTTAATAATAAGTA   <-- RETAINED
     TGTTAATAATAAGTAA
   Cluster ID: arca_cluster_134
+    TGTTAATGTTTTGTTT  <-- RETAINED
+    TTAATGTTTTGTTAG 
+  Cluster ID: arca_cluster_135
     TGTTAATTAATCGTT   <-- RETAINED
     TGTTAATTAATCGTTA
-  Cluster ID: arca_cluster_135
+  Cluster ID: arca_cluster_136
     TGTTACTAATTTGTT   <-- RETAINED
     TGTTACTAATTTGTTG
-  Cluster ID: arca_cluster_136
+  Cluster ID: arca_cluster_137
     TGTTATCGAT   <-- RETAINED
     TGTTATCGATT
-  Cluster ID: arca_cluster_137
+  Cluster ID: arca_cluster_138
     TGTTGTTTTAATGTA   <-- RETAINED
     TGTTGTTTTAATGTAA
-  Cluster ID: arca_cluster_138
+  Cluster ID: arca_cluster_139
     TGTTTTTTCAATGTT   <-- RETAINED
     TGTTTTTTCAATGTTA
-  Cluster ID: arca_cluster_139
+  Cluster ID: arca_cluster_14
+    ACTTTTGCTATAAATA  <-- RETAINED
+    CTTTTGCTATAAATA 
+  Cluster ID: arca_cluster_140
     TTAAAAATTGTTAAC   <-- RETAINED
     TTAAAAATTGTTAACA
-  Cluster ID: arca_cluster_14
-    AGAAAGGTGATTATC   <-- RETAINED
-    AGAAAGGTGATTATCA
-  Cluster ID: arca_cluster_140
+  Cluster ID: arca_cluster_141
     TTAACAAAGTGATGA   <-- RETAINED
     TTAACAAAGTGATGAC
-  Cluster ID: arca_cluster_141
+  Cluster ID: arca_cluster_142
     TTAACAATTAGATCA   <-- RETAINED
     TTAACAATTAGATCAC
-  Cluster ID: arca_cluster_142
+  Cluster ID: arca_cluster_143
     TTAACAATTTTGCAAA  <-- RETAINED
     TTAACAATTTTGCAA 
-  Cluster ID: arca_cluster_143
+  Cluster ID: arca_cluster_144
     TTAACACTTCCATAA   <-- RETAINED
     TTAACACTTCCATAAC
-  Cluster ID: arca_cluster_144
+  Cluster ID: arca_cluster_145
     TTAACATGTTTGCAA   <-- RETAINED
     TTAACATGTTTGCAAC
-  Cluster ID: arca_cluster_145
+  Cluster ID: arca_cluster_146
     TTAACCTTTTCTTAA   <-- RETAINED
     TTAACCTTTTCTTAAA
-  Cluster ID: arca_cluster_146
+  Cluster ID: arca_cluster_147
     TTAACTATAATGAAC   <-- RETAINED
     TTAACTATAATGAACC
-  Cluster ID: arca_cluster_147
+  Cluster ID: arca_cluster_148
     TTAACTTTTGTGTAA   <-- RETAINED
     TTAACTTTTGTGTAAC
-  Cluster ID: arca_cluster_148
+  Cluster ID: arca_cluster_149
     TTACAAATCAGTAAC   <-- RETAINED
     TTTACAAATCAGTAAC
-  Cluster ID: arca_cluster_149
+  Cluster ID: arca_cluster_15
+    AGAAAGGTGATTATC   <-- RETAINED
+    AGAAAGGTGATTATCA
+  Cluster ID: arca_cluster_150
     TTACGTTTAGGTAAC   <-- RETAINED
     TTACGTTTAGGTAACA
-  Cluster ID: arca_cluster_15
-    AGTAAATAATTCGTT   <-- RETAINED
-    AGTAAATAATTCGTTA
-  Cluster ID: arca_cluster_150
+  Cluster ID: arca_cluster_151
     TTATCATTTCATTAA   <-- RETAINED
     TTATCATTTCATTAAC
-  Cluster ID: arca_cluster_151
+  Cluster ID: arca_cluster_152
     TTCACTACGCTTTATTAACAATA  <-- RETAINED
     TTCACTACGCTTTATTAACAAT 
-  Cluster ID: arca_cluster_152
+  Cluster ID: arca_cluster_153
     TTCGTCACGTTTTTATAA   <-- RETAINED
     TTCGTCACGTTTTTATAAC
-  Cluster ID: arca_cluster_153
+  Cluster ID: arca_cluster_154
     TTGCATATTTTTAAC   <-- RETAINED
     TTTGCATATTTTTAAC
-  Cluster ID: arca_cluster_154
+  Cluster ID: arca_cluster_155
     TTGTTATCGAAGTGTT  <-- RETAINED
     TTGTTATCGAAGTGT 
-  Cluster ID: arca_cluster_155
+  Cluster ID: arca_cluster_156
     TTTAAAAAAATGTTA   <-- RETAINED
     TTTTAAAAAAATGTTA
-  Cluster ID: arca_cluster_156
+  Cluster ID: arca_cluster_157
     TTTAAATTTTGACTA   <-- RETAINED
     TTTAAATTTTGACTAA
-  Cluster ID: arca_cluster_157
+  Cluster ID: arca_cluster_158
     TTTAACAGGTCATAA   <-- RETAINED
     TTTAACAGGTCATAAA
-  Cluster ID: arca_cluster_158
+  Cluster ID: arca_cluster_159
     TTTCACAAATAATTA   <-- RETAINED
     TTTCACAAATAATTAA
-  Cluster ID: arca_cluster_159
+  Cluster ID: arca_cluster_16
+    AGTAAATAATTCGTT   <-- RETAINED
+    AGTAAATAATTCGTTA
+  Cluster ID: arca_cluster_160
     TTTGTGAACCACTTG   <-- RETAINED
     TTTGTGAACCACTTGT
-  Cluster ID: arca_cluster_16
-    AGTAAATATATTGTT   <-- RETAINED
-    AGTAAATATATTGTTG
-  Cluster ID: arca_cluster_160
+  Cluster ID: arca_cluster_161
     TTTGTTGAATGATTG   <-- RETAINED
     TTTGTTGAATGATTGT
   Cluster ID: arca_cluster_17
+    AGTAAATATATTGTT   <-- RETAINED
+    AGTAAATATATTGTTG
+  Cluster ID: arca_cluster_18
     AGTTAAATATAAGTA   <-- RETAINED
     AGTTAAATATAAGTAA
-  Cluster ID: arca_cluster_18
+  Cluster ID: arca_cluster_19
     AGTTAAATATTTCCGC  <-- RETAINED
     GTTAAATATTTCCGC 
-  Cluster ID: arca_cluster_19
-    AGTTAATATTATGTTA  <-- RETAINED
-    GTTAATATTATGTTA 
   Cluster ID: arca_cluster_2
     AAATATCGGTAATTTG  <-- RETAINED
     AATATCGGTAATTTG 
   Cluster ID: arca_cluster_20
+    AGTTAATATTATGTTA  <-- RETAINED
+    GTTAATATTATGTTA 
+  Cluster ID: arca_cluster_21
     GTTAATTAAATGATA   <-- RETAINED
     AGTTAATTAAATGATA
-  Cluster ID: arca_cluster_21
+  Cluster ID: arca_cluster_22
     GTTGTGATCAAGCCT   <-- RETAINED
     AGTTGTGATCAAGCCT
-  Cluster ID: arca_cluster_22
+  Cluster ID: arca_cluster_23
     ATAAAAATTTGTTAA   <-- RETAINED
     ATAAAAATTTGTTAAA
-  Cluster ID: arca_cluster_23
+  Cluster ID: arca_cluster_24
     ATAACAATTAATTTA   <-- RETAINED
     ATAACAATTAATTTAC
-  Cluster ID: arca_cluster_24
+  Cluster ID: arca_cluster_25
     ATAATATTTCCTTTAC  <-- RETAINED
     TAATATTTCCTTTAC 
-  Cluster ID: arca_cluster_25
+  Cluster ID: arca_cluster_26
     ATAATCAATTGTTAA   <-- RETAINED
     ATAATCAATTGTTAAA
-  Cluster ID: arca_cluster_26
+  Cluster ID: arca_cluster_27
     ATATCATTTAATTAAC  <-- RETAINED
     ATATCATTTAATTAA 
-  Cluster ID: arca_cluster_27
+  Cluster ID: arca_cluster_28
     ATCACAATAAGAAAA   <-- RETAINED
     ATCACAATAAGAAAAC
-  Cluster ID: arca_cluster_28
+  Cluster ID: arca_cluster_29
     ATGTTTTAATTACAGG  <-- RETAINED
     TGTTTTAATTACAGG 
-  Cluster ID: arca_cluster_29
-    ATTAACAATTGGTTA   <-- RETAINED
-    ATTAACAATTGGTTAA
   Cluster ID: arca_cluster_3
-    AACGGTTAATTATGA   <-- RETAINED
-    AACGGTTAATTATGAC
+    AACAAAACATTAACA   <-- RETAINED
+    CTAACAAAACATTAAC
   Cluster ID: arca_cluster_30
+    ATTAACAATTGGTTAA  <-- RETAINED
+    ATTAACAATTGGTTA 
+    TAACAATTGGTTAAT 
+    TAACAATTGGTTAATA
+  Cluster ID: arca_cluster_31
     ATTAATCAAAATTAA   <-- RETAINED
     TATTAATCAAAATTAA
-  Cluster ID: arca_cluster_31
+  Cluster ID: arca_cluster_32
     TTACATAAATTTAAC   <-- RETAINED
     ATTACATAAATTTAAC
-  Cluster ID: arca_cluster_32
+  Cluster ID: arca_cluster_33
     ATTCACATCATTAAC   <-- RETAINED
     ATTCACATCATTAACC
-  Cluster ID: arca_cluster_33
+  Cluster ID: arca_cluster_34
     ATTGAAACATGATTA   <-- RETAINED
     ATTGAAACATGATTAA
-  Cluster ID: arca_cluster_34
+  Cluster ID: arca_cluster_35
     ATTGATAATCATTTT   <-- RETAINED
     ATTGATAATCATTTTC
-  Cluster ID: arca_cluster_35
+  Cluster ID: arca_cluster_36
     ATTGCATGTTATTTA   <-- RETAINED
     ATTGCATGTTATTTAC
-  Cluster ID: arca_cluster_36
+  Cluster ID: arca_cluster_37
     ATTGTAATGATTTTG   <-- RETAINED
     ATTGTAATGATTTTGT
-  Cluster ID: arca_cluster_37
+  Cluster ID: arca_cluster_38
     ATTTAACTAATGTTT   <-- RETAINED
     ATTTAACTAATGTTTA
-  Cluster ID: arca_cluster_38
+  Cluster ID: arca_cluster_39
     ATTTACATTTATGTA   <-- RETAINED
     ATTTACATTTATGTAA
-  Cluster ID: arca_cluster_39
+  Cluster ID: arca_cluster_4
+    AACGGTTAATTATGA   <-- RETAINED
+    AACGGTTAATTATGAC
+  Cluster ID: arca_cluster_40
     ATTTCAATAAATTTAC  <-- RETAINED
     ATTTCAATAAATTTA 
-  Cluster ID: arca_cluster_4
-    AATATAATGAACAATC  <-- RETAINED
-    AATATAATGAACAAT 
-  Cluster ID: arca_cluster_40
+  Cluster ID: arca_cluster_41
     ATTTGGATAATCAAAT  <-- RETAINED
     TTTGGATAATCAAAT 
-  Cluster ID: arca_cluster_41
+  Cluster ID: arca_cluster_42
     ATTTTAAATAGTAAC   <-- RETAINED
     ATTTTAAATAGTAACA
-  Cluster ID: arca_cluster_42
+  Cluster ID: arca_cluster_43
     CAAACATATAAATCA   <-- RETAINED
     CAAACATATAAATCAC
-  Cluster ID: arca_cluster_43
+  Cluster ID: arca_cluster_44
     CAAATCATTAACAAAA  <-- RETAINED
     CAAATCATTAACAAA 
-  Cluster ID: arca_cluster_44
+  Cluster ID: arca_cluster_45
     CAACGCTTTGATAAC   <-- RETAINED
     GCAACGCTTTGATAAC
-  Cluster ID: arca_cluster_45
+    TACGCTTTGATAACG 
+  Cluster ID: arca_cluster_46
     TCAATTTAACATTGAG  <-- RETAINED
     CAATTTAACATTGAG 
-  Cluster ID: arca_cluster_46
+  Cluster ID: arca_cluster_47
     CACTCATTTTATTAA   <-- RETAINED
     CACTCATTTTATTAAC
-  Cluster ID: arca_cluster_47
+  Cluster ID: arca_cluster_48
     CATAACATTTAGTTA   <-- RETAINED
     CATAACATTTAGTTAA
-  Cluster ID: arca_cluster_48
+  Cluster ID: arca_cluster_49
     CATAAGTTGATGTAA   <-- RETAINED
     GCATAAGTTGATGTAA
-  Cluster ID: arca_cluster_49
+  Cluster ID: arca_cluster_5
+    AATATAATGAACAATC  <-- RETAINED
+    AATATAATGAACAAT 
+  Cluster ID: arca_cluster_50
     CATTATCCCTACACA   <-- RETAINED
     CATTATCCCTACACAA
-  Cluster ID: arca_cluster_5
-    AATGATTTTGTGAAC   <-- RETAINED
-    AATGATTTTGTGAACA
-  Cluster ID: arca_cluster_50
+  Cluster ID: arca_cluster_51
     TCATTTTAATTAATTT  <-- RETAINED
     CATTTTAATTAATTT 
-  Cluster ID: arca_cluster_51
+  Cluster ID: arca_cluster_52
     CCAGCATATAATCAAC  <-- RETAINED
     CCAGCATATAATCAA 
-  Cluster ID: arca_cluster_52
+  Cluster ID: arca_cluster_53
     CCATTTTTATCGCTA   <-- RETAINED
     CCATTTTTATCGCTAA
-  Cluster ID: arca_cluster_53
+  Cluster ID: arca_cluster_54
     CCGAGGTCACAACAT   <-- RETAINED
     CCGAGGTCACAACATA
-  Cluster ID: arca_cluster_54
+  Cluster ID: arca_cluster_55
     CGTTTAGTCCACTTT   <-- RETAINED
     CCGTTTAGTCCACTTT
-  Cluster ID: arca_cluster_55
+  Cluster ID: arca_cluster_56
     GGTAATACGCCGTTA   <-- RETAINED
     CGGTAATACGCCGTTA
-  Cluster ID: arca_cluster_56
+  Cluster ID: arca_cluster_57
     CGTAATATATACGTGG  <-- RETAINED
     CGTAATATATACGTG 
-  Cluster ID: arca_cluster_57
+  Cluster ID: arca_cluster_58
     CGTTAAGTAATTGAG   <-- RETAINED
     CGTTAAGTAATTGAGA
-  Cluster ID: arca_cluster_58
+  Cluster ID: arca_cluster_59
     CGTTACTAAGACGTG   <-- RETAINED
     CGTTACTAAGACGTGA
-  Cluster ID: arca_cluster_59
+  Cluster ID: arca_cluster_6
+    AATGATTTTGTGAAC   <-- RETAINED
+    AATGATTTTGTGAACA
+  Cluster ID: arca_cluster_60
     CGTTATCAAAGCGTA   <-- RETAINED
     CGTTATCAAAGCGTAA
-  Cluster ID: arca_cluster_6
-    AATTAAAATTTTATT   <-- RETAINED
-    AATTAAAATTTTATTG
-  Cluster ID: arca_cluster_60
+  Cluster ID: arca_cluster_61
     CGTTATTTATATGTT   <-- RETAINED
     CGTTATTTATATGTTA
-  Cluster ID: arca_cluster_61
+  Cluster ID: arca_cluster_62
     CTAACAAGAAAATTA   <-- RETAINED
     CTAACAAGAAAATTAC
-  Cluster ID: arca_cluster_62
+  Cluster ID: arca_cluster_63
     CTAACTTAGTGTTGA   <-- RETAINED
     CTAACTTAGTGTTGAC
-  Cluster ID: arca_cluster_63
+  Cluster ID: arca_cluster_64
     CTCACACATTTTAAA   <-- RETAINED
     CTCACACATTTTAAAC
-  Cluster ID: arca_cluster_64
+  Cluster ID: arca_cluster_65
     GCTTTAATAGATAAAC  <-- RETAINED
     CTTTAATAGATAAAC 
-  Cluster ID: arca_cluster_65
+  Cluster ID: arca_cluster_66
     TTTAATTAATTACAC   <-- RETAINED
     CTTTAATTAATTACAC
-  Cluster ID: arca_cluster_66
+  Cluster ID: arca_cluster_67
     CTTTTTTATGTTGCT   <-- RETAINED
     CTTTTTTATGTTGCTT
-  Cluster ID: arca_cluster_67
+  Cluster ID: arca_cluster_68
     TGAAAATGATTATCAA  <-- RETAINED
     GAAAATGATTATCAA 
-  Cluster ID: arca_cluster_68
+  Cluster ID: arca_cluster_69
     GAAACCTTAATTAAA   <-- RETAINED
     GAAACCTTAATTAAAC
-  Cluster ID: arca_cluster_69
+  Cluster ID: arca_cluster_7
+    AATTAAAATTTTATT   <-- RETAINED
+    AATTAAAATTTTATTG
+  Cluster ID: arca_cluster_70
     GAGTTTTTATTAACAT  <-- RETAINED
     GAGTTTTTATTAACA 
-  Cluster ID: arca_cluster_7
-    TAATTATATTGTAAAC  <-- RETAINED
-    AATTATATTGTAAAC 
-  Cluster ID: arca_cluster_70
+  Cluster ID: arca_cluster_71
     GCGAATTAACGAAGT   <-- RETAINED
     GCGAATTAACGAAGTT
-  Cluster ID: arca_cluster_71
+  Cluster ID: arca_cluster_72
     TGCTAACAAAATGTTG  <-- RETAINED
     GCTAACAAAATGTTG 
-  Cluster ID: arca_cluster_72
+  Cluster ID: arca_cluster_73
     GCTATAAATTGATCA   <-- RETAINED
     GCTATAAATTGATCAC
-  Cluster ID: arca_cluster_73
+  Cluster ID: arca_cluster_74
     GGTAATGAAATTGTA   <-- RETAINED
     GGTAATGAAATTGTAA
-  Cluster ID: arca_cluster_74
+  Cluster ID: arca_cluster_75
     GTTAAATCTTGGTTT   <-- RETAINED
     GGTTAAATCTTGGTTT
-  Cluster ID: arca_cluster_75
+  Cluster ID: arca_cluster_76
     GTTAATAATAATTAT   <-- RETAINED
     GGTTAATAATAATTAT
-  Cluster ID: arca_cluster_76
+  Cluster ID: arca_cluster_77
     GGTTAATGAAATGTT   <-- RETAINED
     GGTTAATGAAATGTTG
-  Cluster ID: arca_cluster_77
+  Cluster ID: arca_cluster_78
     GGTTCATTATAGTTA   <-- RETAINED
     TGGTTCATTATAGTTA
-  Cluster ID: arca_cluster_78
+  Cluster ID: arca_cluster_79
     GGTTTCAAAATTGTG   <-- RETAINED
     GGTTTCAAAATTGTGA
-  Cluster ID: arca_cluster_79
+  Cluster ID: arca_cluster_8
+    TAATTATATTGTAAAC  <-- RETAINED
+    AATTATATTGTAAAC 
+  Cluster ID: arca_cluster_80
     TGTAAAAAAATGGTTA  <-- RETAINED
     GTAAAAAAATGGTTA 
-  Cluster ID: arca_cluster_8
-    ACAAAACTTGATTAA   <-- RETAINED
-    ACAAAACTTGATTAAC
-  Cluster ID: arca_cluster_80
+  Cluster ID: arca_cluster_81
     GTATTGACAAGCCAA   <-- RETAINED
     GTATTGACAAGCCAAT
-  Cluster ID: arca_cluster_81
+  Cluster ID: arca_cluster_82
     GTGTTGTGTAACAAT   <-- RETAINED
     GTGTTGTGTAACAATG
-  Cluster ID: arca_cluster_82
+  Cluster ID: arca_cluster_83
     TGTTAAATAATTGTTT  <-- RETAINED
     GTTAAATAATTGTTT 
-  Cluster ID: arca_cluster_83
+  Cluster ID: arca_cluster_84
     TGTTAACAAAAATAAA  <-- RETAINED
     GTTAACAAAAATAAA 
-  Cluster ID: arca_cluster_84
+  Cluster ID: arca_cluster_85
     GTTAACAATTTTGTA   <-- RETAINED
     GTTAACAATTTTGTAA
-  Cluster ID: arca_cluster_85
+  Cluster ID: arca_cluster_86
     GTTAACTAAATGTTA   <-- RETAINED
     GTTAACTAAATGTTAA
-  Cluster ID: arca_cluster_86
+  Cluster ID: arca_cluster_87
     GTTAATAACCATTAA   <-- RETAINED
     GTTAATAACCATTAAT
-  Cluster ID: arca_cluster_87
+  Cluster ID: arca_cluster_88
     GTTAATCTGGACCTA   <-- RETAINED
     GTTAATCTGGACCTAC
-  Cluster ID: arca_cluster_88
+  Cluster ID: arca_cluster_89
     GTTAATCTTAGGTGA   <-- RETAINED
     GTTAATCTTAGGTGAA
-  Cluster ID: arca_cluster_89
+  Cluster ID: arca_cluster_9
+    ACAAAACTTGATTAA   <-- RETAINED
+    ACAAAACTTGATTAAC
+  Cluster ID: arca_cluster_90
     GTTAATTAACAATGT   <-- RETAINED
     GTTAATTAACAATGTA
-  Cluster ID: arca_cluster_9
-    ACAAACTGATTATTAA  <-- RETAINED
-    CAAACTGATTATTAA 
-  Cluster ID: arca_cluster_90
+  Cluster ID: arca_cluster_91
     GTTAATTAAGAGCTAT  <-- RETAINED
     GTTAATTAAGAGCTA 
-  Cluster ID: arca_cluster_91
+  Cluster ID: arca_cluster_92
     GTTAATTATAATATA   <-- RETAINED
     GTTAATTATAATATAA
-  Cluster ID: arca_cluster_92
+  Cluster ID: arca_cluster_93
     GTTACATCAATTTAA   <-- RETAINED
     TGTTACATCAATTTAA
-  Cluster ID: arca_cluster_93
+  Cluster ID: arca_cluster_94
     GTTACCTTATTGAAA   <-- RETAINED
     GTTACCTTATTGAAAC
-  Cluster ID: arca_cluster_94
+  Cluster ID: arca_cluster_95
     GTTACGAATTTGATT   <-- RETAINED
     GTTACGAATTTGATTT
-  Cluster ID: arca_cluster_95
+  Cluster ID: arca_cluster_96
     GTTACGTTAAAAATT   <-- RETAINED
     GTTACGTTAAAAATTG
-  Cluster ID: arca_cluster_96
+  Cluster ID: arca_cluster_97
     TGTTACTTAAGTGTTA  <-- RETAINED
     GTTACTTAAGTGTTA 
-  Cluster ID: arca_cluster_97
+  Cluster ID: arca_cluster_98
     TGTTAGTATCTCGTCG  <-- RETAINED
     GTTAGTATCTCGTCG 
-  Cluster ID: arca_cluster_98
+  Cluster ID: arca_cluster_99
     GTTATAAAAATGTAG   <-- RETAINED
     GTTATAAAAATGTAGC
-  Cluster ID: arca_cluster_99
-    GTTATCAAATCGTTA   <-- RETAINED
-    GTTATCAAATCGTTAC
 
 TF: crp
   Cluster ID: crp_cluster_1
@@ -540,6 +547,8 @@ TF: crp
   Cluster ID: crp_cluster_100
     CATTAGGATTTTGTTATTTAAA   <-- RETAINED
     ACATTAGGATTTTGTTATTTAAA
+    CTTAGGATTTTGTTATTTAAAT 
+    GCTTAGGATTTTGTTATTTAAAT
   Cluster ID: crp_cluster_101
     ACATTTCTGATGATTAGCATTC   <-- RETAINED
     ACATTTCTGATGATTAGCATTCC
@@ -565,8 +574,10 @@ TF: crp
     AGATGTGAGCCAGCTCACCATA   <-- RETAINED
     AGATGTGAGCCAGCTCACCATAA
   Cluster ID: crp_cluster_109
-    AGATGTGATTAGATTATTATTC   <-- RETAINED
-    AGATGTGATTAGATTATTATTCT
+    AGATGTGATTAGATTATTATTCT  <-- RETAINED
+    ATGTGATTAGATTATTATTCTTT
+    AGATGTGATTAGATTATTATTC 
+    ATGTGATTAGATTATTATTCTT 
   Cluster ID: crp_cluster_11
     AAACGAGAGCAGGATCACCTG   <-- RETAINED
     AAACGAGAGCAGGATCACCTGC
@@ -624,251 +635,252 @@ TF: crp
     ATGGTGTGATCGGGGTTCAATAA  <-- RETAINED
     TGGTGTGATCGGGGTTCAATAA 
   Cluster ID: crp_cluster_126
-    ATGTGATTAGATTATTATTCTTT  <-- RETAINED
-    ATGTGATTAGATTATTATTCTT 
-  Cluster ID: crp_cluster_127
     CATGTGTGAAGTTGATCACAAAT  <-- RETAINED
     ATGTGTGAAGTTGATCACAAAT 
     ATGTGTGAAGTTGATCACAAATT
     CATGTGTGAAGTTGATCACAAA 
-  Cluster ID: crp_cluster_128
+  Cluster ID: crp_cluster_127
     ATGTTAAATTGATGTAACATAA   <-- RETAINED
     ATGTTAAATTGATGTAACATAAT
-  Cluster ID: crp_cluster_129
+  Cluster ID: crp_cluster_128
     ATTACGGATCTTCATCACATAAA  <-- RETAINED
     ATTACGGATCTTCATCACATAA 
+  Cluster ID: crp_cluster_129
+    ATTATTAGTAAGTTATCACCATT  <-- RETAINED
+    TTATTAGTAAGTTATCACCATT 
   Cluster ID: crp_cluster_13
     AAACGTGATAGCCGTCAAACAAA  <-- RETAINED
     AAACGTGATAGCCGTCAAACAA 
   Cluster ID: crp_cluster_130
-    ATTATTAGTAAGTTATCACCATT  <-- RETAINED
-    TTATTAGTAAGTTATCACCATT 
-  Cluster ID: crp_cluster_131
     ATTCTTTGATCCATCTCAGAGG   <-- RETAINED
     ATTCTTTGATCCATCTCAGAGGA
-  Cluster ID: crp_cluster_132
+  Cluster ID: crp_cluster_131
     ATTGGTGAGGAACTTAACAATA   <-- RETAINED
     ATTGGTGAGGAACTTAACAATAT
-  Cluster ID: crp_cluster_133
+  Cluster ID: crp_cluster_132
     ATTGGTGATCCATAAAACAATA   <-- RETAINED
     ATTGGTGATCCATAAAACAATAT
-  Cluster ID: crp_cluster_134
+  Cluster ID: crp_cluster_133
     TTGTTTGATATTTATCATATTA   <-- RETAINED
     ATTGTTTGATATTTATCATATTA
-  Cluster ID: crp_cluster_135
+  Cluster ID: crp_cluster_134
     TTGTTTGATTTCGCGCATATTC   <-- RETAINED
     ATTGTTTGATTTCGCGCATATTC
-  Cluster ID: crp_cluster_136
+  Cluster ID: crp_cluster_135
     ATTTAACAAAGTGATGACATTT   <-- RETAINED
     ATTTAACAAAGTGATGACATTTC
-  Cluster ID: crp_cluster_137
+  Cluster ID: crp_cluster_136
     ATTTAGTTACATGTTTAACACTT  <-- RETAINED
     TTTAGTTACATGTTTAACACTT 
-  Cluster ID: crp_cluster_138
+  Cluster ID: crp_cluster_137
     TATTTATGAGCAGCATCGAAAAA  <-- RETAINED
     ATTTATGAGCAGCATCGAAAAA 
-  Cluster ID: crp_cluster_139
+  Cluster ID: crp_cluster_138
     ATTTCATCTCTATGTCACATTT   <-- RETAINED
     TATTTCATCTCTATGTCACATTT
+  Cluster ID: crp_cluster_139
+    ATTTGAGAGTTGAATCTCAAAT   <-- RETAINED
+    ATTTGAGAGTTGAATCTCAAATC
   Cluster ID: crp_cluster_14
     AAACGTGATTTAACGCCTGATT   <-- RETAINED
     AAACGTGATTTAACGCCTGATTT
   Cluster ID: crp_cluster_140
-    ATTTGAGAGTTGAATCTCAAAT   <-- RETAINED
-    ATTTGAGAGTTGAATCTCAAATC
-  Cluster ID: crp_cluster_141
-    ATTTGCCACAGGTAACAAAAAA   <-- RETAINED
+    TTATTTGCCACAGGTAACAAAAA  <-- RETAINED
+    ATTTGCCACAGGTAACAAAAAA 
     ATTTGCCACAGGTAACAAAAAAC
-    TTATTTGCCACAGGTAACAAAAA
-  Cluster ID: crp_cluster_142
+    TTATTTGCCACAGGTAACAAAA 
+  Cluster ID: crp_cluster_141
     ATTTGCGATACGAATTAAATTT   <-- RETAINED
     ATTTGCGATACGAATTAAATTTT
-  Cluster ID: crp_cluster_143
-    ATTTGCGATGCGTCGCGCATTTT  <-- RETAINED
-    ATTTGCGATGCGTCGCGCATTT 
-  Cluster ID: crp_cluster_144
+  Cluster ID: crp_cluster_142
     ATTTGCGGAGCTTGTCACAGCT   <-- RETAINED
     ATTTGCGGAGCTTGTCACAGCTG
-  Cluster ID: crp_cluster_145
+  Cluster ID: crp_cluster_143
     ATTTGCGGGTCGCGTCACATTT   <-- RETAINED
     ATTTGCGGGTCGCGTCACATTTA
-  Cluster ID: crp_cluster_146
+  Cluster ID: crp_cluster_144
     ATTTGTGAATCTTTTCACAGTT   <-- RETAINED
     ATTTGTGAATCTTTTCACAGTTT
-  Cluster ID: crp_cluster_147
+  Cluster ID: crp_cluster_145
     ATTTGTGATCAACCCCACACAT   <-- RETAINED
     ATTTGTGATCAACCCCACACATT
-  Cluster ID: crp_cluster_148
+  Cluster ID: crp_cluster_146
     ATTTGTGCATAGTTACAACTTT   <-- RETAINED
     ATTTGTGCATAGTTACAACTTTG
-  Cluster ID: crp_cluster_149
+  Cluster ID: crp_cluster_147
     TTTTATGACGAGGCACACACAT   <-- RETAINED
     ATTTTATGACGAGGCACACACAT
+  Cluster ID: crp_cluster_148
+    ATTTTGTGACACGAATTGCAAAT  <-- RETAINED
+    TTTTGTGACACGAATTGCAAAT 
+  Cluster ID: crp_cluster_149
+    ATTTTGTGATCTGTTTAAATGTT  <-- RETAINED
+    TTTTGTGATCTGTTTAAATGTT 
   Cluster ID: crp_cluster_15
     AAACGTGATTTCATGCGTCATT   <-- RETAINED
     GAAACGTGATTTCATGCGTCATT
   Cluster ID: crp_cluster_150
-    ATTTTGTGACACGAATTGCAAAT  <-- RETAINED
-    TTTTGTGACACGAATTGCAAAT 
-  Cluster ID: crp_cluster_151
-    ATTTTGTGATCTGTTTAAATGTT  <-- RETAINED
-    TTTTGTGATCTGTTTAAATGTT 
-  Cluster ID: crp_cluster_152
     CAATGTCATTCGAATTACCTGCA  <-- RETAINED
     CAATGTCATTCGAATTACCTGC 
-  Cluster ID: crp_cluster_153
+  Cluster ID: crp_cluster_151
     CACTGTGAGGTATTTGCTAAAG   <-- RETAINED
     TCACTGTGAGGTATTTGCTAAAG
-  Cluster ID: crp_cluster_154
+  Cluster ID: crp_cluster_152
     CATGGTGATGAGTATCACGAAA   <-- RETAINED
     CATGGTGATGAGTATCACGAAAA
-  Cluster ID: crp_cluster_155
+  Cluster ID: crp_cluster_153
     CATTGTGCTGCGGCTCAAGCAG   <-- RETAINED
     CATTGTGCTGCGGCTCAAGCAGG
-  Cluster ID: crp_cluster_156
+  Cluster ID: crp_cluster_154
     CATTGTTATTAGTCTCACACTT   <-- RETAINED
     CATTGTTATTAGTCTCACACTTT
-  Cluster ID: crp_cluster_157
+  Cluster ID: crp_cluster_155
     CCAGCAGATACAACTCACACAA   <-- RETAINED
     TCCAGCAGATACAACTCACACAA
-  Cluster ID: crp_cluster_158
+  Cluster ID: crp_cluster_156
     CCTTTGTGATCGCTTTCACGGA   <-- RETAINED
     CCCTTTGTGATCGCTTTCACGGA
-  Cluster ID: crp_cluster_159
+  Cluster ID: crp_cluster_157
     CCTTGTCATCTTTCTGACACCT   <-- RETAINED
     GCCTTGTCATCTTTCTGACACCT
+  Cluster ID: crp_cluster_158
+    TCCTTTGTGATAAAAATCACTTT  <-- RETAINED
+    CCTTTGTGATAAAAATCACTTT 
+  Cluster ID: crp_cluster_159
+    CGAGCGTGCCAGTTTTCACATTC  <-- RETAINED
+    GAGCGTGCCAGTTTTCACATTC 
   Cluster ID: crp_cluster_16
     AAACGTGGCATCGGTCAATTCA   <-- RETAINED
     AAACGTGGCATCGGTCAATTCAT
   Cluster ID: crp_cluster_160
-    TCCTTTGTGATAAAAATCACTTT  <-- RETAINED
-    CCTTTGTGATAAAAATCACTTT 
-  Cluster ID: crp_cluster_161
-    CGAGCGTGCCAGTTTTCACATTC  <-- RETAINED
-    GAGCGTGCCAGTTTTCACATTC 
-  Cluster ID: crp_cluster_162
     CGATGTGAGGAAATTAACATGA   <-- RETAINED
     CGATGTGAGGAAATTAACATGAA
-  Cluster ID: crp_cluster_163
+  Cluster ID: crp_cluster_161
     GCGATGTGATATTGCTCTCCTAT  <-- RETAINED
     CGATGTGATATTGCTCTCCTAT 
-  Cluster ID: crp_cluster_164
+  Cluster ID: crp_cluster_162
     CGGAGTGATCGAGTTAACATTG   <-- RETAINED
     CGGAGTGATCGAGTTAACATTGT
-  Cluster ID: crp_cluster_165
+  Cluster ID: crp_cluster_163
     CGGTCGTGATATTGCTCACGCCA  <-- RETAINED
     GGTCGTGATATTGCTCACGCCA 
-  Cluster ID: crp_cluster_166
+  Cluster ID: crp_cluster_164
     CGGTGAGCATCACATCACCACA   <-- RETAINED
     GCGGTGAGCATCACATCACCACA
-  Cluster ID: crp_cluster_167
+  Cluster ID: crp_cluster_165
     CGTGACAGGAATCACG   <-- RETAINED
     CGTGACAGGAATCACGG
-  Cluster ID: crp_cluster_168
+  Cluster ID: crp_cluster_166
     CGTGAGCGTTGTAAGT   <-- RETAINED
     CGTGAGCGTTGTAAGTA
-  Cluster ID: crp_cluster_169
+  Cluster ID: crp_cluster_167
     CGTTTCGAGGTTGATCACATTT   <-- RETAINED
     CGTTTCGAGGTTGATCACATTTC
+  Cluster ID: crp_cluster_168
+    CTAATTTATTCCATGTCACACTT  <-- RETAINED
+    TAATTTATTCCATGTCACACTT 
+  Cluster ID: crp_cluster_169
+    TCTATGTGAAATAAATCAAAATT  <-- RETAINED
+    CTATGTGAAATAAATCAAAATT 
   Cluster ID: crp_cluster_17
     AAACGTTAACTGAAACGCATATT  <-- RETAINED
     AAACGTTAACTGAAACGCATAT 
   Cluster ID: crp_cluster_170
-    CTAATTTATTCCATGTCACACTT  <-- RETAINED
-    TAATTTATTCCATGTCACACTT 
-  Cluster ID: crp_cluster_171
-    TCTATGTGAAATAAATCAAAATT  <-- RETAINED
-    CTATGTGAAATAAATCAAAATT 
-  Cluster ID: crp_cluster_172
     CTCAGGTGAATCGCGCCAGCAA   <-- RETAINED
     CTCAGGTGAATCGCGCCAGCAAA
-  Cluster ID: crp_cluster_173
+  Cluster ID: crp_cluster_171
     TGACGTGATCTTCATCACAAAT   <-- RETAINED
     CTGACGTGATCTTCATCACAAAT
-  Cluster ID: crp_cluster_174
+  Cluster ID: crp_cluster_172
     TGGCGTTACCCTTGTCGCAAAG   <-- RETAINED
     CTGGCGTTACCCTTGTCGCAAAG
-  Cluster ID: crp_cluster_175
+  Cluster ID: crp_cluster_173
     CTGTCACAAATCACAAA  <-- RETAINED
     TGTCACAAATCACAAA 
-  Cluster ID: crp_cluster_176
+  Cluster ID: crp_cluster_174
     CTGTTGAGTCATAAATAACCTTT  <-- RETAINED
     TGTTGAGTCATAAATAACCTTT 
-  Cluster ID: crp_cluster_177
-    CTTAGGATTTTGTTATTTAAAT   <-- RETAINED
-    GCTTAGGATTTTGTTATTTAAAT
-  Cluster ID: crp_cluster_178
+  Cluster ID: crp_cluster_175
     CTTCGTCAAATTTATCATGTGG   <-- RETAINED
     CTTCGTCAAATTTATCATGTGGG
-  Cluster ID: crp_cluster_179
+  Cluster ID: crp_cluster_176
     CTTTAGTGAAGCAGATCGCATTA  <-- RETAINED
     TTTAGTGAAGCAGATCGCATTA 
+  Cluster ID: crp_cluster_177
+    CTTTGTGAGATTGAGCATGGAAA  <-- RETAINED
+    CTTTGTGAGATTGAGCATGGAA 
+  Cluster ID: crp_cluster_178
+    CTTTGTGATGTGCTTCCTGTTA   <-- RETAINED
+    CTTTGTGATGTGCTTCCTGTTAG
+  Cluster ID: crp_cluster_179
+    GGAAAGTACGTTTGCAGTGAAAT  <-- RETAINED
+    GAAAGTACGTTTGCAGTGAAAT 
   Cluster ID: crp_cluster_18
     AAACTGAGACTAGTACGACTTTT   <-- RETAINED
     AAACTGAGACTAGTACGACTTTTT
   Cluster ID: crp_cluster_180
-    CTTTGTGAGATTGAGCATGGAAA  <-- RETAINED
-    CTTTGTGAGATTGAGCATGGAA 
-  Cluster ID: crp_cluster_181
-    CTTTGTGATGTGCTTCCTGTTA   <-- RETAINED
-    CTTTGTGATGTGCTTCCTGTTAG
-  Cluster ID: crp_cluster_182
-    GGAAAGTACGTTTGCAGTGAAAT  <-- RETAINED
-    GAAAGTACGTTTGCAGTGAAAT 
-  Cluster ID: crp_cluster_183
     GAATGAGACACGATTCAAAAAA   <-- RETAINED
     GAATGAGACACGATTCAAAAAAA
-  Cluster ID: crp_cluster_184
+  Cluster ID: crp_cluster_181
     GAATGTGACAAGGATATTTTACC  <-- RETAINED
     GAATGTGACAAGGATATTTTAC 
-  Cluster ID: crp_cluster_185
+  Cluster ID: crp_cluster_182
     GGAATTTAATCATGTTTACAGTA  <-- RETAINED
     GAATTTAATCATGTTTACAGTA 
-  Cluster ID: crp_cluster_186
+  Cluster ID: crp_cluster_183
     GAATTTGATTTACATCAATAAG   <-- RETAINED
     GAATTTGATTTACATCAATAAGC
-  Cluster ID: crp_cluster_187
+  Cluster ID: crp_cluster_184
     GACCTCGGTTTAGTTCACAGAA   <-- RETAINED
     GACCTCGGTTTAGTTCACAGAAG
-  Cluster ID: crp_cluster_188
+  Cluster ID: crp_cluster_185
     GACTGCGAGTGGGAGCACGGTT   <-- RETAINED
     GACTGCGAGTGGGAGCACGGTTT
-  Cluster ID: crp_cluster_189
+  Cluster ID: crp_cluster_186
     GACTGTGATCAAACCCGATCTTT   <-- RETAINED
     GACTGTGATCAAACCCGATCTTTT
+  Cluster ID: crp_cluster_187
+    GAGTGCGAGTCTGCTCGCATAA   <-- RETAINED
+    GGAGTGCGAGTCTGCTCGCATAA
+  Cluster ID: crp_cluster_188
+    GAGTGTGGTATAGTCACCTTGC   <-- RETAINED
+    TGAGTGTGGTATAGTCACCTTGC
+  Cluster ID: crp_cluster_189
+    GAGTTGTGATCAAGCCTGCACA   <-- RETAINED
+    GGAGTTGTGATCAAGCCTGCACA
   Cluster ID: crp_cluster_19
     AAACTGGAACGCTTTTCGCATTC  <-- RETAINED
     AACTGGAACGCTTTTCGCATTC 
   Cluster ID: crp_cluster_190
-    GAGTGCGAGTCTGCTCGCATAA   <-- RETAINED
-    GGAGTGCGAGTCTGCTCGCATAA
-  Cluster ID: crp_cluster_191
-    GAGTGTGGTATAGTCACCTTGC   <-- RETAINED
-    TGAGTGTGGTATAGTCACCTTGC
-  Cluster ID: crp_cluster_192
-    GAGTTGTGATCAAGCCTGCACA   <-- RETAINED
-    GGAGTTGTGATCAAGCCTGCACA
-  Cluster ID: crp_cluster_193
     GATTGTGATTCGATTCACATTT   <-- RETAINED
     GATTGTGATTCGATTCACATTTA
-  Cluster ID: crp_cluster_194
+  Cluster ID: crp_cluster_191
     GCAAAAAATGTGAGAGAGTGCAA  <-- RETAINED
     GCAAAAAATGTGAGAGAGTGCA 
-  Cluster ID: crp_cluster_195
+  Cluster ID: crp_cluster_192
     GCAAGTGGTATTCGCACTTTTG   <-- RETAINED
     GGCAAGTGGTATTCGCACTTTTG
-  Cluster ID: crp_cluster_196
+  Cluster ID: crp_cluster_193
     TGCATTGAACTTGTGGATAAAAT  <-- RETAINED
     GCATTGAACTTGTGGATAAAAT 
-  Cluster ID: crp_cluster_197
+  Cluster ID: crp_cluster_194
     TGGCTGTGCTGCGCATAATACTT  <-- RETAINED
     GGCTGTGCTGCGCATAATACTT 
-  Cluster ID: crp_cluster_198
+  Cluster ID: crp_cluster_195
     GTATAACGTGATCATATCAACA   <-- RETAINED
     GGTATAACGTGATCATATCAACA
-  Cluster ID: crp_cluster_199
+  Cluster ID: crp_cluster_196
     GGTTGGGAAGGGGTTCACTGGC   <-- RETAINED
     GGTTGGGAAGGGGTTCACTGGCT
+  Cluster ID: crp_cluster_197
+    TGGTTGTGATGGTGGTATGAAAA  <-- RETAINED
+    GGTTGTGATGGTGGTATGAAAA 
+  Cluster ID: crp_cluster_198
+    GTAAATGGTGTGTTAAATCGAT   <-- RETAINED
+    GTAAATGGTGTGTTAAATCGATT
+  Cluster ID: crp_cluster_199
+    GTACTGCAACCATCTACAAATAA  <-- RETAINED
+    TACTGCAACCATCTACAAATAA 
   Cluster ID: crp_cluster_2
     AAAAATAGTGTCGCTGAGCACTA  <-- RETAINED
     AAAAATAGTGTCGCTGAGCACT 
@@ -878,341 +890,331 @@ TF: crp
     AACTGTGAGCCAAAGCGTTGTTT
     AAACTGTGAGCCAAAGCGTTGT 
   Cluster ID: crp_cluster_200
-    TGGTTGTGATGGTGGTATGAAAA  <-- RETAINED
-    GGTTGTGATGGTGGTATGAAAA 
-  Cluster ID: crp_cluster_201
-    GTAAATGGTGTGTTAAATCGAT   <-- RETAINED
-    GTAAATGGTGTGTTAAATCGATT
-  Cluster ID: crp_cluster_202
-    GTACTGCAACCATCTACAAATAA  <-- RETAINED
-    TACTGCAACCATCTACAAATAA 
-  Cluster ID: crp_cluster_203
     GTATGTGATCCAGATCACATCT   <-- RETAINED
     GTATGTGATCCAGATCACATCTA
-  Cluster ID: crp_cluster_204
-    GTGGGTGATTTGCTTCACATCT   <-- RETAINED
+  Cluster ID: crp_cluster_201
+    TGATGTGATTTGCTTCACATCT   <-- RETAINED
+    GTGGGTGATTTGCTTCACATCT 
     GTGGGTGATTTGCTTCACATCTC
-  Cluster ID: crp_cluster_205
+    TGATGTGATTTGCTTCACATCTT
+  Cluster ID: crp_cluster_202
     GTTCTGTGCATCCCGTCACAAAT  <-- RETAINED
     TTCTGTGCATCCCGTCACAAAT 
-  Cluster ID: crp_cluster_206
+  Cluster ID: crp_cluster_203
     GTTGTGTGAGAGTAATCACGCTT  <-- RETAINED
     TTGTGTGAGAGTAATCACGCTT 
-  Cluster ID: crp_cluster_207
+  Cluster ID: crp_cluster_204
     TTTTGTTACCTGCCTCTAACTT   <-- RETAINED
     GTTTTGTTACCTGCCTCTAACTT
-  Cluster ID: crp_cluster_208
+  Cluster ID: crp_cluster_205
     TAAAGTGAACCATATCTCAATT   <-- RETAINED
     TAAAGTGAACCATATCTCAATTC
-  Cluster ID: crp_cluster_209
+  Cluster ID: crp_cluster_206
     TAAAGTGATGGTAGTCACATAA   <-- RETAINED
     TAAAGTGATGGTAGTCACATAAA
+  Cluster ID: crp_cluster_207
+    TAAATGTGTTTTGCTCATAGTG   <-- RETAINED
+    TAAATGTGTTTTGCTCATAGTGT
+  Cluster ID: crp_cluster_208
+    TAACGCGACTTTTATCACTTTT   <-- RETAINED
+    TAACGCGACTTTTATCACTTTTT
+  Cluster ID: crp_cluster_209
+    TAATATGACCAACCTCTCATAA   <-- RETAINED
+    TAATATGACCAACCTCTCATAAT
   Cluster ID: crp_cluster_21
     AACTGTGGTTGCCATCACAGAT   <-- RETAINED
     AAACTGTGGTTGCCATCACAGAT
   Cluster ID: crp_cluster_210
-    TAAATGTGTTTTGCTCATAGTG   <-- RETAINED
-    TAAATGTGTTTTGCTCATAGTGT
-  Cluster ID: crp_cluster_211
-    TAACGCGACTTTTATCACTTTT   <-- RETAINED
-    TAACGCGACTTTTATCACTTTTT
-  Cluster ID: crp_cluster_212
-    TAATATGACCAACCTCTCATAA   <-- RETAINED
-    TAATATGACCAACCTCTCATAAT
-  Cluster ID: crp_cluster_213
     TAATGAGATTCAGATCACATAT   <-- RETAINED
     TAATGAGATTCAGATCACATATA
-  Cluster ID: crp_cluster_214
+  Cluster ID: crp_cluster_211
     TAATGCGATCTATATCACGCTG   <-- RETAINED
     TTAATGCGATCTATATCACGCTG
-  Cluster ID: crp_cluster_215
+  Cluster ID: crp_cluster_212
     TTAATGTGAGTTAGCTCACTCAT  <-- RETAINED
     TAATGTGAGTTAGCTCACTCAT 
-  Cluster ID: crp_cluster_216
+  Cluster ID: crp_cluster_213
     TAATGTGATTTATGCCTCACTA   <-- RETAINED
     TAATGTGATTTATGCCTCACTAA
-  Cluster ID: crp_cluster_217
+  Cluster ID: crp_cluster_214
     TAATGTGGAGATGCGCACATAA   <-- RETAINED
     TAATGTGGAGATGCGCACATAAA
-  Cluster ID: crp_cluster_218
+  Cluster ID: crp_cluster_215
     TAATTTCCACATTAAAACAGGG   <-- RETAINED
     TAATTTCCACATTAAAACAGGGA
-  Cluster ID: crp_cluster_219
+  Cluster ID: crp_cluster_216
     TACTGTGCAATTTTTCATTGAT   <-- RETAINED
     TTACTGTGCAATTTTTCATTGAT
+  Cluster ID: crp_cluster_217
+    TAGAGTGATATGTATAACATTA   <-- RETAINED
+    TTAGAGTGATATGTATAACATTA
+  Cluster ID: crp_cluster_218
+    TAGATCTCCGTCACATTTTTGC   <-- RETAINED
+    TAGATCTCCGTCACATTTTTGCG
+  Cluster ID: crp_cluster_219
+    TAGTGTGTGTCAGATCTCGTTTT  <-- RETAINED
+    TAGTGTGTGTCAGATCTCGTTT 
   Cluster ID: crp_cluster_22
     AAACTTGATGCACGTCAAAAAA   <-- RETAINED
     AAACTTGATGCACGTCAAAAAAT
   Cluster ID: crp_cluster_220
-    TAGAGTGATATGTATAACATTA   <-- RETAINED
-    TTAGAGTGATATGTATAACATTA
-  Cluster ID: crp_cluster_221
-    TAGATCTCCGTCACATTTTTGC   <-- RETAINED
-    TAGATCTCCGTCACATTTTTGCG
-  Cluster ID: crp_cluster_222
-    TAGTGTGTGTCAGATCTCGTTTT  <-- RETAINED
-    TAGTGTGTGTCAGATCTCGTTT 
-  Cluster ID: crp_cluster_223
     TATAGTGATCCACGCCACATTT   <-- RETAINED
     TATAGTGATCCACGCCACATTTT
-  Cluster ID: crp_cluster_224
+  Cluster ID: crp_cluster_221
     TATTGTGACATATGTTTTGTCA   <-- RETAINED
     TATTGTGACATATGTTTTGTCAA
-  Cluster ID: crp_cluster_225
+  Cluster ID: crp_cluster_222
     TTCACGTGAACGTTCTCACAATT  <-- RETAINED
     TCACGTGAACGTTCTCACAATT 
-  Cluster ID: crp_cluster_226
+  Cluster ID: crp_cluster_223
     TCAGGTGACCGGTTTCACAAAT   <-- RETAINED
     TCAGGTGACCGGTTTCACAAATA
-  Cluster ID: crp_cluster_227
+  Cluster ID: crp_cluster_224
     TCTCGTGATCAAGATCACATTC   <-- RETAINED
     TCTCGTGATCAAGATCACATTCT
-  Cluster ID: crp_cluster_228
+  Cluster ID: crp_cluster_225
     TCTTATGACGCTCTTCACACTC   <-- RETAINED
     TCTTATGACGCTCTTCACACTCT
-  Cluster ID: crp_cluster_229
+  Cluster ID: crp_cluster_226
     TCTTGTGATTCAGATCACAAAGA  <-- RETAINED
     TCTTGTGATTCAGATCACAAAG 
+  Cluster ID: crp_cluster_227
+    TCTTTTTGAATCCCATCACAAA   <-- RETAINED
+    TCTTTTTGAATCCCATCACAAAC
+  Cluster ID: crp_cluster_228
+    TGAAGTGATCCTCGCCACCAA   <-- RETAINED
+    TGAAGTGATCCTCGCCACCAAC
+  Cluster ID: crp_cluster_229
+    TGAGATTTTCATCACAC  <-- RETAINED
+    TGAGATTTTCATCACA 
   Cluster ID: crp_cluster_23
     AAACTTGCGTGACTACACATTCT  <-- RETAINED
     AACTTGCGTGACTACACATTCT 
   Cluster ID: crp_cluster_230
-    TCTTTTTGAATCCCATCACAAA   <-- RETAINED
-    TCTTTTTGAATCCCATCACAAAC
-  Cluster ID: crp_cluster_231
-    TGAAGTGATCCTCGCCACCAA   <-- RETAINED
-    TGAAGTGATCCTCGCCACCAAC
-  Cluster ID: crp_cluster_232
-    TGAGATTTTCATCACAC  <-- RETAINED
-    TGAGATTTTCATCACA 
-  Cluster ID: crp_cluster_233
     TGATGACATTTCTGACGGCGTT   <-- RETAINED
     TGATGACATTTCTGACGGCGTTA
-  Cluster ID: crp_cluster_234
+  Cluster ID: crp_cluster_231
     TGATGTGATGCTCACCGCATTT   <-- RETAINED
     TGATGTGATGCTCACCGCATTTC
-  Cluster ID: crp_cluster_235
-    TGATGTGATTTGCTTCACATCT   <-- RETAINED
-    TGATGTGATTTGCTTCACATCTT
-  Cluster ID: crp_cluster_236
+  Cluster ID: crp_cluster_232
     TGCGATGCATGTCAAA   <-- RETAINED
     TGCGATGCATGTCAAAT
-  Cluster ID: crp_cluster_237
+  Cluster ID: crp_cluster_233
     TGCGATTCCACTCACA   <-- RETAINED
     TGCGATTCCACTCACAA
-  Cluster ID: crp_cluster_238
+  Cluster ID: crp_cluster_234
     TTGCTGTGACTCGATTCACGAAG  <-- RETAINED
     TGCTGTGACTCGATTCACGAAG 
-  Cluster ID: crp_cluster_239
+  Cluster ID: crp_cluster_235
     TTGGAATGAAGAGAGTAACGAAT  <-- RETAINED
     TGGAATGAAGAGAGTAACGAAT 
+  Cluster ID: crp_cluster_236
+    TGGCGCAGGAAACACATA   <-- RETAINED
+    TGGCGCAGGAAACACATAA
+  Cluster ID: crp_cluster_237
+    TGGTGTGACGGCGTTAAAAGT   <-- RETAINED
+    TGGTGTGACGGCGTTAAAAGTA
+  Cluster ID: crp_cluster_238
+    TGTATGCAAAGGACGTCACATT   <-- RETAINED
+    TGTATGCAAAGGACGTCACATTA
+  Cluster ID: crp_cluster_239
+    TGTGAAAACACAC   <-- RETAINED
+    TTGTGAAAACACAC
   Cluster ID: crp_cluster_24
     AAGTGTGATCGGGGACAATATA   <-- RETAINED
     AAAGTGTGATCGGGGACAATATA
   Cluster ID: crp_cluster_240
-    TGGCGCAGGAAACACATA   <-- RETAINED
-    TGGCGCAGGAAACACATAA
-  Cluster ID: crp_cluster_241
-    TGGTGTGACGGCGTTAAAAGT   <-- RETAINED
-    TGGTGTGACGGCGTTAAAAGTA
-  Cluster ID: crp_cluster_242
-    TGTATGCAAAGGACGTCACATT   <-- RETAINED
-    TGTATGCAAAGGACGTCACATTA
-  Cluster ID: crp_cluster_243
-    TGTGAAAACACAC   <-- RETAINED
-    TTGTGAAAACACAC
-  Cluster ID: crp_cluster_244
     TGTGAGACATTGCCGA   <-- RETAINED
     TGTGAGACATTGCCGAT
-  Cluster ID: crp_cluster_245
+  Cluster ID: crp_cluster_241
     TTGTGATCTAAATTGTAGTA  <-- RETAINED
     TGTGATCTAAATTGTAGTA 
-  Cluster ID: crp_cluster_246
+  Cluster ID: crp_cluster_242
     TGTGATCTATGTAGGA   <-- RETAINED
     TGTGATCTATGTAGGAT
-  Cluster ID: crp_cluster_247
+  Cluster ID: crp_cluster_243
     TGTGATGAACTTCAAA   <-- RETAINED
     TGTGATGAACTTCAAAT
-  Cluster ID: crp_cluster_248
+  Cluster ID: crp_cluster_244
     TGTGATGCCAGTTTGC   <-- RETAINED
     TGTGATGCCAGTTTGCG
-  Cluster ID: crp_cluster_249
+  Cluster ID: crp_cluster_245
     TTGTGCGGATAAACACCT  <-- RETAINED
     TGTGCGGATAAACACCT 
+  Cluster ID: crp_cluster_246
+    TGTGCGGTTGCTCATGT  <-- RETAINED
+    TGTGCGGTTGCTCATG 
+  Cluster ID: crp_cluster_247
+    TTAAATTGATCACGTTTTAGAC   <-- RETAINED
+    TTAAATTGATCACGTTTTAGACC
+  Cluster ID: crp_cluster_248
+    TTTAAGTTCGATATTTCTCGTTT  <-- RETAINED
+    TTAAGTTCGATATTTCTCGTTT 
+  Cluster ID: crp_cluster_249
+    TTACCCGCTTTAAAACACGCTA   <-- RETAINED
+    TTACCCGCTTTAAAACACGCTAT
   Cluster ID: crp_cluster_25
     AAGTGTGATGTGAGTCAGATAA   <-- RETAINED
     AAAGTGTGATGTGAGTCAGATAA
   Cluster ID: crp_cluster_250
-    TGTGCGGTTGCTCATGT  <-- RETAINED
-    TGTGCGGTTGCTCATG 
-  Cluster ID: crp_cluster_251
-    TTAAATTGATCACGTTTTAGAC   <-- RETAINED
-    TTAAATTGATCACGTTTTAGACC
-  Cluster ID: crp_cluster_252
-    TTTAAGTTCGATATTTCTCGTTT  <-- RETAINED
-    TTAAGTTCGATATTTCTCGTTT 
-  Cluster ID: crp_cluster_253
-    TTACCCGCTTTAAAACACGCTA   <-- RETAINED
-    TTACCCGCTTTAAAACACGCTAT
-  Cluster ID: crp_cluster_254
     TTATATATGTCAAGTTGTTAAA   <-- RETAINED
     TTATATATGTCAAGTTGTTAAAA
-  Cluster ID: crp_cluster_255
+  Cluster ID: crp_cluster_251
     TTTATGTAATAAAATTCATGG  <-- RETAINED
     TTATGTAATAAAATTCATGG 
-  Cluster ID: crp_cluster_256
+  Cluster ID: crp_cluster_252
     TTATGTGATCTAAATCACTTTT   <-- RETAINED
     TTATGTGATCTAAATCACTTTTA
-  Cluster ID: crp_cluster_257
+  Cluster ID: crp_cluster_253
     TTATGTGATTGATATCACACAA   <-- RETAINED
     TTATGTGATTGATATCACACAAA
-  Cluster ID: crp_cluster_258
+  Cluster ID: crp_cluster_254
     TTATGTGATTTGCATCACTTTT   <-- RETAINED
     TTATGTGATTTGCATCACTTTTG
-  Cluster ID: crp_cluster_259
+  Cluster ID: crp_cluster_255
     TTTATGTGATTTGTATCACATAA  <-- RETAINED
     TTATGTGATTTGTATCACATAA 
+  Cluster ID: crp_cluster_256
+    TTATTTGAACCAGATCGCATTA   <-- RETAINED
+    TTATTTGAACCAGATCGCATTAC
+  Cluster ID: crp_cluster_257
+    TTTATTTGATACCCATCACACTT  <-- RETAINED
+    TTATTTGATACCCATCACACTT 
+  Cluster ID: crp_cluster_258
+    TTCCGACGAATAGATCACAATT   <-- RETAINED
+    TTTCCGACGAATAGATCACAATT
+  Cluster ID: crp_cluster_259
+    TTCTGCATATTAATTGACATTT   <-- RETAINED
+    TTCTGCATATTAATTGACATTTC
   Cluster ID: crp_cluster_26
     AATAGAGATCTACTTCACAAAT   <-- RETAINED
     AAATAGAGATCTACTTCACAAAT
   Cluster ID: crp_cluster_260
-    TTATTTGAACCAGATCGCATTA   <-- RETAINED
-    TTATTTGAACCAGATCGCATTAC
-  Cluster ID: crp_cluster_261
-    TTTATTTGATACCCATCACACTT  <-- RETAINED
-    TTATTTGATACCCATCACACTT 
-  Cluster ID: crp_cluster_262
-    TTCCGACGAATAGATCACAATT   <-- RETAINED
-    TTTCCGACGAATAGATCACAATT
-  Cluster ID: crp_cluster_263
-    TTCTGCATATTAATTGACATTT   <-- RETAINED
-    TTCTGCATATTAATTGACATTTC
-  Cluster ID: crp_cluster_264
     TTCTGGAATCTTCCTTCCTGAT   <-- RETAINED
     TTCTGGAATCTTCCTTCCTGATT
-  Cluster ID: crp_cluster_265
+  Cluster ID: crp_cluster_261
     TTCTTAGAAACCGATCACATAC   <-- RETAINED
     TTCTTAGAAACCGATCACATACA
-  Cluster ID: crp_cluster_266
+  Cluster ID: crp_cluster_262
     TTTCTTCGTAACGCCTCGCAAAT  <-- RETAINED
     TTCTTCGTAACGCCTCGCAAAT 
-  Cluster ID: crp_cluster_267
+  Cluster ID: crp_cluster_263
     TTTGCGTGATCTGTCGCCCAAAT  <-- RETAINED
     TTGCGTGATCTGTCGCCCAAAT 
-  Cluster ID: crp_cluster_268
+  Cluster ID: crp_cluster_264
     TTGTGCGAGCCAGCTCAAACTT   <-- RETAINED
     TTTGTGCGAGCCAGCTCAAACTT
-  Cluster ID: crp_cluster_269
+  Cluster ID: crp_cluster_265
     TTGTGTGATCTCTGTTACAGAA   <-- RETAINED
     TTGTGTGATCTCTGTTACAGAAT
+  Cluster ID: crp_cluster_266
+    TTGTGTGATCTGCATCACGCAT   <-- RETAINED
+    TTTGTGTGATCTGCATCACGCAT
+  Cluster ID: crp_cluster_267
+    TTGTGTGATGCAAGCCACATTTT  <-- RETAINED
+    TTGTGTGATGCAAGCCACATTT 
+  Cluster ID: crp_cluster_268
+    TTTACTGCTGCTTCACGCAGGA   <-- RETAINED
+    TTTACTGCTGCTTCACGCAGGAT
+  Cluster ID: crp_cluster_269
+    TTTATTGATTTAAATCAAAGAT   <-- RETAINED
+    TTTTATTGATTTAAATCAAAGAT
   Cluster ID: crp_cluster_27
     AATAGTGACGCGCTTCGCAACC   <-- RETAINED
     AAATAGTGACGCGCTTCGCAACC
   Cluster ID: crp_cluster_270
-    TTGTGTGATCTGCATCACGCAT   <-- RETAINED
-    TTTGTGTGATCTGCATCACGCAT
-  Cluster ID: crp_cluster_271
-    TTGTGTGATGCAAGCCACATTTT  <-- RETAINED
-    TTGTGTGATGCAAGCCACATTT 
-  Cluster ID: crp_cluster_272
-    TTTACTGCTGCTTCACGCAGGA   <-- RETAINED
-    TTTACTGCTGCTTCACGCAGGAT
-  Cluster ID: crp_cluster_273
-    TTTATTGATTTAAATCAAAGAT   <-- RETAINED
-    TTTTATTGATTTAAATCAAAGAT
-  Cluster ID: crp_cluster_274
     TTTCATGATTTCAATCAAAACC   <-- RETAINED
     TTTCATGATTTCAATCAAAACCT
-  Cluster ID: crp_cluster_275
+  Cluster ID: crp_cluster_271
     TTTCCTGAAAATTCACGCTGTAT  <-- RETAINED
     TTTCCTGAAAATTCACGCTGTA 
-  Cluster ID: crp_cluster_276
+  Cluster ID: crp_cluster_272
     TTTCGTGAAATCTGTCACTGAA   <-- RETAINED
     TTTTCGTGAAATCTGTCACTGAA
-  Cluster ID: crp_cluster_277
+  Cluster ID: crp_cluster_273
     TTTCGTGAGTTAGATCAATAAA   <-- RETAINED
     TTTCGTGAGTTAGATCAATAAAC
-  Cluster ID: crp_cluster_278
+  Cluster ID: crp_cluster_274
     TTTCGTGTTCCGTTTCATGGTT   <-- RETAINED
     TTTCGTGTTCCGTTTCATGGTTA
-  Cluster ID: crp_cluster_279
+  Cluster ID: crp_cluster_275
     TTTCTTGCTTACCGTCACATTC   <-- RETAINED
     TTTCTTGCTTACCGTCACATTCT
+  Cluster ID: crp_cluster_276
+    TTTGGTGACAAAACTCACAAAA   <-- RETAINED
+    TTTGGTGACAAAACTCACAAAAG
+  Cluster ID: crp_cluster_277
+    TTTGTTCCTCTTCACA   <-- RETAINED
+    TTTGTTCCTCTTCACAT
+  Cluster ID: crp_cluster_278
+    TTTTGTTGCTGACCTTCAAAAAT  <-- RETAINED
+    TTTGTTGCTGACCTTCAAAAAT 
+  Cluster ID: crp_cluster_279
+    TTTGTTGCTTTTGATCACAATA   <-- RETAINED
+    TTTGTTGCTTTTGATCACAATAA
   Cluster ID: crp_cluster_28
     AAATATGACGGTGTTCACAAAG   <-- RETAINED
     GAAATATGACGGTGTTCACAAAG
   Cluster ID: crp_cluster_280
-    TTTGGTGACAAAACTCACAAAA   <-- RETAINED
-    TTTGGTGACAAAACTCACAAAAG
-  Cluster ID: crp_cluster_281
-    TTTGTTCCTCTTCACA   <-- RETAINED
-    TTTGTTCCTCTTCACAT
-  Cluster ID: crp_cluster_282
-    TTTTGTTGCTGACCTTCAAAAAT  <-- RETAINED
-    TTTGTTGCTGACCTTCAAAAAT 
-  Cluster ID: crp_cluster_283
-    TTTGTTGCTTTTGATCACAATA   <-- RETAINED
-    TTTGTTGCTTTTGATCACAATAA
-  Cluster ID: crp_cluster_284
     TTTTATGAAGCCCTTCACAGAA   <-- RETAINED
     TTTTATGAAGCCCTTCACAGAAT
-  Cluster ID: crp_cluster_285
+  Cluster ID: crp_cluster_281
     TTTTATGATTTGGTTCAATTCT   <-- RETAINED
     TTTTATGATTTGGTTCAATTCTT
-  Cluster ID: crp_cluster_286
+  Cluster ID: crp_cluster_282
     TTTTATTGACGCACAGCACATT   <-- RETAINED
     TTTTTATTGACGCACAGCACATT
-  Cluster ID: crp_cluster_287
+  Cluster ID: crp_cluster_283
     TTTTCTTATCTACCTCACAAAG   <-- RETAINED
     TTTTCTTATCTACCTCACAAAGG
-  Cluster ID: crp_cluster_288
+  Cluster ID: crp_cluster_284
     TTTTGCAAGCAACATCACGAAAT  <-- RETAINED
     TTTTGCAAGCAACATCACGAAA 
-  Cluster ID: crp_cluster_289
+  Cluster ID: crp_cluster_285
     TTTTGCGATCAAAATAACACTT   <-- RETAINED
     TTTTGCGATCAAAATAACACTTT
+  Cluster ID: crp_cluster_286
+    TTTTGTAAACAGATTAACACCT   <-- RETAINED
+    TTTTGTAAACAGATTAACACCTC
+  Cluster ID: crp_cluster_287
+    TTTTGTGAATCAGATCAGAAAA   <-- RETAINED
+    TTTTGTGAATCAGATCAGAAAAC
+  Cluster ID: crp_cluster_288
+    TTTTGTGAGCTGTTTCGCGTTA   <-- RETAINED
+    TTTTGTGAGCTGTTTCGCGTTAT
+  Cluster ID: crp_cluster_289
+    TTTTGTGATCACTCCGGCTTTT   <-- RETAINED
+    TTTTTGTGATCACTCCGGCTTTT
   Cluster ID: crp_cluster_29
     AAATCTTTATCTTTGTAGCACTT  <-- RETAINED
     AATCTTTATCTTTGTAGCACTT 
   Cluster ID: crp_cluster_290
-    TTTTGTAAACAGATTAACACCT   <-- RETAINED
-    TTTTGTAAACAGATTAACACCTC
-  Cluster ID: crp_cluster_291
-    TTTTGTGAATCAGATCAGAAAA   <-- RETAINED
-    TTTTGTGAATCAGATCAGAAAAC
-  Cluster ID: crp_cluster_292
-    TTTTGTGAGCTGTTTCGCGTTA   <-- RETAINED
-    TTTTGTGAGCTGTTTCGCGTTAT
-  Cluster ID: crp_cluster_293
-    TTTTGTGATCACTCCGGCTTTT   <-- RETAINED
-    TTTTTGTGATCACTCCGGCTTTT
-  Cluster ID: crp_cluster_294
     TTTTGTGATCGTTATCTCGATA   <-- RETAINED
     TTTTTGTGATCGTTATCTCGATA
-  Cluster ID: crp_cluster_295
+  Cluster ID: crp_cluster_291
     TTTTGTGATCTTCCTCCACATTA  <-- RETAINED
     TTTTGTGATCTTCCTCCACATT 
-  Cluster ID: crp_cluster_296
+  Cluster ID: crp_cluster_292
     TTTTGTGATGAACGTCACGTCA   <-- RETAINED
     TTTTGTGATGAACGTCACGTCAA
-  Cluster ID: crp_cluster_297
+  Cluster ID: crp_cluster_293
     TTTTGTGATGGCTATTAGAAAT   <-- RETAINED
     TTTTGTGATGGCTATTAGAAATT
-  Cluster ID: crp_cluster_298
+  Cluster ID: crp_cluster_294
     TTTTGTGATGGTTGTCATATTA   <-- RETAINED
     TTTTTGTGATGGTTGTCATATTA
-  Cluster ID: crp_cluster_299
+  Cluster ID: crp_cluster_295
     TTTTGTGGCCTGCTTCAAACTT   <-- RETAINED
     TTTTGTGGCCTGCTTCAAACTTT
+  Cluster ID: crp_cluster_296
+    TTTTTAGATGTAAATCACTCCA   <-- RETAINED
+    TTTTTAGATGTAAATCACTCCAT
   Cluster ID: crp_cluster_3
     AAACGTGATCAACCCCTCAATT   <-- RETAINED
     AAAACGTGATCAACCCCTCAATT
   Cluster ID: crp_cluster_30
     TAAATGTAAGCTGTGCCACGTTT  <-- RETAINED
     AAATGTAAGCTGTGCCACGTTT 
-  Cluster ID: crp_cluster_300
-    TTTTTAGATGTAAATCACTCCA   <-- RETAINED
-    TTTTTAGATGTAAATCACTCCAT
   Cluster ID: crp_cluster_31
     AAATGTATGACAGATCACTATT   <-- RETAINED
     AAATGTATGACAGATCACTATTT
@@ -1262,8 +1264,10 @@ TF: crp
     AAATTTGAAGTAGCTCACACTT   <-- RETAINED
     CAAATTTGAAGTAGCTCACACTT
   Cluster ID: crp_cluster_46
-    AAATTTGCGATGCGTCGCGCAT   <-- RETAINED
-    AAATTTGCGATGCGTCGCGCATT
+    AAATTTGCGATGCGTCGCGCATT  <-- RETAINED
+    ATTTGCGATGCGTCGCGCATTTT
+    AAATTTGCGATGCGTCGCGCAT 
+    ATTTGCGATGCGTCGCGCATTT 
   Cluster ID: crp_cluster_47
     AATTTTACTTTTGGTTACATAT   <-- RETAINED
     AAATTTTACTTTTGGTTACATAT
@@ -1497,26 +1501,23 @@ TF: fadr
     GCTCCGGTCGGACCTGGC  <-- RETAINED
     CTCCGGTCGGACCTGGC 
   Cluster ID: fadr_cluster_17
-    CTCTGGTATGATGAGTC   <-- RETAINED
-    CTCTGGTATGATGAGTCC
-  Cluster ID: fadr_cluster_18
     GACAGGTCAGCTTTGAT   <-- RETAINED
     GACAGGTCAGCTTTGATG
-  Cluster ID: fadr_cluster_19
+  Cluster ID: fadr_cluster_18
     GCTGGCCAGTCATCGAC   <-- RETAINED
     GCTGGCCAGTCATCGACA
   Cluster ID: fadr_cluster_2
     TAACTCATCGGATCAGTT  <-- RETAINED
     AACTCATCGGATCAGTT 
-  Cluster ID: fadr_cluster_20
-    TGGCTGATCGGACTTGTT  <-- RETAINED
-    GGCTGATCGGACTTGTT 
   Cluster ID: fadr_cluster_3
-    GAACTGATCGGACTTGTT  <-- RETAINED
+    GGCTGATCGGACTTGTT   <-- RETAINED
+    GAACTGATCGGACTTGTT
+    TGGCTGATCGGACTTGTT
     AACTGATCGGACTTGTT 
   Cluster ID: fadr_cluster_4
-    AAGCTGGTATGATGAGTT  <-- RETAINED
-    AGCTGGTATGATGAGTT 
+    AGCTGGTATGATGAGTT   <-- RETAINED
+    AAGCTGGTATGATGAGTT
+    CTCTGGTATGATGAGTC 
   Cluster ID: fadr_cluster_5
     AAGTGGTCAGACCTCCT   <-- RETAINED
     CAAGTGGTCAGACCTCCT
@@ -1972,6 +1973,8 @@ TF: lrp
     AGCAGCATGAAAATTA
   Cluster ID: lrp_cluster_31
     GGCATATAACAGAGG   <-- RETAINED
+    GCATATAACAGA    
+    GGCATATAACAGA   
     AGGCATATAACAGAGG
   Cluster ID: lrp_cluster_32
     AGTAGCATGAAACGT   <-- RETAINED
@@ -2127,53 +2130,53 @@ TF: lrp
     GTGTTGGATTATTCT 
     TCGTGTTGGATTATTC
   Cluster ID: lrp_cluster_78
+    CTAATATTATGCCGG   <-- RETAINED
+    TCGTAATATTATGCCG
+  Cluster ID: lrp_cluster_79
     CTATCAATCTATGCCA  <-- RETAINED
     TATCAATCTATGCCA 
-  Cluster ID: lrp_cluster_79
-    CTCCTGTTTATTCTT   <-- RETAINED
-    CTCCTGTTTATTCTTA
   Cluster ID: lrp_cluster_8
     AAGCGTGTATTTTTGTGAGCTGTTT   <-- RETAINED
     AAGCGTGTATTTTTGTGAGCTGTTTC
   Cluster ID: lrp_cluster_80
+    CTCCTGTTTATTCTT   <-- RETAINED
+    CTCCTGTTTATTCTTA
+  Cluster ID: lrp_cluster_81
     TGATTTTCTCCT   <-- RETAINED
     CTGATTTTCTCCT
-  Cluster ID: lrp_cluster_81
+  Cluster ID: lrp_cluster_82
     CTTATTAGTTTTTCTG   <-- RETAINED
     TCTTATTAGTTTTTCTG
-  Cluster ID: lrp_cluster_82
+  Cluster ID: lrp_cluster_83
     CTTGAAATTATTCTG   <-- RETAINED
     TCTTGAAATTATTCTG
-  Cluster ID: lrp_cluster_83
+  Cluster ID: lrp_cluster_84
     GAAAGCGTGAAAAAC   <-- RETAINED
     GAAAGCGTGAAAAACA
-  Cluster ID: lrp_cluster_84
+  Cluster ID: lrp_cluster_85
     GAAGTTTAATTC   <-- RETAINED
     GAAGTTTAATTCT
-  Cluster ID: lrp_cluster_85
+  Cluster ID: lrp_cluster_86
     GAGAATTTTTTTCTT   <-- RETAINED
     GAGAATTTTTTTCTTT
-  Cluster ID: lrp_cluster_86
+  Cluster ID: lrp_cluster_87
     GAGCACCTCATTTCA   <-- RETAINED
     GAGCACCTCATTTCAA
-  Cluster ID: lrp_cluster_87
+  Cluster ID: lrp_cluster_88
     GAGGATTTTATCGTT   <-- RETAINED
     GAGGATTTTATCGTTT
-  Cluster ID: lrp_cluster_88
+  Cluster ID: lrp_cluster_89
     GCAAAATTATCTGCT   <-- RETAINED
     GCAAAATTATCTGCTG
-  Cluster ID: lrp_cluster_89
-    GCAGGATAAAGCACC   <-- RETAINED
-    GCAGGATAAAGCACCG
   Cluster ID: lrp_cluster_9
     AGTTACACGTTATTT   <-- RETAINED
     AAGTTACACGTTATTT
   Cluster ID: lrp_cluster_90
+    GCAGGATAAAGCACC   <-- RETAINED
+    GCAGGATAAAGCACCG
+  Cluster ID: lrp_cluster_91
     GCAGTGAAAAAATCT   <-- RETAINED
     GCAGTGAAAAAATCTG
-  Cluster ID: lrp_cluster_91
-    GCATATAACAGA   <-- RETAINED
-    GGCATATAACAGA
   Cluster ID: lrp_cluster_92
     GCATTAATTCTTGCC   <-- RETAINED
     GCATTAATTCTTGCCT

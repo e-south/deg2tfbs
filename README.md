@@ -206,9 +206,9 @@ deg2tfbs/
 
     A set of all possible 6-mers is generated for each sequence, and pairwise comparisons are made based on the overlap of these k-mers. The resulting Jaccard similarity score ranges from 0 to 1, with higher scores indicating stronger compositional similarity between sequences.
 
-    <img src="images/tfbs_jaccard_summary.png" alt="Jaccard Workflow" width="700"/>
+    <img src="images/tfbs_jaccard_summary.png" alt="Jaccard Workflow" width="800"/>
     
-    Above is a visual summary of the Jaccard-based deduplication process for TFBSs. The left panel shows pairwise Jaccard similarities among binding sites, grouped by transcription factor. Similarities above the 0.80 threshold (dashed line) are considered redundant. The center panel depicts a similarity network for a randomly selected TF (`fadr`), where nodes represent sequences and edges indicate high-similarity relationships. The right panel shows a representative cluster, with the centroid—retained in the final dataset—highlighted, and similar neighbors removed.
+    Above is a visual summary of the Jaccard-based deduplication process for TFBSs. The left panel shows pairwise Jaccard similarities among binding sites, grouped by transcription factor. We considered similarities above the 0.50 threshold (dashed line) as redundant. The center panel depicts a similarity network for a randomly selected TF (`fadr`), where nodes represent sequences and edges indicate high-similarity relationships. The right panel shows a representative cluster, with the centroid—retained in the final dataset—highlighted, and similar neighbors removed.
 
     This approach offers a principled method to define a representative site from near-duplicate sequences while allowing for flexibility through configurable parameters.
 

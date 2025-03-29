@@ -92,13 +92,13 @@ def run_treitz_schmidt_concordant_pipeline(full_config: dict):
         r = row["log2FC_mrna"]
         p = row["log2FC_protein"]
         if (abs(r) >= t) and (abs(p) >= t) and (np.sign(r) == np.sign(p)):
-            return "concordant"
+            return "Concordant"
         elif abs(r) >= t and abs(p) < t:
-            return "RNA specific"
+            return "Treitz et al. specific"
         elif abs(p) >= t and abs(r) < t:
-            return "Protein specific"
+            return "Schmidt et al. specific"
         else:
-            return "unchanged"
+            return "Unchanged"
     
     merged["category"] = merged.apply(lambda row: assign_category(row, threshold), axis=1)
     
@@ -120,10 +120,10 @@ def run_treitz_schmidt_concordant_pipeline(full_config: dict):
     # Create the concordant plot.
     plt.figure(figsize=(7,6))
     cat_colors = {
-        "concordant": "purple",
-        "RNA specific": "blue",
-        "Protein specific": "red",
-        "unchanged": "gray"
+        "Concordant": "purple",
+        "Treitz et al. specific": "blue",
+        "Schmidt et al. specific": "red",
+        "Unchanged": "gray"
     }
     # For each category, scale marker sizes using the log of avg_exp (from Schmidt data).
     for cat, color in cat_colors.items():

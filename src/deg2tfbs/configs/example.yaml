@@ -61,8 +61,8 @@ pipeline:
       params:
         top_n: 25
       apply_jaccard_filter: true
-      kmer_size: 6
-      jaccard_similarity_threshold: 0.8
+      kmer_size: 8
+      jaccard_similarity_threshold: 0.5
       selected_tf: "fadr"
       umap_n_neighbors: 15
       umap_min_dist: 0.1
