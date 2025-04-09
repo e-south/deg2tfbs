@@ -71,25 +71,6 @@ def read_treitz_data(config_data: dict) -> pd.DataFrame:
 def run_treitz_pipeline(full_config: dict):
     """
     Loads the Treitz dataset, applies thresholds, plots a volcano plot, and saves results as CSVs.
-
-    Expected YAML config snippet for treitz:
-      treitz:
-        data:
-          dataset_key: "treitz"
-          sheet_name: "TableSI;Data"
-          usecols:
-            - "Gene name"
-            - "# Proteins"
-            - "(A/G)-ratio"
-            - "log2 (A/G)-ratio"
-            - "Ratio Count"
-            - "(-log) p-value"
-          header: 1
-        thresholds:
-          log2_fc_threshold: 1.5
-        output:
-          csv_subdir: "csvs"
-          plot_subdir: "plots"
     """
     config_treitz = full_config['datasets']["treitz"]
     df = read_treitz_data(config_treitz["data"])
@@ -105,7 +86,7 @@ def run_treitz_pipeline(full_config: dict):
     csv_dir.mkdir(parents=True, exist_ok=True)
     plot_dir.mkdir(parents=True, exist_ok=True)
 
-    # Retrieve threshold for log2 fold change (asserting numeric type for robustness)
+    # Retrieve threshold for log2 fold change
     threshold = config_treitz["thresholds"]["log2_fc_threshold"]
     assert isinstance(threshold, (int, float)), "Threshold must be numeric."
 

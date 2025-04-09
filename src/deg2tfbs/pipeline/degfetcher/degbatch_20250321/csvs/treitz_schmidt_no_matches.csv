@@ -1,4 +1,4 @@
-gene,ratio,log2FC_mrna,dataset,Acetate,Glucose,log2FC_protein,avg_exp
+gene,ratio,log2FC_treitz,dataset,Acetate,Glucose,log2FC_schmidt,avg_exp
 plap,0.1907346683499914,-2.390361,Treitz,,,,
 uidc,0.2857520988122496,-1.807164,Treitz,,,,
 yihq,0.3251204028612238,-1.620954,Treitz,,,,

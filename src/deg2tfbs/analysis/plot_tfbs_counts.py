@@ -8,9 +8,6 @@ transcription factor. The operation groups by the 'tf' column and counts the num
 of unique 'tfbs' values. The plot title is set to the name of the parent directory 
 of source_csv. 
 
-If an optional set of regulators to exclude is provided (via exclude_regulators),
-those rows are removed before computing counts.
-
 Module Author(s): Eric J. South
 Dunlop Lab
 --------------------------------------------------------------------------------
@@ -23,6 +20,8 @@ from pathlib import Path
 import logging
 from typing import Union, Optional, Dict
 import matplotlib.patches as mpatches
+
+from deg2tfbs.pipeline.utils import get_regulator_display_name
 
 logger = logging.getLogger(__name__)
 
@@ -89,14 +88,17 @@ def plot_tfbs_counts(source_csv: Union[str, Path],
     if log_scale:
         ax.set_yscale("log")
     
-    # Determine the plot title.
+    # Replaces the raw 'tf' names with their properly formatted display names.
+    new_labels = [get_regulator_display_name(tf) for tf in counts.index]
+    ax.set_xticklabels(new_labels, rotation=90)
+    
+    # Determine the plot title based on the parent directory name.
     parent_name = Path(source_csv).parent.name  # e.g., "tfbsbatch_20250223_42C_up_kim_et_al"
     trimmed = trim_label(parent_name)           # e.g., "42C_up_kim_et_al"
     group_title = group_labels.get(trimmed, trimmed) if group_labels else trimmed
     ax.set_title(f"TFBS Counts for {group_title}")
     ax.set_xlabel("Transcription Factor")
     ax.set_ylabel("Unique TFBS Count")
-    ax.tick_params(axis='x', rotation=90)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     

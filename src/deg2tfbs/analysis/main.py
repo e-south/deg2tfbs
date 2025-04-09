@@ -41,7 +41,7 @@ def run_multi_batch_analysis(rosters, regs_reference, total_regs, output_root: P
     """
     out_dir = output_root / run_label
     out_dir.mkdir(parents=True, exist_ok=True)
-    csv_dir = out_dir / "data"
+    csv_dir = out_dir / "outputs"
     csv_dir.mkdir(exist_ok=True)
     
     comparisons = config["analysis"].get("comparisons", [])
@@ -166,7 +166,7 @@ def run_single_batch_analysis(config, repo_root):
         sys.exit(1)
     
     plot_base_dir = resolve_path(analysis_config.get("plot_output_dir", "analysis/plots"), repo_root)
-    csv_base_dir = resolve_path(analysis_config.get("csv_output_dir", "analysis/data"), repo_root)
+    csv_base_dir = resolve_path(analysis_config.get("csv_output_dir", "analysis/outputs"), repo_root)
     output_plots_dir = plot_base_dir / "single_batch"
     output_csv_dir = csv_base_dir / "single_batch"
     output_plots_dir.mkdir(parents=True, exist_ok=True)

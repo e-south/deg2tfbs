@@ -27,4 +27,3 @@ def is_sigma_factor(regulator: str) -> bool:
 def is_nucleoid_regulator(regulator: str, nuc_reg_set: set) -> bool:
     reg_lower = regulator.lower().strip()
     return reg_lower in nuc_reg_set or any(reg_lower.startswith(nuc.lower()) for nuc in nuc_reg_set)
-

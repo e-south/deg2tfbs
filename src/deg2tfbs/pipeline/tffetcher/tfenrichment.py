@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 --------------------------------------------------------------------------------
 <deg2tfbs project>
@@ -15,18 +14,18 @@ For each TF:
   - Let a = number of DEGs (from the union of all DEG files) that are targets of the TF.
   - Let K = total number of targets for the TF (from the full network).
   - The enrichment score is defined as a/K.
-  - A Fisher’s exact test is performed using the following 2×2 contingency table:
+  - A Fisher's exact test is performed using the following 2x2 contingency table:
   
-             |   DEG    | Non-DEG 
-    ---------|----------|---------
-    Targets  |    a     |  K - a
-    Non-targets |  M - a |  N - K - (M - a)
+                |   DEG    | Non-DEG 
+    ------------|----------|---------
+    Targets     |    a     |  K - a
+    Non-targets |  M - a   |  N - K - (M - a)
     
     where:
       M = number of DEGs (present in the full network)
       N = total number of genes in the full network.
       
-  - P-values are corrected using the Benjamini–Hochberg method.
+  - P-values are corrected using the Benjamini-Hochberg method.
 
 The module outputs:
   1. A CSV summary (tf_enrichment_summary.csv) that includes for each TF:
@@ -71,6 +70,8 @@ from deg2tfbs.pipeline.tffetcher.regulator_utils import (
     is_sigma_factor,
     is_nucleoid_regulator
 )
+
+from deg2tfbs.pipeline.utils import get_regulator_display_name
 
 logger = logging.getLogger("tfenrichment")
 
@@ -204,7 +205,7 @@ def run_enrichment(merged_network, mapping_rows, all_degs, out_dir: Path, params
     ax_top.set_ylabel("Enrichment Score (DEG targets / total targets)", fontsize=14)
     # Set main title and add a subtitle with a smaller font.
     ax_top.set_title("Prioritizing Transcription Factors", fontsize=16, pad=20)
-    ax_top.text(0.5, 0.99, "Integrating Enrichment Scores, Target Abundance, and Statistical Significance", 
+    ax_top.text(0.5, 0.99, "DEG Enrichment per TF, BH-FDR Significance, and Number of Genes Regulated", 
                 transform=ax_top.transAxes, ha="center", fontsize=14)
     ax_top.tick_params(axis="both", labelsize=12)
     # Ensure y-axis ticks show two decimal places
@@ -244,12 +245,14 @@ def run_enrichment(merged_network, mapping_rows, all_degs, out_dir: Path, params
     if len(df_plot) >= top_n:
         partition_x = top_n - 0.5
         ax_bottom.axvline(x=partition_x, color="#ff5555", linestyle="--", linewidth=1)
-        ax_bottom.text(partition_x - 0.2, -0.95, f"Top {top_n}", color="#ff5555",
-                       fontsize=14, ha="right", va="bottom", rotation=90)
+        ax_bottom.text(partition_x - 0.2, -0.95, f"Top {top_n}", color="black",
+                       fontsize=14, ha="right", va="bottom", rotation=0)
     
-    # Set x-axis tick labels uniformly in black and shared between subplots.
+    # Set x-axis tick labels to show original capitalization.
     ax_bottom.set_xticks(x)
-    ax_bottom.set_xticklabels(df_plot["regulator"], rotation=90, fontsize=12, color="black")
+    corrected_labels = [get_regulator_display_name(reg) for reg in df_plot["regulator"]]
+    ax_bottom.set_xticklabels(corrected_labels, rotation=90, fontsize=12, color="black")
+
     sns.despine(ax=ax_bottom, top=True, right=True)
     
     plt.tight_layout(pad=0.5)

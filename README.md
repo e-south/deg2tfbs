@@ -85,7 +85,7 @@ deg2tfbs/
    - Produces tidy CSV outputs, such as `schmidt_upregulated_degs.csv`, containing columns:  
      - **gene**: DEG identifier.
      - **source**: The source dataset (e.g., "schmidt").
-     - **thresholds**: Optional column specifying user-defined DEG thresholds from the config file.
+     - **thresholds**: Optional column specifying user-defined filtering thresholds from the config file.
      - **comparison**: The experimental context defining the target vs. reference condition.
 
       For example:
@@ -104,9 +104,9 @@ deg2tfbs/
 
     **A quick use case:**
 
-    The example above highlights up- and down-regulated genes during *E. coli* growth in M9-acetate versus M9-glucose, using proteomic data from [**Schmidt *et al.***](https://www.nature.com/articles/nbt.3418). The `schmidt.py` module processes this dataset to identify DEGs and generate the corresponding MA plot.
+    The example above highlights up- and down-regulated genes during *E. coli* growth in M9-acetate versus M9-glucose, using proteomic data from [**Schmidt *et al.***](https://www.nature.com/articles/nbt.3418). The `schmidt.py` module processes this dataset to identify DEGs and generate the above MA plot.
 
-    To further increase confidence in DEG selection, we wrote another module in **degfetcher** to threshold on data from [**Treitz *et al.***](https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/10.1002/pmic.201600303), which also collected *E. coli* protein abundance data, grown in either M9-acetate to M9-glucose. 
+    To further increase confidence in DEG selection, we also thresholded on data from [**Treitz *et al.***](https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/10.1002/pmic.201600303), which also collected *E. coli* protein abundance data, grown in either M9-acetate to M9-glucose. 
     
     <img src="images/treitz_volcano.png" alt="Treitz Volcano Plot" width="600"/>
 
@@ -121,13 +121,13 @@ deg2tfbs/
     The next step is to find which transcription factors are associated with these DEGs.
 
 2. **tffetcher** *(Step 2: Map DEGs to TFs)*  
-   - Reads CSV outputs, saved in batches, from **degfetcher**.
-   - Loads **regulatory network**-type datasets (i.e., TF-gene connections) curated from a database (e.g., from **RegulonDB** or **EcoCyc**).  
-   - Fetches TFs that reportedly regulate these DEGs (the “regulatees”).  
+   - Reads CSV outputs (saved in batches) from **degfetcher**.
+   - Loads **regulatory network**-type datasets (i.e., TF-gene connections) curated from a databases like **RegulonDB** or **EcoCyc**.  
+   - Fetches TFs that reportedly regulate these DEGs.  
    - Produces a tidy CSV output, `deg2tf_mapping`, containing columns: 
      - **gene** - DEG identifier.
      - **regulator**: TFs reported to regulated target gene.
-     - **polarity**: Reported "type" of regulation applied to gene, if available.
+     - **polarity**: Reported type of regulation applied to gene, if available.
      - **source**: Record of which regulatory network dataset(s) were used.
      - **is_global_regulator**: Boolean indicating whether the regulator is classified as a global regulator by EcoCyc.
      - **is_sigma_factor**: Boolean indicating whether the regulator is classified as a sigma factor by EcoCyc.
@@ -144,7 +144,7 @@ deg2tfbs/
       | aceb  | cra       | +        | ecocyc_28_AND_regdb_13     | yes                 | no              | no                    |
       | aceb  | lrp       | +        | ecocyc_28_AND_regdb_13     | yes                 | no              | no                    |
 
-      In addition to the mapping file, tffetcher can perform statistical testing (e.g., a Fisher's Exact Test) to prioritize TFs that are enriched for regulating DEGs. For each TF, we construct a 2x2 continguency table to assess enrichment of DEGs among its targets:
+      In addition to generating a *deg2tf* mapping file, **tffetcher** can perform statistical testing (e.g., a Fisher's Exact Test) to prioritize TFs that are enriched for regulating input DEGs. For each TF, we construct a 2x2 continguency table to assess enrichment of DEGs among its targets:
       |                 | DEG (Observed) | Non-DEG (Not observed) | 
       |-----------------|----------------|------------------------|
       | TF Targets      | a              | K - a                  |
@@ -158,16 +158,16 @@ deg2tfbs/
       
       ***Note:*** *In enrichment analysis, the term background (i.e., the entire population) refers to the set of all genes that could theoretically be detected as DEGs in the experiment. In our case, the curated regulatory networks (from EcoCyc and RegulonDB) include over 3,000 genes, yet an experimental dataset from **degfetcher** may contains only a subset (e.g., the 1,881 genes in the above Treitz-Schmidt concordant plot). Therefore, we would filter the regulatory network to include only genes present in the concordant plot. This ensures that only measurable genes contribute to the background, preventing an inflated denominator.*
 
-      A one‑tailed Fisher's Exact Test (testing for overrepresentation) was applied to yield a raw p‑value for each TF. P‑values are then adjusted for multiple testing using the Benjamini–Hochberg (BH) method. TFs can then be ranked in ascending order by their FDR-corrected p‑values. This “Top-N” method prioritizes TFs showing the strongest enrichment of regulated DEGs, based on the assumption that such overrepresentation may indicate condition-specific regulatory activity (e.g., between M9-acetate and M9-glucose).
+      A one‑tailed Fisher's Exact Test (testing for overrepresentation) was applied to yield a raw p‑value for each TF. P‑values were then adjusted for multiple testing using the Benjamini–Hochberg (BH) method. TFs can then be ranked in ascending order by their FDR-corrected p‑values. This “Top-N” method prioritizes TFs showing the strongest enrichment of regulated DEGs, based on the assumption that such overrepresentation may indicate condition-specific regulatory activity (e.g., between M9-acetate and M9-glucose).
 
       ***Note:*** Enrichment scores (a/K) and p-values from the Fisher's Exact Test are related—but they’re not the same, and they don’t always move together.
-      - The enrichment fraction (a/K) - This measures what proportion of a TF's targets are differentially expressed
-      - The absolute number of gene targets - This affects statistical power and confidence
+      - The **enrichment fraction (a/K)**: Measures what proportion of a TF's targets are differentially expressed
+      - The **absolute number of gene targets**: Affects statistical power and confidence.
 
       <img src="images/tf_consolidated_enrichment.png" alt="TF Enrichment" width="700"/>
 
-      The Fisher's Exact Test is sensitive to both the proportion and the total counts.
-    
+      The Fisher's Exact Test is sensitive to both proportion and total counts. The next step is to find which of these transcription factors have binding site information.
+
      
 3. **tfbsfetcher** *(Step 3: Map TFs to TFBSs)*  
    - Reads CSV outputs, saved in batches, from **tffetcher**.
@@ -186,15 +186,15 @@ deg2tfbs/
       | **is_sigma_factor** | Boolean flag (e.g., "no") indicating whether the TF is a sigma factor                            |
       | **is_global_regulator** | Boolean flag (e.g., "no") indicating whether the TF is a global regulator                    |
 
-    The counts of unique TF binding sites for each TF (from the `tf2tfbs_mapping.csv` file) can be visualized, as shown below, or used in downstream analyses beyond the scope of **deg2tfbs**.
+    The counts of unique binding sites for each TF can then be visualized, as shown below, or used in downstream analyses beyond the scope of **deg2tfbs**.
 
     <img src="images/tfbs_counts.png" alt="TFBS Counts Plot" width="600"/>
 
     **Jaccard Similarity in TFBS Deduplication**
     
-    In ```tfbsfetcher.py```, binding sites are identified by checking if a transcription factor has any annotated binding site sequences (e.g., in EcoCyc or RegulonDB). Collected binding sites are then deduplicated based on exact string matches—only unique TF–TFBS sequence pairs are retained. No alignment or motif inference is performed, so even near-identical binding sites (e.g., differing by ±1 nucleotide) are treated as distinct, which may not be desired.
+    In ```tfbsfetcher.py```, binding sites are identified by checking if a transcription factor has any annotated binding site sequences (e.g., in **EcoCyc** or **RegulonDB**). Collected binding sites are then deduplicated based on exact string matches—only unique TF–TFBS sequence pairs are retained. No alignment or motif inference is performed, so even near-identical binding sites (e.g., differing by ±1 nucleotide) are treated as distinct, which may not be desired.
 
-    To address redundancy among highly similar sequences, an optional deduplication step based on the **Jaccard similarity index** is included. This method groups sequences with high compositional similarity and retains a single representative from each group.
+    To address redundancy among highly similar sequences, an optional deduplication step based on the **Jaccard similarity index** can be performed. This method groups sequences with high compositional similarity and retains a single representative from each group.
 
     For sets A and B, it is defined as:
 
@@ -210,7 +210,7 @@ deg2tfbs/
     
     Above is a visual summary of the Jaccard-based deduplication process for TFBSs. The left panel shows pairwise Jaccard similarities among binding sites, grouped by transcription factor. We considered similarities above the 0.50 threshold (dashed line) as redundant. The center panel depicts a similarity network for a randomly selected TF (`fadr`), where nodes represent sequences and edges indicate high-similarity relationships. The right panel shows a representative cluster, with the centroid—retained in the final dataset—highlighted, and similar neighbors removed.
 
-    This approach offers a principled method to define a representative site from near-duplicate sequences while allowing for flexibility through configurable parameters.
+    This approach offers a principled method to define a representative binding site from near-duplicate sequences while allowing for flexibility through configurable parameters.
 
 ## **Running the Pipeline**
 

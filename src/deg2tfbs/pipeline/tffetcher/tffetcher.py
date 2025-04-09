@@ -36,6 +36,7 @@ from deg2tfbs.pipeline.tffetcher.regulator_utils import (
 )
 from deg2tfbs.pipeline.tffetcher import tfenrichment, normalize_gene
 from deg2tfbs.pipeline import utils
+from deg2tfbs.pipeline import filtering
 
 logging.basicConfig(level=logging.INFO)
 
@@ -268,6 +269,9 @@ def run_tffetcher_stage(config: dict) -> None:
                 "is_nucleoid_regulator": is_nucleo,
                 "deg_source": deg_source_str,
             })
+    
+    # Remove any transcription factors that do not contain binding sites.
+    rows = filtering.filter_mapping_rows_by_tfbs(rows)
     
     out_dir = root_dir / batch_id
     out_dir.mkdir(parents=True, exist_ok=True)

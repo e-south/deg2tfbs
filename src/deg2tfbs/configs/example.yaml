@@ -42,7 +42,7 @@ pipeline:
         include_master_regulators: true
         include_sigma_factors: true
         fdr_threshold: 0.10
-        top_n: 25
+        top_n: 20
 
     tfbsfetcher:
       root_dir: "pipeline/tfbsfetcher"
@@ -59,7 +59,7 @@ pipeline:
             path: "regulondb_13_tf_ri_set"
             regulondb_pssm: false
       params:
-        top_n: 25
+        top_n: 20
       apply_jaccard_filter: true
       kmer_size: 8
       jaccard_similarity_threshold: 0.5

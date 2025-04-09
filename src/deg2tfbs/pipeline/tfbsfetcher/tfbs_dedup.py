@@ -147,28 +147,8 @@ def plot_jaccard_summary(non_clustered: pd.DataFrame, clustered: pd.DataFrame, c
     Create a 3-panel summary figure:
     
       Panel 0 (Swarm):
-        - Title: "TFBS Pairwise Similarity Scores"
-        - x-axis: "Jaccard Similarity"
-        - y-axis: "Transcription Factor" 
-          with TFs ordered by increasing proportion of high-similarity pairs then reversed so that the TF with most high-similarity pairs appears at the top
-        - Legend: "Lower Similarity (< threshold)" / "Higher Similarity (≥ threshold)"
-      
       Panel 1 (Network Graph):
-        - Title: "TFBS Similarity Network for Selected Transcription Factor"
-        - x-axis label: "Nodes = TFBS sequences, Edges = Jaccard similarity (≥ threshold)"
-          (this annotation appears right below the network plot)
-        - Uses spring_layout with edge weights for positioning.
-        - Node sizes: centroid = 80, non-centroid = 50.
-        - Edge thicknesses are normalized modestly (light gray, alpha ≈ 0.5).
-        - All axis splines (frames) are removed.
-      
       Panel 2 (Cluster Snapshot):
-        - Title: "Largest Cluster Snapshot for Selected Transcription Factor"
-        - In the snapshot, the centroid sequence is annotated with " <-- RETAINED"
-    
-    Font sizes for titles, axis labels, ticks, and annotations have been increased.
-    The transcription factor for Panels 1 and 2 is determined by the config key "selected_tf".
-    If not provided or not found, a random TF is selected.
     """
     import seaborn as sns
     import matplotlib.pyplot as plt

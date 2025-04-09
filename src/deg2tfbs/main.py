@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 --------------------------------------------------------------------------------
 <deg2tfbs project>
@@ -10,7 +9,8 @@ Supports grouping of DEG CSV files so that you can process:
   - subsets based on a filter (e.g. "up" or "down"),
   - explicit combinations (with customized comparison overrides).
 
-Module Author(s): Eric J. South (refined)
+Module Author(s): Eric J. South
+Dunlop Lab
 --------------------------------------------------------------------------------
 """
 

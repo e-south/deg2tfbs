@@ -29,7 +29,12 @@ def get_tfbs_mapping_files(tfbs_dir: Path, file_pattern: str = "*.csv") -> Dict[
     mapping: Dict[str, Path] = {}
     for subdir in tfbs_dir.iterdir():
         if subdir.is_dir() and subdir.name.startswith("tfbsbatch_"):
-            csv_files = list(subdir.glob(file_pattern))
+            # Look for a "csvs" subdirectory first.
+            csv_dir = subdir / "csvs"
+            if csv_dir.is_dir():
+                csv_files = list(csv_dir.glob(file_pattern))
+            else:
+                csv_files = list(subdir.glob(file_pattern))
             if csv_files:
                 mapping[subdir.name] = csv_files[0]
                 logger.info(f"Found CSV in {subdir.name}: {csv_files[0]}")
