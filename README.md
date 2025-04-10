@@ -161,7 +161,7 @@ deg2tfbs/
       A one‑tailed Fisher's Exact Test (testing for overrepresentation) was applied to yield a raw p‑value for each TF. P‑values were then adjusted for multiple testing using the Benjamini–Hochberg (BH) method. TFs can then be ranked in ascending order by their FDR-corrected p‑values. This “Top-N” method prioritizes TFs showing the strongest enrichment of regulated DEGs, based on the assumption that such overrepresentation may indicate condition-specific regulatory activity (e.g., between M9-acetate and M9-glucose).
 
       ***Note:*** Enrichment scores (a/K) and p-values from the Fisher's Exact Test are related—but they’re not the same, and they don’t always move together.
-      - The **enrichment fraction (a/K)**: Measures what proportion of a TF's targets are differentially expressed
+      - The **enrichment fraction (a/K)**: Measures what proportion of a TF's targets are differentially expressed.
       - The **absolute number of gene targets**: Affects statistical power and confidence.
 
       <img src="images/tf_consolidated_enrichment.png" alt="TF Enrichment" width="700"/>
