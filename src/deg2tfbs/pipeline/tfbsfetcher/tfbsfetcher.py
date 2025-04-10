@@ -57,9 +57,10 @@ def print_diagnostics(df: pd.DataFrame):
         total = diff1 + diff2 + diff3plus
         logger.info(f"TF '{tf}': diff==1: {diff1}, diff==2: {diff2}, diff>=3: {diff3plus} (total pairs: {total})")
 
-def run_tfbsfetcher_stage(config: dict):
+def run_tfbsfetcher_stage(config: dict) -> None:
     """
     Main entry point for the TFBS-fetcher stage.
+    
     Steps:
       1. Validate configuration and create output directories.
       2. Load TF mapping CSV.
@@ -70,7 +71,7 @@ def run_tfbsfetcher_stage(config: dict):
       7. Write final mapping CSV and filtered-out CSV.
       8. Generate a three-panel Jaccard summary plot.
       9. Export cluster strips (alignment-like text summary of clusters).
-      10. Print diagnostic metrics regarding length differences.
+     10. Print diagnostic metrics regarding length differences.
     """
     if "root_dir" not in config or "batch_id" not in config:
         raise ValueError("tfbsfetcher config must have 'root_dir' and 'batch_id' keys")
@@ -208,24 +209,20 @@ def run_tfbsfetcher_stage(config: dict):
     if df_out["tfbs"].str.strip().eq("").any():
         raise AssertionError("[TFBSFetcher] Found empty values in 'tfbs' column.")
 
+    # Group by 'tf' and 'tfbs', completely consolidating all other columns.
     group_cols = ["tf", "tfbs"]
-    duplicate_mask = df_out.duplicated(subset=group_cols, keep=False)
-    num_duplicates = duplicate_mask.sum()
-    if num_duplicates:
-        logger.info(f"[TFBSFetcher] Found {num_duplicates} duplicate rows; aggregating duplicates based on {group_cols}")
-        aggregation_rules = {
-            "gene": lambda x: '_'.join(sorted(set(x))),
-            "deg_source": lambda x: '-'.join(sorted(set(x))),
-            "polarity": lambda x: x.mode().iloc[0] if not x.mode().empty else "NA",
-            "tfbs_source": lambda x: '_'.join(sorted(set(x))),
-            "is_sigma_factor": "first",
-            "is_global_regulator": "first"
-        }
-        agg_rules = {col: rule for col, rule in aggregation_rules.items() if col not in group_cols and col in df_out.columns}
-        df_out = df_out.groupby(group_cols, as_index=False).agg(agg_rules)
-    else:
-        df_out = df_out.drop_duplicates(subset=group_cols)
+    logger.info(f"[TFBSFetcher] Aggregating rows based solely on columns {group_cols}...")
+    aggregation_rules = {
+        "gene": lambda x: ';'.join(sorted(set(x.dropna().str.strip()))),
+        "deg_source": lambda x: ';'.join(sorted(set(x.dropna().str.strip()))),
+        "polarity": lambda x: x.mode().iloc[0] if not x.mode().empty else "NA",
+        "tfbs_source": lambda x: ';'.join(sorted(set(x.dropna().str.strip()))),
+        "is_sigma_factor": "first",
+        "is_global_regulator": "first"
+    }
+    df_out = df_out.groupby(group_cols, as_index=False).agg(aggregation_rules)
 
+    # If Jaccard filtering is enabled, apply it.
     if config.get("apply_jaccard_filter", False):
         logger.info("[TFBSFetcher] Applying Jaccard similarity filtering to reduce redundant TFBS entries...")
         df_before = df_out.copy()
