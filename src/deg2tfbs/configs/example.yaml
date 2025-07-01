@@ -4,28 +4,27 @@ pipeline:
   stages:
     degfetcher:
       root_dir: "pipeline/degfetcher"
-      batch_id: "degbatch_20250321"
+      batch_id: "degbatch_20250630"
       modules:
-        - treitz
-        - schmidt
-        - treitz_schmidt_concordant
+        - bie
+        - emani
 
     tffetcher:
       root_dir: "pipeline/tffetcher"
-      batch_id: "tfbatch_20250321"
+      batch_id: "tfbatch_20250630"
       input:
-        deg_batch_id: "degbatch_20250321"             
+        deg_batch_id: "degbatch_20250630"             
         deg_csv_subdir: "csvs"
         deg_csv_groups:
-          acetate_concordant_up:
+          ciprofloxacin_up_bie_et_al:                    
             files:
-              - { file: "treitz_schmidt_concordant_up.csv", comparison: "m9_acetate_vs_m9_glucose" }
-            plot_name: "M9-Acetate vs. M9-Glucose, ↑ DEGs"     
-          acetate_concordant_down:
+              - { file: "bie_upregulated_degs.csv", comparison: "CIPvsH2O" }
+            plot_name: "Ciprofloxacin, ↑ DEGs (Bie et al.)"       
+          secretion_tag_up_emani_et_al:                    
             files:
-              - { file: "treitz_schmidt_concordant_down.csv", comparison: "m9_acetate_vs_m9_glucose" }
-            plot_name: "M9-Acetate vs. M9-Glucose, ↓ DEGs"
-        filter_gene_networks: true
+              - { file: "emani_upregulated_degs.csv", comparison: "all_tags_vs_control" }
+            plot_name: "Secretion Tag  OE, ↑ DEGs (Emani et al.)"    
+        filter_gene_networks: false
         filter_gene_network_csv: "treitz_schmidt_merged.csv"
       sources:
         regulatory_networks:
@@ -42,13 +41,13 @@ pipeline:
         include_master_regulators: true
         include_sigma_factors: true
         fdr_threshold: 0.10
-        top_n: 20
+        top_n: 100
 
     tfbsfetcher:
       root_dir: "pipeline/tfbsfetcher"
-      batch_id: "tfbsbatch_20250321"
+      batch_id: "tfbsbatch_20250630"
       input:
-        tf_batch_id: "tfbatch_20250321"
+        tf_batch_id: "tfbatch_20250630"
       use_only_enriched_tfs: true
       sources:
         binding_sites:
@@ -59,11 +58,11 @@ pipeline:
             path: "regulondb_13_tf_ri_set"
             regulondb_pssm: false
       params:
-        top_n: 20
+        top_n: 100
       apply_jaccard_filter: true
       kmer_size: 8
       jaccard_similarity_threshold: 0.5
-      selected_tf: "fadr"
+      selected_tf: "lexa"
       umap_n_neighbors: 15
       umap_min_dist: 0.1
       umap_figsize: [8, 6]
@@ -77,9 +76,9 @@ analysis:
 
   # Flag for switching between multi-comparison and single-batch analysis
   multi_comparison: false
-  reference_set: "tfbsbatch_20250321"
+  reference_set: "tfbsbatch_20250630"
   comparisons:
-    - ["tfbsbatch_20250321", "tfbsbatch_20250321"]
+    - ["tfbsbatch_20250630", "tfbsbatch_20250630"]
   
   exclude_intersections: false
   include_unassigned: false
@@ -91,39 +90,63 @@ analysis:
   umap_hue: "sample"
 
 datasets:
-  # Treitz et al. (DOI: 10.1002/pmic.201600303)
-  treitz:
+  # Bie et al. (DOI: 10.1128/spectrum.00317-23)
+  bie:
     data:
-      dataset_key: "treitz"
-      sheet_name: "TableSI;Data"
-      usecols:
-        - "Gene name"
-        - "# Proteins"
-        - "(A/G)-ratio"
-        - "log2 (A/G)-ratio"
-        - "Ratio Count"
-        - "(-log) p-value"
+      dataset_key: "bie"
+      sheet_name: "Sheet1"
       header: 1
+      usecols:
+        - "Genename"
+        - "KAN_readcount(KANvsH2O)"
+        - "H2O_readcount(KANvsH2O)"
+        - "log2FoldChange(KANvsH2O)"
+        - "pval(KANvsH2O)"
+        - "padj(KANvsH2O)"
+        - "significant(KANvsH2O)"
+        - "CIP_readcount(CIPvsH2O)"
+        - "H2O_readcount(CIPvsH2O)"
+        - "log2FoldChange(CIPvsH2O)"
+        - "pval(CIPvsH2O)"
+        - "padj(CIPvsH2O)"
+        - "significant(CIPvsH2O)"
+
     thresholds:
-      log2_fc_threshold: 1.00
+      log2_fc_threshold: 5
+      conditions:
+        - {
+            antibiotic_name: "KAN",
+            gene_col: "Genename",
+            abx_readcount_col: "KAN_readcount(KANvsH2O)",
+            h2o_readcount_col: "H2O_readcount(KANvsH2O)",
+            log2_fc_col: "log2FoldChange(KANvsH2O)",
+            sig_col: "significant(KANvsH2O)"
+          }
+        - {
+            antibiotic_name: "CIP",
+            gene_col: "Genename",
+            abx_readcount_col: "CIP_readcount(CIPvsH2O)",
+            h2o_readcount_col: "H2O_readcount(CIPvsH2O)",
+            log2_fc_col: "log2FoldChange(CIPvsH2O)",
+            sig_col: "significant(CIPvsH2O)"
+          }
+
     output:
       csv_subdir: "csvs"
       plot_subdir: "plots"
 
-  # Schmidt et al. (DOI: 10.1038/nbt.3418)
-  schmidt:
+  # Emani et al (DOI: 10.1093/synbio/ysad013)
+  emani:
     data:
-      dataset_key: "schmidt"
-      sheet_name: "Schmidt et al."
-      usecols: "C:AC"
-      header: 2
+      dataset_key: "emani"
+      sheet_name: "Figure 5_alltags v control"
+      usecols:
+        - "Gene"
+        - "log2FoldChange (Green = Upregulated in 10uM IPTG All Tags)"
+        - "pvalue"
+        - "padj"
     thresholds:
-      log2_fc_threshold: 1.50
-      comparisons:
-        Acetate_vs_Glucose: ["Acetate", "Glucose"]
-        Xylose_vs_Glucose: ["Xylose", "Glucose"]
-        Chemostat_slow_vs_fast: ["Chemostat µ=0.20", "Chemostat µ=0.5"]
-        Osmotic_stress_glucose_vs_Glucose: ["Osmotic-stress glucose", "Glucose"]
+      log2_fc_threshold: 2.0
     output:
       csv_subdir: "csvs"
       plot_subdir: "plots"

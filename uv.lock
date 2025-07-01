@@ -8,12 +8,20 @@ contourpy==1.3.2
     # via matplotlib
 cycler==0.12.1
     # via matplotlib
+et-xmlfile==2.0.0
+    # via openpyxl
+filelock==3.18.0
+    # via torch
 fonttools==4.58.4
     # via matplotlib
+fsspec==2025.5.1
+    # via torch
 h5py==3.14.0
     # via
     #   anndata
     #   scanpy
+jinja2==3.1.6
+    # via torch
 joblib==1.5.1
     # via
     #   pynndescent
@@ -27,17 +35,23 @@ llvmlite==0.44.0
     # via
     #   numba
     #   pynndescent
+markupsafe==3.0.2
+    # via jinja2
 matplotlib==3.10.3
     # via
     #   deg2tfbs (pyproject.toml)
     #   scanpy
     #   seaborn
+mpmath==1.3.0
+    # via sympy
 natsort==8.4.0
     # via
     #   anndata
     #   scanpy
 networkx==3.5
-    # via scanpy
+    # via
+    #   scanpy
+    #   torch
 numba==0.61.2
     # via
     #   pynndescent
@@ -58,7 +72,10 @@ numpy==2.2.6
     #   scipy
     #   seaborn
     #   statsmodels
+    #   torchvision
     #   umap-learn
+openpyxl==3.1.5
+    # via deg2tfbs (pyproject.toml)
 packaging==25.0
     # via
     #   anndata
@@ -77,7 +94,9 @@ patsy==1.0.1
     #   scanpy
     #   statsmodels
 pillow==11.2.1
-    # via matplotlib
+    # via
+    #   matplotlib
+    #   torchvision
 pynndescent==0.5.13
     # via
     #   scanpy
@@ -86,10 +105,15 @@ pyparsing==3.2.3
     # via matplotlib
 python-dateutil==2.9.0.post0
     # via
+    #   deg2tfbs (pyproject.toml)
     #   matplotlib
     #   pandas
 pytz==2025.2
-    # via pandas
+    # via
+    #   deg2tfbs (pyproject.toml)
+    #   pandas
+pyyaml==6.0.2
+    # via deg2tfbs (pyproject.toml)
 scanpy==1.11.2
     # via deg2tfbs (pyproject.toml)
 scikit-learn==1.7.0
@@ -112,18 +136,33 @@ seaborn==0.13.2
     #   scanpy
 session-info2==0.1.2
     # via scanpy
+setuptools==80.9.0
+    # via torch
 six==1.17.0
     # via python-dateutil
 statsmodels==0.14.4
     # via
     #   deg2tfbs (pyproject.toml)
     #   scanpy
+sympy==1.14.0
+    # via torch
 threadpoolctl==3.6.0
     # via scikit-learn
+torch==2.7.1
+    # via
+    #   deg2tfbs (pyproject.toml)
+    #   torchaudio
+    #   torchvision
+torchaudio==2.7.1
+    # via deg2tfbs (pyproject.toml)
+torchvision==0.22.1
+    # via deg2tfbs (pyproject.toml)
 tqdm==4.67.1
     # via
     #   scanpy
     #   umap-learn
+typing-extensions==4.14.0
+    # via torch
 tzdata==2025.2
     # via pandas
 umap-learn==0.5.8

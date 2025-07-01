@@ -6,35 +6,30 @@
 
 ## **Installation**
 
-**Prerequisites**
-
-- [Conda](https://docs.conda.io/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-- (Optional) [Mamba](https://mamba.readthedocs.io/) for faster dependency resolution
-
-
 **Step 1.** Clone the repository
 ```bash
 git clone https://github.com/e-south/deg2tfbs.git
 cd deg2tfbs
 ```
 
-**Step 2.** Create the Conda environment
+**Step 2.** Create & activate an isolated virtual-env
 ```bash
-conda env create -f environment.yml
-```
-This command will read the ```environment.yml``` file and create a Conda environment named ```deg2tfbs``` with all the necessary packages installed.
-
-**Step 3.** Activate the environment
-```bash
-conda activate deg2tfbs
+uv venv .venv          # creates .venv/ and auto-activates it
+source .venv/bin/activate
 ```
 
-**Step 4.** Install the Local `deg2tfbs` Package in Editable Mode
+**Step 3.** Sync dependencies and write uv.lock
 ```bash
-(deg2tfbs) cd deg2tfbs
-(deg2tfbs) pip install -e .
+uv pip sync pyproject.toml    # first run = resolves + pins + installs
 ```
-This allows Python to recognize **deg2tfbs** as an installed package while still linking directly to the source files in the repository. Any changes made to the source code will be immediately available without requiring reinstallation.
+On subsequent machines/CI you can omit the filename & it will read uv.lock.
+
+**Step 4.** Install `deg2tfbs` in editable mode
+```bash
+uv pip install --editable .
+```
+Any code change in src/deg2tfbs/ is now picked up instantly.
+
 
 ## Directory Layout
 ```text

@@ -1,0 +1,129 @@
+# configs/example.yaml
+pipeline:
+  name: "default"
+  stages:
+    degfetcher:
+      root_dir: "pipeline/degfetcher"
+      batch_id: "degbatch_20250321"
+      modules:
+        - treitz
+        - schmidt
+        - treitz_schmidt_concordant
+
+    tffetcher:
+      root_dir: "pipeline/tffetcher"
+      batch_id: "tfbatch_20250321"
+      input:
+        deg_batch_id: "degbatch_20250321"             
+        deg_csv_subdir: "csvs"
+        deg_csv_groups:
+          acetate_concordant_up:
+            files:
+              - { file: "treitz_schmidt_concordant_up.csv", comparison: "m9_acetate_vs_m9_glucose" }
+            plot_name: "M9-Acetate vs. M9-Glucose, ↑ DEGs"     
+          acetate_concordant_down:
+            files:
+              - { file: "treitz_schmidt_concordant_down.csv", comparison: "m9_acetate_vs_m9_glucose" }
+            plot_name: "M9-Acetate vs. M9-Glucose, ↓ DEGs"
+        filter_gene_networks: true
+        filter_gene_network_csv: "treitz_schmidt_merged.csv"
+      sources:
+        regulatory_networks:
+          ecocyc:
+            path: "ecocyc_28_reg_network"           
+            enabled: true
+            parser: "ecocyc_network_v28-5"
+          regulondb:
+            path: "regulondb_13_network_interactions"
+            enabled: true
+            parser: "regulondb_network_regulator_genes_v13"
+      params:
+        network_strategy: "union"
+        include_master_regulators: true
+        include_sigma_factors: true
+        fdr_threshold: 0.10
+        top_n: 20
+
+    tfbsfetcher:
+      root_dir: "pipeline/tfbsfetcher"
+      batch_id: "tfbsbatch_20250321"
+      input:
+        tf_batch_id: "tfbatch_20250321"
+      use_only_enriched_tfs: true
+      sources:
+        binding_sites:
+          ecocyc:
+            path: "ecocyc_28_tfbs_smart_table"
+            ecocyc_motifs: true
+          regdb:
+            path: "regulondb_13_tf_ri_set"
+            regulondb_pssm: false
+      params:
+        top_n: 20
+      apply_jaccard_filter: true
+      kmer_size: 8
+      jaccard_similarity_threshold: 0.5
+      selected_tf: "fadr"
+      umap_n_neighbors: 15
+      umap_min_dist: 0.1
+      umap_figsize: [8, 6]
+      umap_alpha: 0.5
+      umap_dpi: 500
+
+analysis:
+  tfbsfetcher_dir: "pipeline/tfbsfetcher"
+  plot_output_dir: "analysis/plots"
+  csv_output_dir: "analysis/data"
+
+  # Flag for switching between multi-comparison and single-batch analysis
+  multi_comparison: false
+  reference_set: "tfbsbatch_20250321"
+  comparisons:
+    - ["tfbsbatch_20250321", "tfbsbatch_20250321"]
+  
+  exclude_intersections: false
+  include_unassigned: false
+  umap_n_neighbors: 15
+  umap_min_dist: 0.1
+  umap_figsize: [8, 6]
+  umap_alpha: 0.5
+  umap_dpi: 150
+  umap_hue: "sample"
+
+datasets:
+  # Treitz et al. (DOI: 10.1002/pmic.201600303)
+  treitz:
+    data:
+      dataset_key: "treitz"
+      sheet_name: "TableSI;Data"
+      usecols:
+        - "Gene name"
+        - "# Proteins"
+        - "(A/G)-ratio"
+        - "log2 (A/G)-ratio"
+        - "Ratio Count"
+        - "(-log) p-value"
+      header: 1
+    thresholds:
+      log2_fc_threshold: 1.00
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"
+
+  # Schmidt et al. (DOI: 10.1038/nbt.3418)
+  schmidt:
+    data:
+      dataset_key: "schmidt"
+      sheet_name: "Schmidt et al."
+      usecols: "C:AC"
+      header: 2
+    thresholds:
+      log2_fc_threshold: 1.50
+      comparisons:
+        Acetate_vs_Glucose: ["Acetate", "Glucose"]
+        Xylose_vs_Glucose: ["Xylose", "Glucose"]
+        Chemostat_slow_vs_fast: ["Chemostat µ=0.20", "Chemostat µ=0.5"]
+        Osmotic_stress_glucose_vs_Glucose: ["Osmotic-stress glucose", "Glucose"]
+    output:
+      csv_subdir: "csvs"
+      plot_subdir: "plots"

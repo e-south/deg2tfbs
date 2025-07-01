@@ -15,7 +15,6 @@ Dunlop Lab
 """
 
 import yaml
-import copy
 from pathlib import Path
 
 # Import the stage runners

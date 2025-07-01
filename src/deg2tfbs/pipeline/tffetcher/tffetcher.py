@@ -68,7 +68,7 @@ def run_tffetcher_stage(config: dict) -> None:
         - a: The number of DEGs (from the union of all DEG files) that are targets of the TF.
         - K: The total number of targets for the TF (from the full network).
         - Enrichment score: a/K.
-        - Fisher’s exact test p-value from a 2×2 table:
+        - Fisher's exact test p-value from a 2x2 table:
               [ a, K - a ]
               [ M - a, N - K - (M - a) ]
           where M = number of DEGs (intersection with full network) and N = total genes in the full network.
