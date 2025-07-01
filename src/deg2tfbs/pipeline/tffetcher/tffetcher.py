@@ -5,7 +5,7 @@ pipeline/tffetcher/tffetcher.py
 
 This module maps differentially expressed genes (DEGs) to transcription factors (TFs)
 using one or more regulatory network resources (e.g., EcoCyc, RegulonDB). It produces:
-  - A consolidated deg2tf_mapping CSV showing the TF–DEG associations (filtered by the DEG CSV files)
+  - A consolidated deg2tf_mapping CSV showing the TF-DEG associations (filtered by the DEG CSV files)
   - An enrichment analysis of TFs based on the full (unfiltered) regulatory network.
     
 Additional metadata is recorded for up- and down-regulated DEGs (as indicated by the 'deg_source' field),
