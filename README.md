@@ -6,37 +6,34 @@
 
 ## **Installation**
 
-**Step 1.** Clone the repository
+CI verifies the committed lock with uv 0.13.7 on Python 3.11 and 3.13.
+The patched filelock and Pillow releases require Python 3.11 or newer.
+The locked torchvision release excludes Python 3.14.1.
+The verified Linux installation uses the official PyTorch CPU wheels for torch,
+torchvision, and torchaudio. A standalone wheel installation follows the
+installer’s configured package indexes. Use the locked command below to select
+the CPU builds on Linux.
+
 ```bash
 git clone https://github.com/e-south/deg2tfbs.git
 cd deg2tfbs
+uv sync --locked --python 3.11
+uv run --locked python -c "import deg2tfbs"
 ```
 
-**Step 2.** Create & activate an isolated virtual-env
-```bash
-uv venv .venv          # creates .venv/ and auto-activates it
-source .venv/bin/activate
-```
-
-**Step 3.** Sync dependencies and write uv.lock
-```bash
-uv pip sync pyproject.toml    # first run = resolves + pins + installs
-```
-On subsequent machines/CI you can omit the filename & it will read uv.lock.
-
-**Step 4.** Install `deg2tfbs` in editable mode
-```bash
-uv pip install --editable .
-```
-Any code change in src/deg2tfbs/ is now picked up instantly.
-
+`uv sync` installs the project and its dependencies into `.venv`.
+The security floors cover filelock, fonttools, fsspec, Pillow, setuptools, and torch.
+When updating dependencies, run `uv lock --upgrade` and review the changes to
+`uv.lock`. Run `uv audit --locked` and `uv run --locked python .github/scripts/audit_lock.py`
+to check all locked versions against OSV and PyPI. To also audit the distributions
+in the installed environment, run `.venv/bin/python -I .github/scripts/audit_lock.py --installed`.
 
 ## Directory Layout
 ```text
 deg2tfbs/
 ├── README.md
 ├── pyproject.toml
-├── environment.yml
+├── uv.lock
 ├── LICENSE
 └── src/
     └── deg2tfbs/

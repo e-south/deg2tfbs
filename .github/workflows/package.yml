@@ -1,0 +1,74 @@
+# deg2tfbs
+# deg2tfbs/.github/workflows/package.yml
+# Verify the locked CPU installation and audit all locked dependency versions.
+# Module Author(s): Eric J. South
+
+name: Package checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: CPU install (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+        with:
+          version: "0.13.7"
+          enable-cache: false
+      - name: Install the locked dependencies and the project wheel
+        env:
+          PYTHON_VERSION: ${{ matrix.python }}
+        run: |
+          uv sync --locked --no-editable --python "$PYTHON_VERSION"
+          uv pip check
+      - name: Audit the installed distributions
+        run: .venv/bin/python -I .github/scripts/audit_lock.py --installed
+      - name: Import the package and check the CPU extensions
+        env:
+          MPLBACKEND: Agg
+        run: |
+          .venv/bin/python -I - <<'PY'
+          from importlib.metadata import version
+          import deg2tfbs
+          import scanpy
+          import torch
+          import torchaudio
+          import torchvision
+
+          for name in ("torch", "torchaudio", "torchvision"):
+              assert version(name).endswith("+cpu"), (name, version(name))
+          assert torch.version.cuda is None
+          boxes = torch.tensor([[0.0, 0.0, 1.0, 1.0]])
+          assert torchvision.ops.nms(boxes, torch.ones(1), 0.5).tolist() == [0]
+          waveform = torch.tensor([0.25, 0.5])
+          coefficients = torch.tensor([1.0, 0.0])
+          filtered = torchaudio.functional.lfilter(waveform, coefficients, coefficients)
+          torch.testing.assert_close(filtered, waveform)
+          PY
+
+  audit:
+    name: Audit the full lock
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+        with:
+          version: "0.13.7"
+          enable-cache: false
+      - run: uv audit --locked
+      - run: uv run --no-project --python 3.11 python .github/scripts/audit_lock.py
