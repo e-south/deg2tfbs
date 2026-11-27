@@ -25,7 +25,8 @@ uv run --locked python -c "import deg2tfbs"
 The security floors cover filelock, fonttools, fsspec, Pillow, setuptools, and torch.
 When updating dependencies, run `uv lock --upgrade` and review the changes to
 `uv.lock`. Run `uv audit --locked` and `uv run --locked python .github/scripts/audit_lock.py`
-to check all locked versions against OSV and PyPI.
+to check all locked versions against OSV and PyPI. To also audit the distributions
+in the installed environment, run `.venv/bin/python -I .github/scripts/audit_lock.py --installed`.
 
 ## Directory Layout
 ```text

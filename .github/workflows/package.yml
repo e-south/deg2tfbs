@@ -34,6 +34,8 @@ jobs:
         run: |
           uv sync --locked --no-editable --python "$PYTHON_VERSION"
           uv pip check
+      - name: Audit the installed distributions
+        run: .venv/bin/python -I .github/scripts/audit_lock.py --installed
       - name: Import the package and check the CPU extensions
         env:
           MPLBACKEND: Agg
